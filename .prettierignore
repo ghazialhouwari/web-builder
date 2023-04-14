@@ -1,0 +1,7 @@
+dist
+coverage
+.vscode/settings.json
+.output
+.nuxt
+.history
+pnpm-lock.yaml

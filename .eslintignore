@@ -1,0 +1,11 @@
+# Common
+node_modules
+dist
+.nuxt
+coverage
+lib/templates
+.vscode/settings.json
+.output
+.history
+pnpm-lock.yaml
+*.css
