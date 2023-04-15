@@ -1,13 +1,9 @@
-<script setup lang="ts">
-	import GrapesJSEditor from './components/GrapesJSEditor.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<v-app>
 		<v-main>
-			<v-container>
-				<GrapesJSEditor />
-			</v-container>
+			<v-container> </v-container>
 		</v-main>
 	</v-app>
 </template>
