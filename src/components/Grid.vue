@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+	import { ref } from 'vue';
 	import { useGridStore } from '@/store/grid';
 	import useGrid from '@/composables/useGrid';
 
@@ -8,17 +9,21 @@
 	import DraggedGridItemArea from '@/components/DraggedGridItemArea.vue';
 
 	const gridStore = useGridStore();
+	const gridWrapper = ref<HTMLElement | null>(null);
+
 	const {
 		isDragging,
 		draggedGridItemArea,
 		gridRowCount,
 		moveHandler,
 		moveEndHandler,
-	} = useGrid();
+	} = useGrid(gridWrapper);
 </script>
 
 <template>
 	<div
+		ref="gridWrapper"
+		id="gridWrapper"
 		class="grid-wrapper"
 		:style="{
 			'--grid-row-count': gridRowCount,

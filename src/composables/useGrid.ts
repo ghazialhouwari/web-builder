@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue';
+import { ref, computed, type Ref } from 'vue';
 import { IGridItemArea } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
 
-export default function useGrid() {
+export default function useGrid(gridWrapper: Ref<HTMLElement | null>) {
 	const gridStore = useGridStore();
 
 	const isDragging = ref(false);
@@ -35,11 +35,12 @@ export default function useGrid() {
 	): IGridItemArea {
 		const { grid } = gridStore;
 
+		const offsetX = grid.gutters + grid.gap;
+		const offsetY = gridWrapper.value!.offsetTop;
+
 		// Get grid row and column from grid item offset
-		const gridColumn = Math.ceil(
-			(x - grid.gutters + grid.gap) / (grid.cellWidth + grid.gap)
-		);
-		const gridRow = Math.round(y / (grid.cellHeight + grid.gap));
+		const gridColumn = Math.ceil((x - offsetX) / (grid.cellWidth + grid.gap));
+		const gridRow = Math.round((y - offsetY) / (grid.cellHeight + grid.gap));
 
 		const columnStart = Math.max(1, gridColumn + 1);
 		const rowStart = Math.max(1, gridRow + 1);
