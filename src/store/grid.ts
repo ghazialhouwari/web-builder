@@ -1,22 +1,25 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { IGridItem } from '@/utils/types';
-import { gridAreaToArray } from '@/utils';
+import { IGridItem, IGridItemArea } from '@/utils/types';
 
 export const useGridStore = defineStore('grid', () => {
 	const items = ref<IGridItem[]>([
 		{
 			content: 'Item 1',
-			style: {
-				gridArea: '2/2/4/6',
-				transform: 'translate(0, 0)',
+			gridArea: {
+				rowStart: 2,
+				columnStart: 2,
+				rowEnd: 4,
+				columnEnd: 6,
 			},
 		},
 		{
 			content: 'Item 2',
-			style: {
-				gridArea: '4/8/6/14',
-				transform: 'translate(0, 0)',
+			gridArea: {
+				rowStart: 4,
+				columnStart: 8,
+				rowEnd: 6,
+				columnEnd: 14,
 			},
 		},
 	]);
@@ -48,22 +51,13 @@ export const useGridStore = defineStore('grid', () => {
 		};
 	});
 
-	function getItemGridAreaByIndex(index: number) {
-		return gridAreaToArray(items.value[index].style.gridArea);
-	}
-
-	function updateItemTransformByIndex(index: number, x: number, y: number) {
-		items.value[index].style.transform = `translate(${x}px, ${y}px)`;
-	}
-	function updateItemGridAreaByIndex(index: number, gridArea: string) {
-		items.value[index].style.gridArea = gridArea;
+	function updateItemGridAreaByIndex(index: number, gridArea: IGridItemArea) {
+		items.value[index].gridArea = gridArea;
 	}
 
 	return {
 		grid,
 		items,
-		getItemGridAreaByIndex,
-		updateItemTransformByIndex,
 		updateItemGridAreaByIndex,
 	};
 });

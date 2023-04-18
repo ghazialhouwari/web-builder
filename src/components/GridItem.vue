@@ -1,80 +1,59 @@
 <script setup lang="ts">
-	import { onMounted, ref, computed } from 'vue';
+	import { onMounted, ref, toRef } from 'vue';
 	import { useDraggable } from '@vueuse/core';
-	import { gridAreaToArray } from '@/utils';
-	import { IGridItem } from '@/utils/types';
-
-	import { useGridStore } from '@/store/grid';
+	import { IGridItem, IGridItemArea } from '@/utils/types';
 
 	interface Props {
 		item: IGridItem;
 		index: number;
-		placeholder: string;
+		placeholder?: IGridItemArea;
 	}
 
 	const props = defineProps<Props>();
+
 	const emit = defineEmits({
-		updatePlaceholderPosition: (
-			x: number,
-			y: number,
-			columnSize: number,
-			rowSize: number
-		) => true,
-		move: () => true,
+		move: (x: number, y: number) => true,
 		end: () => true,
 	});
 
-	const gridStore = useGridStore();
-
 	const gridItem = ref<HTMLElement>();
+	const gridArea = toRef(props.item, 'gridArea');
+
+	const offset = ref({ x: 0, y: 0 });
+
+	// Update the item's offset relative to its original position
+	function updateItemOffset(x: number, y: number) {
+		offset.value.x = x - gridItem.value!.offsetLeft;
+		offset.value.y = y - gridItem.value!.offsetTop;
+	}
+
+	function resetItemOffset() {
+		offset.value.x = 0;
+		offset.value.y = 0;
+	}
 
 	onMounted(() => {
-		if (gridItem.value) {
-			const initialPos = { x: 0, y: 0 };
+		const { x, y } = useDraggable(gridItem.value, {
+			onMove: () => {
+				emit('move', x.value, y.value);
 
-			const { x, y, style } = useDraggable(gridItem.value, {
-				onStart: () => {
-					if (!gridItem.value) return;
-					initialPos.x = gridItem.value.offsetLeft;
-					initialPos.y = gridItem.value.offsetTop;
-				},
-				onMove: () => {
-					emit('move');
-
-					const [rowStart, columnStart, rowEnd, columnEnd] = gridAreaToArray(
-						props.item.style.gridArea
-					);
-
-					emit(
-						'updatePlaceholderPosition',
-						x.value,
-						y.value,
-						columnEnd - columnStart,
-						rowEnd - rowStart
-					);
-
-					// Update the item's transform property relative to its original position
-					const deltaX = x.value - initialPos.x;
-					const deltaY = y.value - initialPos.y;
-					gridStore.updateItemTransformByIndex(props.index, deltaX, deltaY);
-				},
-				onEnd: () => {
-					emit('end');
-					gridStore.updateItemGridAreaByIndex(props.index, props.placeholder);
-					gridStore.updateItemTransformByIndex(props.index, 0, 0);
-				},
-			});
-		}
+				updateItemOffset(x.value, y.value);
+			},
+			onEnd: () => {
+				emit('end');
+				resetItemOffset();
+			},
+		});
 	});
 </script>
 
 <template>
 	<div
 		ref="gridItem"
-		class="grid-item"
+		class="GridItem"
 		:style="{
-			gridArea: props.item.style.gridArea,
-			transform: props.item.style.transform,
+			gridArea: `${gridArea.rowStart}/${gridArea.columnStart}/${gridArea.rowEnd}/${gridArea.columnEnd}`,
+			transform: `translate(${offset.x}px, ${offset.y}px)`,
 		}"
 	>
 		{{ props.item.content }}
@@ -82,7 +61,7 @@
 </template>
 
 <style scoped>
-	.grid-item {
+	.GridItem {
 		position: relative;
 		user-select: none;
 		cursor: grab;

@@ -1,9 +1,11 @@
-export interface IGridItemStyle {
-	gridArea: string;
-	transform: string;
+export interface IGridItemArea {
+	rowStart: number;
+	columnStart: number;
+	rowEnd: number;
+	columnEnd: number;
 }
 
 export interface IGridItem {
 	content: string;
-	style: IGridItemStyle;
+	gridArea: IGridItemArea;
 }

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 	import { ref, computed } from 'vue';
-	import { gridAreaToArray } from '@/utils';
 	import { useGridStore } from '@/store/grid';
 	import GridItem from '@/components/GridItem.vue';
+	import { IGridItem, IGridItemArea } from '@/utils/types';
 
 	const gridStore = useGridStore();
 
 	const isDragging = ref(false);
-	const placeholder = ref('');
+	const placeholder = ref<IGridItemArea>();
 
 	const draggedItemRowEnd = ref(0);
 
@@ -15,14 +15,19 @@
 		return getMaxRow();
 	});
 
-	function updatePlaceholderPosition(
-		x: number,
-		y: number,
-		columnSize: number,
-		rowSize: number
-	) {
+	function moveEndHanlder(index: number) {
+		isDragging.value = false;
+		gridStore.updateItemGridAreaByIndex(index, placeholder.value!);
+	}
+
+	function moveHanlder(x: number, y: number, item: IGridItem) {
+		isDragging.value = true;
+
+		const rowSize = item.gridArea.rowEnd - item.gridArea.rowStart;
+		const columnSize = item.gridArea.columnEnd - item.gridArea.columnStart;
+
 		placeholder.value = getUpdatedGridArea(x, y, columnSize, rowSize);
-		draggedItemRowEnd.value = gridAreaToArray(placeholder.value)[2];
+		draggedItemRowEnd.value = placeholder.value.rowEnd;
 		updateGridRowCount();
 	}
 
@@ -35,8 +40,7 @@
 
 	function getMaxRow() {
 		const maxRow = gridStore.items.reduce((max, item) => {
-			const rowEnd = gridAreaToArray(item.style.gridArea)[2];
-			return Math.max(max, rowEnd);
+			return Math.max(max, item.gridArea.rowEnd);
 		}, 0);
 		return Math.max(maxRow, 9, draggedItemRowEnd.value) - 1;
 	}
@@ -46,8 +50,8 @@
 		y: number,
 		columnSize: number,
 		rowSize: number
-	) {
-		const gridX = Math.round(
+	): IGridItemArea {
+		const gridX = Math.ceil(
 			(x - gridStore.grid.gutters + gridStore.grid.gap) /
 				(gridStore.grid.cellWidth + gridStore.grid.gap)
 		);
@@ -60,7 +64,7 @@
 		const columnEnd = columnStart + columnSize;
 		const rowEnd = rowStart + rowSize;
 
-		return `${rowStart}/${columnStart}/${rowEnd}/${columnEnd}`;
+		return { rowStart, columnStart, rowEnd, columnEnd };
 	}
 </script>
 
@@ -72,9 +76,8 @@
 			:item="item"
 			:index="index"
 			:placeholder="placeholder"
-			@updatePlaceholderPosition="updatePlaceholderPosition"
-			@move="isDragging = true"
-			@end="isDragging = false"
+			@move="(x, y) => moveHanlder(x, y, item)"
+			@end="moveEndHanlder(index)"
 		/>
 		<template v-if="isDragging">
 			<template v-for="row in gridRowCount" :key="row">
@@ -87,9 +90,11 @@
 			</template>
 		</template>
 		<div
-			v-if="isDragging"
+			v-if="isDragging && placeholder"
 			class="GridPlaceholder"
-			:style="{ gridArea: placeholder }"
+			:style="{
+				gridArea: `${placeholder.rowStart}/${placeholder.columnStart}/${placeholder.rowEnd}/${placeholder.columnEnd}`,
+			}"
 		></div>
 	</div>
 </template>
