@@ -6,14 +6,13 @@
 	interface Props {
 		item: IGridItem;
 		index: number;
-		placeholder?: IGridItemArea;
 	}
 
 	const props = defineProps<Props>();
 
 	const emit = defineEmits({
-		move: (x: number, y: number) => true,
-		end: () => true,
+		move: (x: number, y: number, gridArea: IGridItemArea) => true,
+		end: (index: number) => true,
 	});
 
 	const gridItem = ref<HTMLElement | null>(null);
@@ -22,17 +21,17 @@
 	const { offset } = useDraggable(gridItem, onMove, onEnd);
 
 	function onMove(x: number, y: number) {
-		emit('move', x, y);
+		emit('move', x, y, props.item.gridArea);
 	}
 	function onEnd() {
-		emit('end');
+		emit('end', props.index);
 	}
 </script>
 
 <template>
 	<div
 		ref="gridItem"
-		class="GridItem"
+		class="grid-wrapper__item"
 		:style="{
 			'--row-start': gridArea.rowStart,
 			'--col-start': gridArea.columnStart,
@@ -47,7 +46,7 @@
 </template>
 
 <style scoped>
-	.GridItem {
+	.grid-wrapper__item {
 		position: relative;
 		user-select: none;
 		cursor: grab;

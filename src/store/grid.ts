@@ -26,6 +26,7 @@ export const useGridStore = defineStore('grid', () => {
 
 	const grid = computed(() => {
 		const columnCount = 24;
+		const minRowCount = 9;
 		const gap = 11;
 		const rowHeightRatio = 0.0215;
 		const gutters = window.innerWidth * 0.02 - gap;
@@ -37,8 +38,13 @@ export const useGridStore = defineStore('grid', () => {
 		const cellWidth = (width - gapCount) / columnCount;
 		const cellHeight = width * rowHeightRatio;
 
+		const rowCount = items.value.reduce((max, item) => {
+			return Math.max(max, item.gridArea.rowEnd);
+		}, minRowCount);
+
 		return {
 			columnCount,
+			rowCount,
 			gap,
 			rowHeightRatio,
 			gutters,

@@ -3,7 +3,6 @@
 	--site-max-width: 1400px;
 	--grid-gap: 11px;
 	--grid-column-count: 24;
-	--grid-row-count: 8;
 	--grid-row-height-ratio: 0.0215;
 	--grid-gap-count: (var(--grid-column-count) - 1);
 	--grid-gutter: calc(var(--site-gutter) - var(--grid-gap));
