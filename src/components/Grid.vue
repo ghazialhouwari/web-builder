@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 	import { useGridStore } from '@/store/grid';
 	import useGrid from '@/composables/useGrid';
-	import { IGridItem, IGridItemArea } from '@/utils/types';
 
 	// Components
 	import GridItem from '@/components/GridItem.vue';

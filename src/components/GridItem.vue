@@ -10,6 +10,7 @@
 
 	const props = defineProps<Props>();
 
+	/* eslint-disable no-unused-vars */
 	const emit = defineEmits({
 		move: (x: number, y: number, gridArea: IGridItemArea) => true,
 		end: (index: number) => true,
