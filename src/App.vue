@@ -1,7 +1,7 @@
 <template>
-	<DraggableGrid />
+	<Grid />
 </template>
 
 <script lang="ts" setup>
-	import DraggableGrid from '@/components/DraggableGrid.vue';
+	import Grid from '@/components/Grid.vue';
 </script>
