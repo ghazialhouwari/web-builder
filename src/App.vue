@@ -1,9 +1,7 @@
-<script setup lang="ts"></script>
-
 <template>
-	<v-app>
-		<v-main>
-			<v-container> </v-container>
-		</v-main>
-	</v-app>
+	<DraggableGrid />
 </template>
+
+<script lang="ts" setup>
+	import DraggableGrid from '@/components/DraggableGrid.vue';
+</script>
