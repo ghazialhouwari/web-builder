@@ -1,6 +1,6 @@
 <script setup lang="ts">
-	import { onMounted, ref, toRef } from 'vue';
-	import { useDraggable } from '@vueuse/core';
+	import { ref, toRef } from 'vue';
+	import useDraggable from '@/composables/useDraggable';
 	import { IGridItem, IGridItemArea } from '@/utils/types';
 
 	interface Props {
@@ -16,35 +16,17 @@
 		end: () => true,
 	});
 
-	const gridItem = ref<HTMLElement>();
+	const gridItem = ref<HTMLElement | null>(null);
 	const gridArea = toRef(props.item, 'gridArea');
 
-	const offset = ref({ x: 0, y: 0 });
+	const { offset } = useDraggable(gridItem, onMove, onEnd);
 
-	// Update the item's offset relative to its original position
-	function updateItemOffset(x: number, y: number) {
-		offset.value.x = x - gridItem.value!.offsetLeft;
-		offset.value.y = y - gridItem.value!.offsetTop;
+	function onMove(x: number, y: number) {
+		emit('move', x, y);
 	}
-
-	function resetItemOffset() {
-		offset.value.x = 0;
-		offset.value.y = 0;
+	function onEnd() {
+		emit('end');
 	}
-
-	onMounted(() => {
-		const { x, y } = useDraggable(gridItem.value, {
-			onMove: () => {
-				emit('move', x.value, y.value);
-
-				updateItemOffset(x.value, y.value);
-			},
-			onEnd: () => {
-				emit('end');
-				resetItemOffset();
-			},
-		});
-	});
 </script>
 
 <template>
@@ -52,8 +34,12 @@
 		ref="gridItem"
 		class="GridItem"
 		:style="{
-			gridArea: `${gridArea.rowStart}/${gridArea.columnStart}/${gridArea.rowEnd}/${gridArea.columnEnd}`,
-			transform: `translate(${offset.x}px, ${offset.y}px)`,
+			'--row-start': gridArea.rowStart,
+			'--col-start': gridArea.columnStart,
+			'--row-end': gridArea.rowEnd,
+			'--col-end': gridArea.columnEnd,
+			'--x-offset': `${offset.x}px`,
+			'--y-offset': `${offset.y}px`,
 		}"
 	>
 		{{ props.item.content }}
@@ -66,5 +52,8 @@
 		user-select: none;
 		cursor: grab;
 		background: lightblue;
+		grid-area: var(--row-start) / var(--col-start) / var(--row-end) /
+			var(--col-end);
+		transform: translate(var(--x-offset), var(--y-offset));
 	}
 </style>
