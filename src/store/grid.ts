@@ -37,13 +37,16 @@ export const useGridStore = defineStore('grid', () => {
 	]);
 
 	const isDragging = ref(false);
-	const draggedGridItemArea = ref<IGridItemArea>();
+	const draggedGridItemArea = ref<IGridItemArea | null>(null);
 
-	function updateItemGridAreaByIndex(index: number, gridArea: IGridItemArea) {
-		items[index].gridArea = gridArea;
+	function updateItemGridAreaByIndex(index: number) {
+		if (draggedGridItemArea.value) {
+			items[index].gridArea = draggedGridItemArea.value;
+			updateDraggedGridItemArea(null);
+		}
 	}
 
-	function updateDraggedGridItemArea(gridArea: IGridItemArea) {
+	function updateDraggedGridItemArea(gridArea: IGridItemArea | null) {
 		draggedGridItemArea.value = gridArea;
 	}
 

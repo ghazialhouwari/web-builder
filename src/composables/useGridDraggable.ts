@@ -20,7 +20,9 @@ export default function useGridDraggable() {
 
 	function moveEndHandler(index: number) {
 		gridStore.updateIsDragging(false);
-		gridStore.updateItemGridAreaByIndex(index, gridStore.draggedGridItemArea!);
+		if (gridStore.draggedGridItemArea) {
+			gridStore.updateItemGridAreaByIndex(index);
+		}
 	}
 
 	return {
