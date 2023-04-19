@@ -1,30 +1,32 @@
-import { ref, computed, type Ref } from 'vue';
+import { ref, reactive, toRefs, onMounted, onUnmounted, computed } from 'vue';
 import { IGridItemArea } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
 
-export default function useGrid(gridWrapper: Ref<HTMLElement | null>) {
+interface Grid {
+	gap: number;
+	gutters: number;
+	cellWidth: number;
+	cellHeight: number;
+	columnCount: number;
+	minRowCount: number;
+}
+
+export default function useGrid() {
 	const gridStore = useGridStore();
+	const grid = reactive<Grid>(calculateGrid());
+	const gridWrapper = ref<HTMLElement | null>(null);
 
-	const isDragging = ref(false);
-	const draggedGridItemArea = ref<IGridItemArea>();
-
-	const gridRowCount = computed(() => {
-		const rowEnd = draggedGridItemArea.value?.rowEnd || 0;
-		return Math.max(gridStore.grid.rowCount, rowEnd) - 1;
+	const rowCount = computed(() => {
+		const rowEnd = gridStore.draggedGridItemArea?.rowEnd || 0;
+		const rowCount = gridStore.items.reduce(
+			(max, item) => Math.max(max, item.gridArea.rowEnd),
+			grid.minRowCount
+		);
+		return Math.max(rowCount, rowEnd) - 1;
 	});
 
-	function moveEndHandler(index: number) {
-		isDragging.value = false;
-		gridStore.updateItemGridAreaByIndex(index, draggedGridItemArea.value!);
-	}
-
-	function moveHandler(x: number, y: number, gridArea: IGridItemArea) {
-		isDragging.value = true;
-
-		const rowSize = gridArea.rowEnd - gridArea.rowStart;
-		const columnSize = gridArea.columnEnd - gridArea.columnStart;
-
-		draggedGridItemArea.value = offsetToGridArea(x, y, columnSize, rowSize);
+	function handleResize() {
+		Object.assign(grid, calculateGrid());
 	}
 
 	function offsetToGridArea(
@@ -33,10 +35,8 @@ export default function useGrid(gridWrapper: Ref<HTMLElement | null>) {
 		columnSize: number,
 		rowSize: number
 	): IGridItemArea {
-		const { grid } = gridStore;
-
 		const offsetX = grid.gutters + grid.gap;
-		const offsetY = gridWrapper.value!.offsetTop;
+		const offsetY = gridWrapper.value?.offsetTop || 0;
 
 		// Get grid row and column from grid item offset
 		const gridColumn = Math.ceil((x - offsetX) / (grid.cellWidth + grid.gap));
@@ -50,11 +50,49 @@ export default function useGrid(gridWrapper: Ref<HTMLElement | null>) {
 		return { rowStart, columnStart, rowEnd, columnEnd };
 	}
 
+	function setGridWrapper() {
+		gridWrapper.value = document.querySelector('#gridWrapper');
+	}
+
+	onMounted(() => {
+		setGridWrapper();
+		window.addEventListener('resize', handleResize);
+	});
+	onUnmounted(() => window.removeEventListener('resize', handleResize));
+
 	return {
-		isDragging,
-		draggedGridItemArea,
-		gridRowCount,
-		moveHandler,
-		moveEndHandler,
+		...toRefs(grid),
+		rowCount,
+		gridWrapper,
+		offsetToGridArea,
+	};
+}
+
+function calculateGrid(): Grid {
+	const viewPort = window.innerWidth;
+
+	const gap = 11;
+	const columnCount = 24;
+	const minRowCount = 8;
+	const rowHeightRatio = 0.0215;
+	const minContainerWidth = 1400;
+
+	const gutters = viewPort * 0.02 - gap;
+	const gapCount = (columnCount - 1) * gap;
+	const containerWidth = viewPort - gutters * 2 - gap * 2;
+
+	const width = Math.min(minContainerWidth, containerWidth);
+	const height = minRowCount * width * rowHeightRatio + gap * (minRowCount - 1);
+
+	const cellWidth = (width - gapCount) / columnCount;
+	const cellHeight = width * rowHeightRatio;
+
+	return {
+		gap,
+		gutters,
+		cellWidth,
+		cellHeight,
+		columnCount,
+		minRowCount,
 	};
 }

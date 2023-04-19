@@ -9,3 +9,8 @@ export interface IGridItem {
 	content: string;
 	gridArea: IGridItemArea;
 }
+
+export interface IBlock {
+	title: string;
+	value: number;
+}

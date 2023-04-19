@@ -1,13 +1,20 @@
-import { onMounted, Ref, ref } from 'vue';
-import { useDraggable as useVueCoreDraggable } from '@vueuse/core';
+import { ref, Ref } from 'vue';
+import { useDraggable } from '@vueuse/core';
+import useGrid from '@/composables/useGrid';
 
-export default function useDraggable(
-	gridItem: Ref<HTMLElement | null>,
-	onMove: (x: number, y: number) => void,
-	onEnd: () => void
-) {
+export default function useGridItemDraggable({
+	gridItem,
+	onStart,
+	onMove,
+	onEnd,
+}: {
+	gridItem: Ref<HTMLElement | null>;
+	onStart?: () => void;
+	onMove?: (x: number, y: number) => void;
+	onEnd?: () => void;
+}) {
 	const offset = ref({ x: 0, y: 0 });
-	const gridWrapper = ref<HTMLElement | null>(null);
+	const { gridWrapper } = useGrid();
 
 	function updateItemOffset(x: number, y: number) {
 		const wrapperOffsetTop = gridWrapper.value?.offsetTop || 0;
@@ -20,19 +27,18 @@ export default function useDraggable(
 		offset.value.y = 0;
 	}
 
-	useVueCoreDraggable(gridItem, {
+	useDraggable(gridItem, {
+		onStart: () => {
+			onStart && onStart();
+		},
 		onMove: ({ x, y }) => {
-			onMove(x, y);
 			updateItemOffset(x, y);
+			onMove && onMove(x, y);
 		},
 		onEnd: () => {
-			onEnd();
 			resetItemOffset();
+			onEnd && onEnd();
 		},
-	});
-
-	onMounted(() => {
-		gridWrapper.value = document.querySelector('#gridWrapper');
 	});
 
 	return { offset };

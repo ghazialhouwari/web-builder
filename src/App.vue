@@ -1,6 +1,7 @@
 <template>
 	<v-app>
 		<v-main>
+			<Blocks />
 			<div class="py-12">
 				<Grid />
 			</div>
@@ -10,4 +11,5 @@
 
 <script lang="ts" setup>
 	import Grid from '@/components/Grid.vue';
+	import Blocks from '@/components/Blocks.vue';
 </script>

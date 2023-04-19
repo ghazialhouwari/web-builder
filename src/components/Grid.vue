@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-	import { ref } from 'vue';
 	import { useGridStore } from '@/store/grid';
 	import useGrid from '@/composables/useGrid';
+	import useGridDraggable from '@/composables/useGridDraggable';
 
 	// Components
 	import GridItem from '@/components/GridItem.vue';
@@ -9,24 +9,16 @@
 	import DraggedGridItemArea from '@/components/DraggedGridItemArea.vue';
 
 	const gridStore = useGridStore();
-	const gridWrapper = ref<HTMLElement | null>(null);
-
-	const {
-		isDragging,
-		draggedGridItemArea,
-		gridRowCount,
-		moveHandler,
-		moveEndHandler,
-	} = useGrid(gridWrapper);
+	const { rowCount } = useGrid();
+	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable();
 </script>
 
 <template>
 	<div
-		ref="gridWrapper"
 		id="gridWrapper"
 		class="grid-wrapper"
 		:style="{
-			'--grid-row-count': gridRowCount,
+			'--grid-row-count': rowCount,
 		}"
 	>
 		<GridItem
@@ -34,13 +26,14 @@
 			:key="index"
 			:item="item"
 			:index="index"
+			@start="moveStartHandler"
 			@move="moveHandler"
 			@end="moveEndHandler"
 		/>
-		<GridCells v-if="isDragging" :gridRowCount="gridRowCount" />
+		<GridCells v-if="gridStore.isDragging" />
 		<DraggedGridItemArea
-			v-if="isDragging && draggedGridItemArea"
-			:gridArea="draggedGridItemArea"
+			v-if="gridStore.isDragging && gridStore.draggedGridItemArea"
+			:gridArea="gridStore.draggedGridItemArea"
 		/>
 	</div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref, toRef } from 'vue';
-	import useDraggable from '@/composables/useDraggable';
+	import useGridItemDraggable from '@/composables/useGridItemDraggable';
 	import { IGridItem, IGridItemArea } from '@/utils/types';
 
 	interface Props {
@@ -12,6 +12,7 @@
 
 	/* eslint-disable no-unused-vars */
 	const emit = defineEmits({
+		start: () => true,
 		move: (x: number, y: number, gridArea: IGridItemArea) => true,
 		end: (index: number) => true,
 	});
@@ -19,8 +20,11 @@
 	const gridItem = ref<HTMLElement | null>(null);
 	const gridArea = toRef(props.item, 'gridArea');
 
-	const { offset } = useDraggable(gridItem, onMove, onEnd);
+	const { offset } = useGridItemDraggable({ gridItem, onStart, onMove, onEnd });
 
+	function onStart() {
+		emit('start');
+	}
 	function onMove(x: number, y: number) {
 		emit('move', x, y, props.item.gridArea);
 	}
