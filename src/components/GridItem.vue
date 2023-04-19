@@ -36,7 +36,7 @@
 <template>
 	<div
 		ref="gridItem"
-		class="grid-wrapper__item"
+		class="grid-wrapper__item d-flex align-center justify-center"
 		:style="{
 			'--row-start': gridArea.rowStart,
 			'--col-start': gridArea.columnStart,
@@ -46,7 +46,7 @@
 			'--y-offset': `${offset.y}px`,
 		}"
 	>
-		{{ props.item.content }}
+		{{ props.item.block.title }}
 	</div>
 </template>
 
@@ -55,7 +55,7 @@
 		position: relative;
 		user-select: none;
 		cursor: grab;
-		background: lightblue;
+		background: var(--site-hover);
 		grid-area: var(--row-start) / var(--col-start) / var(--row-end) /
 			var(--col-end);
 		transform: translate(var(--x-offset), var(--y-offset));

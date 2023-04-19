@@ -6,11 +6,14 @@ export interface IGridItemArea {
 }
 
 export interface IGridItem {
-	content: string;
 	gridArea: IGridItemArea;
+	block: IBlock;
 }
 
 export interface IBlock {
 	title: string;
-	value: number;
+	value: string;
+	icon: string;
+	rowSize: number;
+	columnSize: number;
 }

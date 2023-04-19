@@ -1,25 +1,37 @@
 import { defineStore } from 'pinia';
-import { ref, reactive, computed, readonly } from 'vue';
+import { ref, reactive, readonly } from 'vue';
 import { IGridItem, IGridItemArea } from '@/utils/types';
 
 export const useGridStore = defineStore('grid', () => {
 	const items = reactive<IGridItem[]>([
 		{
-			content: 'Item 1',
 			gridArea: {
 				rowStart: 2,
 				columnStart: 2,
 				rowEnd: 4,
-				columnEnd: 6,
+				columnEnd: 8,
+			},
+			block: {
+				title: 'Text',
+				value: 'text',
+				icon: 'mdi-format-text',
+				columnSize: 6,
+				rowSize: 2,
 			},
 		},
 		{
-			content: 'Item 2',
 			gridArea: {
 				rowStart: 4,
 				columnStart: 8,
-				rowEnd: 6,
+				rowEnd: 10,
 				columnEnd: 14,
+			},
+			block: {
+				title: 'Image',
+				value: 'image',
+				icon: 'mdi-image-outline',
+				columnSize: 6,
+				rowSize: 6,
 			},
 		},
 	]);
