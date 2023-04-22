@@ -2,7 +2,7 @@ import { ref, Ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { useGridStore } from '@/store/grid';
 import useGrid from '@/composables/useGrid';
-import { IBlock } from '@/utils/types';
+import { SiteBlock } from '@/utils/types';
 
 export default function useBlockDraggable({
 	blockItem,
@@ -12,7 +12,7 @@ export default function useBlockDraggable({
 	onEnd,
 }: {
 	blockItem: Ref<HTMLElement | null>;
-	block: IBlock;
+	block: SiteBlock;
 	onStart?: () => void;
 	onMove?: (x: number, y: number) => void;
 	onEnd?: () => void;
@@ -24,18 +24,19 @@ export default function useBlockDraggable({
 	const width = ref<number>();
 	const height = ref<number>();
 
-	const { offsetToGridArea } = useGrid();
+	const { offsetToBlockLayout } = useGrid();
 
 	function updateBlockOffset(x: number, y: number) {
-		const draggedItemGridArea = offsetToGridArea(
+		const draggedBlockLayout = offsetToBlockLayout(
 			x,
 			y,
-			block.columnSize,
-			block.rowSize
+			block.layout.size.columns,
+			block.layout.size.rows,
+			block.layout.zIndex
 		);
-		gridStore.updateDraggedGridItemArea(draggedItemGridArea);
-		offset.value.x = x;
-		offset.value.y = y;
+		gridStore.setDraggedBlockLayout(draggedBlockLayout);
+		offset.value.x = x + window.scrollX;
+		offset.value.y = y + window.scrollY;
 	}
 
 	function resetBlockOffset() {
@@ -44,11 +45,15 @@ export default function useBlockDraggable({
 	}
 
 	useDraggable(blockItem, {
-		onStart: () => {
+		onStart: ({ x, y }) => {
 			if (blockItem.value) {
 				width.value = blockItem.value.offsetWidth;
 				height.value = blockItem.value.offsetHeight;
-				updateBlockOffset(blockItem.value.offsetLeft, blockItem.value.offsetTop);
+
+				const rect = blockItem.value.getBoundingClientRect();
+				x = rect.left;
+				y = rect.top;
+				updateBlockOffset(x, y);
 			}
 			isDragging.value = true;
 			gridStore.updateIsDragging(true);
@@ -61,8 +66,9 @@ export default function useBlockDraggable({
 		onEnd: () => {
 			isDragging.value = false;
 			gridStore.updateIsDragging(false);
-			resetBlockOffset();
 			onEnd && onEnd();
+			resetBlockOffset();
+			gridStore.resetDraggedBlockLayout();
 		},
 	});
 

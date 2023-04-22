@@ -1,6 +1,8 @@
 import { ref, reactive, toRefs, onMounted, onUnmounted, computed } from 'vue';
-import { IGridItemArea } from '@/utils/types';
+import { ViewType } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
+import { useSectionsStore } from '@/store/sections';
+import { SectionBlockLayout } from '@/utils/types';
 
 interface Grid {
 	gap: number;
@@ -15,39 +17,48 @@ export default function useGrid() {
 	const gridStore = useGridStore();
 	const grid = reactive<Grid>(calculateGrid());
 	const gridWrapper = ref<HTMLElement | null>(null);
+	const viewType = ref<ViewType>('desktop');
 
 	const rowCount = computed(() => {
-		const rowEnd = gridStore.draggedGridItemArea?.rowEnd || 0;
-		const rowCount = gridStore.items.reduce(
-			(max, item) => Math.max(max, item.gridArea.rowEnd),
-			grid.minRowCount
-		);
-		return Math.max(rowCount, rowEnd) - 1;
+		const sectionRowCount = gridStore.sectionLayout?.rows ?? 1;
+		return Math.max(grid.minRowCount, sectionRowCount) - 1;
 	});
 
 	function handleResize() {
 		Object.assign(grid, calculateGrid());
+		viewType.value = window.innerWidth > 767 ? 'desktop' : 'mobile';
 	}
 
-	function offsetToGridArea(
+	function offsetToBlockLayout(
 		x: number,
 		y: number,
 		columnSize: number,
-		rowSize: number
-	): IGridItemArea {
-		const offsetX = grid.gutters + grid.gap;
-		const offsetY = gridWrapper.value?.offsetTop || 0;
+		rowSize: number,
+		zIndex: number
+	): SectionBlockLayout {
+		const offsetX = x + window.scrollX - grid.gutters + grid.gap;
+		const offsetY = y + window.scrollY - (gridWrapper.value?.offsetTop || 0);
 
 		// Get grid row and column from grid item offset
-		const gridColumn = Math.ceil((x - offsetX) / (grid.cellWidth + grid.gap));
-		const gridRow = Math.round((y - offsetY) / (grid.cellHeight + grid.gap));
+		const gridColumn = Math.ceil(offsetX / (grid.cellWidth + grid.gap));
+		const gridRow = Math.round(offsetY / (grid.cellHeight + grid.gap));
 
 		const columnStart = Math.max(1, gridColumn + 1);
 		const rowStart = Math.max(1, gridRow + 1);
 		const columnEnd = columnStart + columnSize;
 		const rowEnd = rowStart + rowSize;
 
-		return { rowStart, columnStart, rowEnd, columnEnd };
+		return {
+			start: {
+				x: columnStart,
+				y: rowStart,
+			},
+			end: {
+				x: columnEnd,
+				y: rowEnd,
+			},
+			zIndex,
+		};
 	}
 
 	function setGridWrapper() {
@@ -63,8 +74,9 @@ export default function useGrid() {
 	return {
 		...toRefs(grid),
 		rowCount,
+		viewType,
 		gridWrapper,
-		offsetToGridArea,
+		offsetToBlockLayout,
 	};
 }
 

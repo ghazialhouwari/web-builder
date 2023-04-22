@@ -1,15 +1,11 @@
 <template>
 	<v-app>
 		<v-main>
-			<Blocks />
-			<div class="py-12">
-				<Grid />
-			</div>
+			<PageSections />
 		</v-main>
 	</v-app>
 </template>
 
 <script lang="ts" setup>
-	import Grid from '@/components/Grid.vue';
-	import Blocks from '@/components/Blocks.vue';
+	import PageSections from '@/components/PageSections.vue';
 </script>

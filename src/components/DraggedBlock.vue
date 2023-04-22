@@ -1,18 +1,15 @@
 <script setup lang="ts">
-	import { IGridItemArea } from '@/utils/types';
-
-	interface Props {
-		gridArea: IGridItemArea;
-	}
-
-	defineProps<Props>();
+	import { SectionBlockLayout } from '@/utils/types';
+	defineProps<{
+		blockLayout: SectionBlockLayout;
+	}>();
 </script>
 
 <template>
 	<div
 		class="grid-wrapper__dragged-item-area"
 		:style="{
-			gridArea: `${gridArea.rowStart}/${gridArea.columnStart}/${gridArea.rowEnd}/${gridArea.columnEnd}`,
+			gridArea: `${blockLayout.start.y}/${blockLayout.start.x}/${blockLayout.end.y}/${blockLayout.end.x}`,
 		}"
 	></div>
 </template>

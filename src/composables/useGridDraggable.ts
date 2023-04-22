@@ -1,27 +1,45 @@
-import { IGridItemArea } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
+import { useSectionsStore } from '@/store/sections';
 import useGrid from '@/composables/useGrid';
+import { Section, SectionBlockLayout } from '@/utils/types';
 
-export default function useGridDraggable() {
+export default function useGridDraggable(
+	section: Section,
+	sectionIndex: number
+) {
 	const gridStore = useGridStore();
-	const { offsetToGridArea } = useGrid();
+	const sectionsStore = useSectionsStore();
+	const { viewType, offsetToBlockLayout } = useGrid();
 
 	function moveStartHandler() {
+		gridStore.setSectionLayout(section.layout[viewType.value]);
 		gridStore.updateIsDragging(true);
+		gridStore.setSectionIndex(sectionIndex);
+	}
+	function moveHandler(x: number, y: number, blockLayout: SectionBlockLayout) {
+		const rowSize = blockLayout.end.y - blockLayout.start.y;
+		const columnSize = blockLayout.end.x - blockLayout.start.x;
+
+		const draggedBlockLayout = offsetToBlockLayout(
+			x,
+			y,
+			columnSize,
+			rowSize,
+			blockLayout.zIndex
+		);
+		gridStore.setDraggedBlockLayout(draggedBlockLayout);
 	}
 
-	function moveHandler(x: number, y: number, gridArea: IGridItemArea) {
-		const rowSize = gridArea.rowEnd - gridArea.rowStart;
-		const columnSize = gridArea.columnEnd - gridArea.columnStart;
-
-		const draggedItemGridArea = offsetToGridArea(x, y, columnSize, rowSize);
-		gridStore.updateDraggedGridItemArea(draggedItemGridArea);
-	}
-
-	function moveEndHandler(index: number) {
+	function moveEndHandler(blockIndex: number) {
 		gridStore.updateIsDragging(false);
-		if (gridStore.draggedGridItemArea) {
-			gridStore.updateItemGridAreaByIndex(index);
+		if (gridStore.draggedBlockLayout) {
+			sectionsStore.updateSectionBlockLayoutByIndex(
+				sectionIndex,
+				blockIndex,
+				gridStore.draggedBlockLayout,
+				viewType.value
+			);
+			gridStore.resetDraggedBlockLayout();
 		}
 	}
 

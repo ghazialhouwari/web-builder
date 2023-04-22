@@ -1,28 +1,31 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import { IBlock, IGridItem } from '@/utils/types';
 	import { useGridStore } from '@/store/grid';
+	import { useSectionsStore } from '@/store/sections';
 	import useBlockDraggable from '@/composables/useBlockDraggable';
+	import { SiteBlock } from '@/utils/types';
 
-	interface Props {
-		block: IBlock;
-	}
-	const props = defineProps<Props>();
+	const props = defineProps<{
+		block: SiteBlock;
+	}>();
 
 	const gridStore = useGridStore();
+	const sectionsStore = useSectionsStore();
 	const blockItem = ref<HTMLElement | null>(null);
 	const { isDragging, offset, width, height } = useBlockDraggable({
 		blockItem,
 		block: props.block,
-		onEnd: addBlockToGrid,
+		onEnd: addBlock,
 	});
 
-	function addBlockToGrid() {
-		const item: IGridItem = {
-			gridArea: gridStore.draggedGridItemArea!,
-			block: props.block,
-		};
-		gridStore.addItem(item);
+	function addBlock() {
+		if (gridStore.sectionIndex !== null && gridStore.draggedBlockLayout) {
+			sectionsStore.addBlock(
+				gridStore.sectionIndex,
+				props.block.type,
+				gridStore.draggedBlockLayout
+			);
+		}
 	}
 </script>
 
@@ -30,22 +33,23 @@
 	<li ref="blockItem">
 		<div class="block__item">
 			<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
-			<h4>{{ block.title }}</h4>
+			<h4>{{ block.type }}</h4>
 		</div>
-		<div
-			v-if="isDragging"
-			class="block__item block__item__placeholder"
-			:class="{ 'block__item--drag': isDragging }"
-			:style="{
-				'--x-offset': `${offset.x}px`,
-				'--y-offset': `${offset.y}px`,
-				'--width': `${width}px`,
-				'--height': `${height}px`,
-			}"
-		>
-			<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
-			<h4>{{ block.title }}</h4>
-		</div>
+		<Teleport v-if="isDragging" to="#dragged-block">
+			<div
+				class="block__item block__item__placeholder"
+				:class="{ 'block__item--drag': isDragging }"
+				:style="{
+					'--x-offset': `${offset.x}px`,
+					'--y-offset': `${offset.y}px`,
+					'--width': `${width}px`,
+					'--height': `${height}px`,
+				}"
+			>
+				<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
+				<h4>{{ block.type }}</h4>
+			</div>
+		</Teleport>
 	</li>
 </template>
 

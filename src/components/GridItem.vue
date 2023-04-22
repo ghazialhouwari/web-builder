@@ -1,35 +1,34 @@
 <script setup lang="ts">
-	import { ref, toRef } from 'vue';
+	import { ref } from 'vue';
 	import useGridItemDraggable from '@/composables/useGridItemDraggable';
-	import { IGridItem, IGridItemArea } from '@/utils/types';
+	import { SectionBlock, SectionBlockLayout } from '@/utils/types';
+	import useGrid from '@/composables/useGrid';
 
-	interface Props {
-		item: IGridItem;
-		index: number;
-	}
-
-	const props = defineProps<Props>();
+	const props = defineProps<{
+		block: SectionBlock;
+		blockIndex: number;
+	}>();
 
 	/* eslint-disable no-unused-vars */
 	const emit = defineEmits({
 		start: () => true,
-		move: (x: number, y: number, gridArea: IGridItemArea) => true,
-		end: (index: number) => true,
+		move: (x: number, y: number, blockLayout: SectionBlockLayout) => true,
+		end: (blockIndex: number) => true,
 	});
 
 	const gridItem = ref<HTMLElement | null>(null);
-	const gridArea = toRef(props.item, 'gridArea');
 
+	const { viewType } = useGrid();
 	const { offset } = useGridItemDraggable({ gridItem, onStart, onMove, onEnd });
 
 	function onStart() {
 		emit('start');
 	}
 	function onMove(x: number, y: number) {
-		emit('move', x, y, props.item.gridArea);
+		emit('move', x, y, props.block.layout[viewType.value]);
 	}
 	function onEnd() {
-		emit('end', props.index);
+		emit('end', props.blockIndex);
 	}
 </script>
 
@@ -38,15 +37,15 @@
 		ref="gridItem"
 		class="grid-wrapper__item d-flex align-center justify-center"
 		:style="{
-			'--row-start': gridArea.rowStart,
-			'--col-start': gridArea.columnStart,
-			'--row-end': gridArea.rowEnd,
-			'--col-end': gridArea.columnEnd,
+			'--row-start': block.layout[viewType].start.y,
+			'--col-start': block.layout[viewType].start.x,
+			'--row-end': block.layout[viewType].end.y,
+			'--col-end': block.layout[viewType].end.x,
 			'--x-offset': `${offset.x}px`,
 			'--y-offset': `${offset.y}px`,
 		}"
 	>
-		{{ props.item.block.title }}
+		{{ block.type }}
 	</div>
 </template>
 

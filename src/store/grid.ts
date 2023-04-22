@@ -1,70 +1,49 @@
 import { defineStore } from 'pinia';
-import { ref, reactive, readonly } from 'vue';
-import { IGridItem, IGridItemArea } from '@/utils/types';
+import { ref, readonly } from 'vue';
+import { SectionBlockLayout, SectionLayout } from '@/utils/types';
 
 export const useGridStore = defineStore('grid', () => {
-	const items = reactive<IGridItem[]>([
-		{
-			gridArea: {
-				rowStart: 2,
-				columnStart: 2,
-				rowEnd: 4,
-				columnEnd: 8,
-			},
-			block: {
-				title: 'Text',
-				value: 'text',
-				icon: 'mdi-format-text',
-				columnSize: 6,
-				rowSize: 2,
-			},
-		},
-		{
-			gridArea: {
-				rowStart: 4,
-				columnStart: 8,
-				rowEnd: 10,
-				columnEnd: 14,
-			},
-			block: {
-				title: 'Image',
-				value: 'image',
-				icon: 'mdi-image-outline',
-				columnSize: 6,
-				rowSize: 6,
-			},
-		},
-	]);
-
 	const isDragging = ref(false);
-	const draggedGridItemArea = ref<IGridItemArea | null>(null);
+	const sectionIndex = ref<number | null>(0);
+	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
+	const sectionLayout = ref<SectionLayout>();
 
-	function updateItemGridAreaByIndex(index: number) {
-		if (draggedGridItemArea.value) {
-			items[index].gridArea = draggedGridItemArea.value;
-			updateDraggedGridItemArea(null);
+	function setDraggedBlockLayout(layout: SectionBlockLayout) {
+		draggedBlockLayout.value = layout;
+		if (sectionLayout.value && layout.end.y > sectionLayout.value.rows) {
+			sectionLayout.value.rows = layout.end.y;
 		}
 	}
 
-	function updateDraggedGridItemArea(gridArea: IGridItemArea | null) {
-		draggedGridItemArea.value = gridArea;
+	function setSectionLayout(layout: SectionLayout) {
+		sectionLayout.value = layout;
+	}
+
+	function resetDraggedBlockLayout() {
+		draggedBlockLayout.value = null;
 	}
 
 	function updateIsDragging(value: boolean) {
 		isDragging.value = value;
 	}
 
-	function addItem(item: IGridItem) {
-		items.push(item);
+	function setSectionIndex(value: number) {
+		sectionIndex.value = value;
+	}
+	function resetSectionIndex() {
+		sectionIndex.value = null;
 	}
 
 	return {
-		items: readonly(items),
-		draggedGridItemArea: readonly(draggedGridItemArea),
+		draggedBlockLayout: readonly(draggedBlockLayout),
 		isDragging: readonly(isDragging),
-		updateItemGridAreaByIndex,
-		updateDraggedGridItemArea,
+		sectionLayout: readonly(sectionLayout),
+		sectionIndex: readonly(sectionIndex),
+		setSectionLayout,
+		setDraggedBlockLayout,
+		resetDraggedBlockLayout,
 		updateIsDragging,
-		addItem,
+		setSectionIndex,
+		resetSectionIndex,
 	};
 });
