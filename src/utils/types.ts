@@ -127,3 +127,7 @@ export interface SiteBlock {
 }
 
 export type ActionType = 'ADD_BLOCK' | 'UPDATE_SECTION_BLOCK_LAYOUT';
+
+export type BlocksComponenets = {
+	[key in BlockComponentType]: any;
+};

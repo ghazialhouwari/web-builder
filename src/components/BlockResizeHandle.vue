@@ -1,0 +1,88 @@
+<template>
+	<div ref="resizeHandle" class="grid-item__resize">
+		<span data-directions="top,left" class="resize__handle top left"></span>
+		<span data-directions="top,center" class="resize__handle top center"></span>
+		<span data-directions="top,right" class="resize__handle top right"></span>
+		<span
+			data-directions="right,center"
+			class="resize__handle right center"
+		></span>
+		<span
+			data-directions="bottom,right"
+			class="resize__handle bottom right"
+		></span>
+		<span
+			data-directions="bottom,center"
+			class="resize__handle bottom center"
+		></span>
+		<span data-directions="bottom,left" class="resize__handle bottom left"></span>
+		<span data-directions="left,center" class="resize__handle left center"></span>
+	</div>
+</template>
+
+<script setup lang="ts"></script>
+
+<style scoped>
+	.grid-item__handle {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+		cursor: grab;
+	}
+	.grid-item__resize {
+		display: none;
+		position: absolute;
+		top: -7px;
+		left: -7px;
+		bottom: -7px;
+		right: -7px;
+		z-index: 5;
+	}
+	.grid-item:hover .grid-item__resize {
+		display: block;
+	}
+	.resize__handle {
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		background: var(--site-engine-color);
+	}
+	.resize__handle.top {
+		top: 0;
+	}
+	.resize__handle.bottom {
+		bottom: 0;
+	}
+	.resize__handle.left {
+		left: 0;
+	}
+	.resize__handle.right {
+		right: 0;
+	}
+	.resize__handle.top.left,
+	.resize__handle.bottom.right {
+		cursor: nwse-resize;
+	}
+	.resize__handle.top.right,
+	.resize__handle.bottom.left {
+		cursor: nesw-resize;
+	}
+	.resize__handle.top.center,
+	.resize__handle.bottom.center {
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		cursor: ns-resize;
+	}
+	.resize__handle.left.center,
+	.resize__handle.right.center {
+		top: 0;
+		bottom: 0;
+		margin: auto 0;
+		cursor: ew-resize;
+	}
+</style>

@@ -16,7 +16,7 @@
 
 <style scoped>
 	.grid-wrapper__dragged-item-area {
-		border: 3px solid rgb(2, 122, 255);
+		border: var(--site-engine-border-width) solid var(--site-engine-color);
 		inset: -3px;
 		z-index: 10;
 	}

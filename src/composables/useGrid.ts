@@ -1,7 +1,6 @@
 import { ref, reactive, toRefs, onMounted, onUnmounted, computed } from 'vue';
 import { ViewType } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
-import { useSectionsStore } from '@/store/sections';
 import { SectionBlockLayout } from '@/utils/types';
 
 interface Grid {

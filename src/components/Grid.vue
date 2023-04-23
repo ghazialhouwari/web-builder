@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 	import { onMounted } from 'vue';
+	import { Section } from '@/utils/types';
+	// Store
 	import { useGridStore } from '@/store/grid';
+	// Composables
 	import useGrid from '@/composables/useGrid';
+	import useGridResize from '@/composables/useGridResize';
 	import useGridDraggable from '@/composables/useGridDraggable';
-	import { Section, SectionBlockLayout } from '@/utils/types';
-	import { useSectionsStore } from '@/store/sections';
-
 	// Components
 	import GridItem from '@/components/GridItem.vue';
 	import GridCells from '@/components/GridCells.vue';
@@ -17,26 +18,15 @@
 	}>();
 
 	const gridStore = useGridStore();
-	const sectionsStore = useSectionsStore();
 	const { viewType, rowCount } = useGrid();
 	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable(
-		props.section,
 		props.sectionIndex
 	);
+	const { resizeHanlder } = useGridResize(props.sectionIndex);
 
 	onMounted(() => {
 		gridStore.setSectionLayout(props.section.layout[viewType.value]);
 	});
-
-	function resizeHanlder(blockIndex: number, layout: SectionBlockLayout) {
-		sectionsStore.updateSectionBlockLayoutByIndex(
-			props.sectionIndex,
-			blockIndex,
-			layout,
-			viewType.value
-		);
-		gridStore.updateSectionRowCount(layout.end.y);
-	}
 </script>
 
 <template>

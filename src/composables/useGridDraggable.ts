@@ -1,12 +1,9 @@
+import { SectionBlockLayout } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
 import useGrid from '@/composables/useGrid';
-import { Section, SectionBlockLayout } from '@/utils/types';
 
-export default function useGridDraggable(
-	section: Section,
-	sectionIndex: number
-) {
+export default function useGridDraggable(sectionIndex: number) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
 	const { viewType, offsetToBlockLayout } = useGrid();
