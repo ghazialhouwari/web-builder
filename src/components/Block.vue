@@ -1,39 +1,27 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import { useGridStore } from '@/store/grid';
+	import { SiteBlock } from '@/utils/types';
 	import { useSectionsStore } from '@/store/sections';
 	import useBlockDraggable from '@/composables/useBlockDraggable';
-	import { SiteBlock } from '@/utils/types';
 
 	const props = defineProps<{
 		block: SiteBlock;
 	}>();
 
-	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
+
 	const blockItem = ref<HTMLElement | null>(null);
 	const { isDragging, offset, width, height } = useBlockDraggable({
 		blockItem,
 		block: props.block,
-		onEnd: addBlock,
+		onEnd: sectionsStore.addBlock,
 	});
-
-	function addBlock() {
-		if (gridStore.sectionIndex !== null && gridStore.draggedBlockLayout) {
-			sectionsStore.addBlock(
-				gridStore.sectionIndex,
-				props.block.type,
-				gridStore.draggedBlockLayout
-			);
-		}
-	}
 </script>
 
 <template>
 	<li ref="blockItem">
 		<div class="block__item">
-			<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
-			<h4>{{ block.type }}</h4>
+			<slot />
 		</div>
 		<Teleport v-if="isDragging" to="#dragged-block">
 			<div
@@ -46,8 +34,7 @@
 					'--height': `${height}px`,
 				}"
 			>
-				<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
-				<h4>{{ block.type }}</h4>
+				<slot />
 			</div>
 		</Teleport>
 	</li>

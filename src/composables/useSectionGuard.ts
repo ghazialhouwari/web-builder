@@ -1,4 +1,4 @@
-import { generateUUID } from '@/utils';
+import { deepClone, generateUUID } from '@/utils';
 import {
 	ButtonSectionBlock,
 	ImageSectionBlock,
@@ -31,7 +31,7 @@ export default function useSectionGuard(
 				value: block.value as SectionBlockButton,
 				layout,
 			};
-			return sectionButton;
+			return deepClone(sectionButton);
 
 		case 'text':
 			const sectionText: TextSectionBlock = {

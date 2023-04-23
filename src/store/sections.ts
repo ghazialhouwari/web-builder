@@ -23,14 +23,10 @@ export const useSectionsStore = defineStore('sections', () => {
 		layout: SectionBlockLayout,
 		viewType: ViewType
 	) {
-		sections[sectionIndex].blocks[blockIndex].layout[viewType].start.x =
-			layout.start.x;
-		sections[sectionIndex].blocks[blockIndex].layout[viewType].end.x =
-			layout.end.x;
-		sections[sectionIndex].blocks[blockIndex].layout[viewType].start.y =
-			layout.start.y;
-		sections[sectionIndex].blocks[blockIndex].layout[viewType].end.y =
-			layout.end.y;
+		Object.assign(
+			sections[sectionIndex].blocks[blockIndex].layout[viewType],
+			layout
+		);
 	}
 
 	function updateSectionBlockLayoutByIndex(
@@ -70,8 +66,9 @@ export const useSectionsStore = defineStore('sections', () => {
 		type: BlockType,
 		layout: SectionBlockLayout
 	) {
-		const blockIndex = siteBlocks.findIndex((block) => block.type === type);
-		const block: SiteBlock = JSON.parse(JSON.stringify(siteBlocks[blockIndex]));
+		const block = siteBlocks.find((block) => block.type === type);
+		if (!block) return;
+
 		createBlock(sectionIndex, block, layout);
 		addAction({
 			type: 'ADD_BLOCK',

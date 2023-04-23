@@ -9,3 +9,7 @@ export const generateUUID = (): string => {
 		return v.toString(16);
 	});
 };
+
+export function deepClone<T>(obj: T): T {
+	return JSON.parse(JSON.stringify(obj));
+}

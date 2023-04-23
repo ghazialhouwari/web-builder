@@ -26,7 +26,7 @@ export const useGridStore = defineStore('grid', () => {
 		draggedBlockLayout.value = null;
 	}
 
-	function updateIsDragging(value: boolean) {
+	function setIsDragging(value: boolean) {
 		isDragging.value = value;
 	}
 
@@ -45,7 +45,7 @@ export const useGridStore = defineStore('grid', () => {
 		setSectionLayout,
 		setDraggedBlockLayout,
 		resetDraggedBlockLayout,
-		updateIsDragging,
+		setIsDragging,
 		setSectionIndex,
 		resetSectionIndex,
 		updateSectionRowCount,

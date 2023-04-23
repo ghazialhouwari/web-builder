@@ -40,14 +40,14 @@ export default function useGridItemResize({
 		end.x = evt.clientX;
 		end.y = evt.clientY;
 		isDown.value = true;
-		gridStore.updateIsDragging(true);
+		gridStore.setIsDragging(true);
 		window.addEventListener('mouseup', mouseUpHandler);
 		window.addEventListener('mousemove', mouseMoveHanlder);
 	}
 
 	function mouseUpHandler() {
 		isDown.value = false;
-		gridStore.updateIsDragging(false);
+		gridStore.setIsDragging(false);
 		if (gridStore.draggedBlockLayout) {
 			onResize && onResize(gridStore.draggedBlockLayout!);
 			gridStore.updateSectionRowCount(gridStore.draggedBlockLayout?.end.y ?? 1);
