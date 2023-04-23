@@ -21,7 +21,10 @@ export default function useGrid() {
 
 	const rowCount = computed(() => {
 		const sectionRowCount = gridStore.sectionLayout?.rows ?? 1;
-		return Math.max(grid.minRowCount, sectionRowCount) - 1;
+		const draggableBlockRowCount = gridStore.draggedBlockLayout?.end.y ?? 1;
+		return (
+			Math.max(grid.minRowCount, sectionRowCount, draggableBlockRowCount) - 1
+		);
 	});
 
 	function handleResize() {

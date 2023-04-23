@@ -12,7 +12,6 @@ export default function useGridDraggable(
 	const { viewType, offsetToBlockLayout } = useGrid();
 
 	function moveStartHandler() {
-		gridStore.setSectionLayout(section.layout[viewType.value]);
 		gridStore.updateIsDragging(true);
 		gridStore.setSectionIndex(sectionIndex);
 	}
@@ -39,6 +38,7 @@ export default function useGridDraggable(
 				gridStore.draggedBlockLayout,
 				viewType.value
 			);
+			gridStore.updateSectionRowCount(gridStore.draggedBlockLayout.end.y);
 			gridStore.resetDraggedBlockLayout();
 		}
 	}

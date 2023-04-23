@@ -16,12 +16,8 @@
 
 <style scoped>
 	.grid-wrapper__dragged-item-area {
-		border: 2px solid rgb(2, 122, 255);
-		inset: -2px;
-		border-style: solid;
-		border-width: 2px;
-		border-color: rgb(2, 122, 255);
-		box-sizing: border-box;
+		border: 3px solid rgb(2, 122, 255);
+		inset: -3px;
 		z-index: 10;
 	}
 </style>

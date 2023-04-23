@@ -10,13 +10,16 @@ export const useGridStore = defineStore('grid', () => {
 
 	function setDraggedBlockLayout(layout: SectionBlockLayout) {
 		draggedBlockLayout.value = layout;
-		if (sectionLayout.value && layout.end.y > sectionLayout.value.rows) {
-			sectionLayout.value.rows = layout.end.y;
-		}
 	}
 
 	function setSectionLayout(layout: SectionLayout) {
 		sectionLayout.value = layout;
+	}
+
+	function updateSectionRowCount(rowCount: number) {
+		if (sectionLayout.value && rowCount > sectionLayout.value.rows) {
+			sectionLayout.value.rows = rowCount;
+		}
 	}
 
 	function resetDraggedBlockLayout() {
@@ -45,5 +48,6 @@ export const useGridStore = defineStore('grid', () => {
 		updateIsDragging,
 		setSectionIndex,
 		resetSectionIndex,
+		updateSectionRowCount,
 	};
 });

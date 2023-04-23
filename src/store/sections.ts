@@ -21,7 +21,14 @@ export const useSectionsStore = defineStore('sections', () => {
 		layout: SectionBlockLayout,
 		viewType: ViewType
 	) {
-		sections[sectionIndex].blocks[blockIndex].layout[viewType] = layout;
+		sections[sectionIndex].blocks[blockIndex].layout[viewType].start.x =
+			layout.start.x;
+		sections[sectionIndex].blocks[blockIndex].layout[viewType].end.x =
+			layout.end.x;
+		sections[sectionIndex].blocks[blockIndex].layout[viewType].start.y =
+			layout.start.y;
+		sections[sectionIndex].blocks[blockIndex].layout[viewType].end.y =
+			layout.end.y;
 	}
 
 	function createBlock(
@@ -43,9 +50,20 @@ export const useSectionsStore = defineStore('sections', () => {
 		createBlock(sectionIndex, block, layout);
 	}
 
+	function resizeBlock(
+		sectionIndex: number,
+		blockIndex: number,
+		columns: number,
+		rows: number
+	) {
+		sections[sectionIndex].blocks[blockIndex].layout.desktop.end.x += columns;
+		sections[sectionIndex].blocks[blockIndex].layout.desktop.end.y += rows;
+	}
+
 	return {
 		sections,
 		addBlock,
+		resizeBlock,
 		updateSectionBlockLayoutByIndex,
 	};
 });

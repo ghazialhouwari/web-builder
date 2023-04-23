@@ -4,11 +4,13 @@ import useGrid from '@/composables/useGrid';
 
 export default function useGridItemDraggable({
 	gridItem,
+	dragHandle,
 	onStart,
 	onMove,
 	onEnd,
 }: {
 	gridItem: Ref<HTMLElement | null>;
+	dragHandle: Ref<HTMLElement | null>;
 	onStart?: () => void;
 	onMove?: (x: number, y: number) => void;
 	onEnd?: () => void;
@@ -29,6 +31,7 @@ export default function useGridItemDraggable({
 	}
 
 	useDraggable(gridItem, {
+		handle: dragHandle,
 		onStart: () => {
 			onStart && onStart();
 		},
