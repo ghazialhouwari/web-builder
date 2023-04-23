@@ -24,7 +24,7 @@ export default function useSectionGuard(
 		mobile: blockLayout,
 	};
 	switch (block.type) {
-		case 'button':
+		case 'button': {
 			const sectionButton: ButtonSectionBlock = {
 				id,
 				type: block.type,
@@ -32,8 +32,8 @@ export default function useSectionGuard(
 				layout,
 			};
 			return deepClone(sectionButton);
-
-		case 'text':
+		}
+		case 'text': {
 			const sectionText: TextSectionBlock = {
 				id,
 				type: block.type,
@@ -41,8 +41,8 @@ export default function useSectionGuard(
 				layout,
 			};
 			return sectionText;
-
-		case 'quote':
+		}
+		case 'quote': {
 			const sectionQuote: QuoteSectionBlock = {
 				id,
 				type: block.type,
@@ -50,8 +50,8 @@ export default function useSectionGuard(
 				layout,
 			};
 			return sectionQuote;
-
-		case 'image':
+		}
+		case 'image': {
 			const sectionImage: ImageSectionBlock = {
 				id,
 				type: block.type,
@@ -59,7 +59,7 @@ export default function useSectionGuard(
 				layout,
 			};
 			return sectionImage;
-
+		}
 		default:
 			throw new Error('Unknown section');
 	}

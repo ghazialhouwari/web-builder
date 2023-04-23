@@ -9,3 +9,7 @@ lib/templates
 .history
 pnpm-lock.yaml
 *.css
+README.md
+package.json
+tsconfig.json
+tsconfig.node.json

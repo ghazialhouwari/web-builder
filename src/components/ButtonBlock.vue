@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { SectionBlockButton } from '@/utils/types';
 
-	const props = defineProps<{
+	defineProps<{
 		value: SectionBlockButton;
 	}>();
 </script>
