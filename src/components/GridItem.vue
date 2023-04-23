@@ -9,6 +9,9 @@
 	import useGrid from '@/composables/useGrid';
 	import useGridItemResize from '@/composables/useGridItemResize';
 	import ButtonBlock from '@/components/ButtonBlock.vue';
+	import TextBlock from '@/components/TextBlock.vue';
+	import ImageBlock from '@/components/ImageBlock.vue';
+	import QuoteBlock from '@/components/QuoteBlock.vue';
 
 	const props = defineProps<{
 		block: SectionBlock;
@@ -23,7 +26,11 @@
 		resize: (blockIndex: number, layout: SectionBlockLayout) => true,
 	});
 
-	const blocks = { ButtonBlock };
+	type Blocks = {
+		[key in BlockComponentType]: any;
+	};
+
+	const blocks: Blocks = { ButtonBlock, TextBlock, ImageBlock, QuoteBlock };
 	const currentBlock = ref<BlockComponentType>('ButtonBlock');
 
 	const gridItem = ref<HTMLElement | null>(null);
