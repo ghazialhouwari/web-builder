@@ -34,7 +34,8 @@ export const sections: Section[] = [
 						newWindow: false,
 					},
 					buttonAlignment: 'center',
-					buttonSize: 'medium',
+					buttonSize: 'default',
+					fluid: false,
 				},
 				layout: {
 					desktop: {
@@ -96,7 +97,8 @@ export const sections: Section[] = [
 						newWindow: false,
 					},
 					buttonAlignment: 'center',
-					buttonSize: 'medium',
+					buttonSize: 'default',
+					fluid: true,
 				},
 				layout: {
 					desktop: {

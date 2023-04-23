@@ -1,9 +1,14 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
 	import useGridItemDraggable from '@/composables/useGridItemDraggable';
-	import { SectionBlock, SectionBlockLayout } from '@/utils/types';
+	import {
+		SectionBlock,
+		SectionBlockLayout,
+		BlockComponentType,
+	} from '@/utils/types';
 	import useGrid from '@/composables/useGrid';
 	import useGridItemResize from '@/composables/useGridItemResize';
+	import ButtonBlock from '@/components/ButtonBlock.vue';
 
 	const props = defineProps<{
 		block: SectionBlock;
@@ -17,6 +22,9 @@
 		end: (blockIndex: number) => true,
 		resize: (blockIndex: number, layout: SectionBlockLayout) => true,
 	});
+
+	const blocks = { ButtonBlock };
+	const currentBlock = ref<BlockComponentType>('ButtonBlock');
 
 	const gridItem = ref<HTMLElement | null>(null);
 	const dragHandle = ref<HTMLElement | null>(null);
@@ -50,7 +58,7 @@
 <template>
 	<div
 		ref="gridItem"
-		class="grid-item d-flex align-center justify-center"
+		class="grid-item d-flex"
 		:style="{
 			'--row-start': block.layout[viewType].start.y,
 			'--col-start': block.layout[viewType].start.x,
@@ -61,7 +69,7 @@
 		}"
 	>
 		<span ref="dragHandle" class="grid-item__handle"></span>
-		{{ block.type }}
+		<component :is="blocks[currentBlock]" :value="block.value" />
 		<div ref="resizeHandle" class="grid-item__resize">
 			<span data-directions="top,left" class="resize__handle top left"></span>
 			<span data-directions="top,center" class="resize__handle top center"></span>

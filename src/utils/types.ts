@@ -1,5 +1,10 @@
 export type ViewType = 'desktop' | 'mobile';
 export type BlockType = 'text' | 'quote' | 'button' | 'image';
+export type BlockComponentType =
+	| 'TextBlock'
+	| 'QuoteBlock'
+	| 'ButtonBlock'
+	| 'ImageBlock';
 
 export interface SectionStyles {
 	sectionTheme: string;
@@ -50,7 +55,8 @@ export interface SectionBlockButton {
 	buttonText: string;
 	action: SectionBlockLink;
 	buttonAlignment: 'top' | 'center' | 'bottom';
-	buttonSize: 'small' | 'medium' | 'large';
+	buttonSize: 'x-small' | 'small' | 'default' | 'large' | 'x-large';
+	fluid: boolean;
 }
 
 export interface SectionBlockImage {

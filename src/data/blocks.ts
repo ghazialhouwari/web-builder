@@ -19,7 +19,8 @@ export const blocks: SiteBlock[] = [
 				newWindow: false,
 			},
 			buttonAlignment: 'center',
-			buttonSize: 'medium',
+			fluid: true,
+			buttonSize: 'default',
 		},
 	},
 	// mdi-image-outline 6x6
