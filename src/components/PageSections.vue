@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import { useSectionsStore } from '@/store/sections';
+
+	// Components
 	import PageSection from '@/components/PageSection.vue';
 	import Blocks from '@/components/Blocks.vue';
 

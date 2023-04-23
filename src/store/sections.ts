@@ -11,11 +11,13 @@ import { sections as siteSections } from '@/data/sections';
 import { blocks as siteBlocks } from '@/data/blocks';
 
 import useSectionGuard from '@/composables/useSectionGuard';
+import useUndoRedo from '@/composables/useUndoRedo';
 
 export const useSectionsStore = defineStore('sections', () => {
 	const sections = reactive<Section[]>(siteSections);
+	const { addAction, undo, redo } = useUndoRedo();
 
-	function updateSectionBlockLayoutByIndex(
+	function updateLayout(
 		sectionIndex: number,
 		blockIndex: number,
 		layout: SectionBlockLayout,
@@ -29,6 +31,29 @@ export const useSectionsStore = defineStore('sections', () => {
 			layout.start.y;
 		sections[sectionIndex].blocks[blockIndex].layout[viewType].end.y =
 			layout.end.y;
+	}
+
+	function updateSectionBlockLayoutByIndex(
+		sectionIndex: number,
+		blockIndex: number,
+		layout: SectionBlockLayout,
+		viewType: ViewType
+	) {
+		const prevLayout = JSON.parse(
+			JSON.stringify(sections[sectionIndex].blocks[blockIndex].layout[viewType])
+		);
+
+		updateLayout(sectionIndex, blockIndex, layout, viewType);
+
+		addAction({
+			type: 'UPDATE_SECTION_BLOCK_LAYOUT',
+			undo: () => {
+				updateLayout(sectionIndex, blockIndex, prevLayout, viewType);
+			},
+			redo: () => {
+				updateLayout(sectionIndex, blockIndex, layout, viewType);
+			},
+		});
 	}
 
 	function createBlock(
@@ -48,22 +73,22 @@ export const useSectionsStore = defineStore('sections', () => {
 		const blockIndex = siteBlocks.findIndex((block) => block.type === type);
 		const block: SiteBlock = JSON.parse(JSON.stringify(siteBlocks[blockIndex]));
 		createBlock(sectionIndex, block, layout);
-	}
-
-	function resizeBlock(
-		sectionIndex: number,
-		blockIndex: number,
-		columns: number,
-		rows: number
-	) {
-		sections[sectionIndex].blocks[blockIndex].layout.desktop.end.x += columns;
-		sections[sectionIndex].blocks[blockIndex].layout.desktop.end.y += rows;
+		addAction({
+			type: 'ADD_BLOCK',
+			undo: () => {
+				sections[sectionIndex].blocks.pop();
+			},
+			redo: () => {
+				createBlock(sectionIndex, block, layout);
+			},
+		});
 	}
 
 	return {
 		sections,
 		addBlock,
-		resizeBlock,
 		updateSectionBlockLayoutByIndex,
+		undo,
+		redo,
 	};
 });

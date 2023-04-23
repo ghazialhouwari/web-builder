@@ -125,3 +125,5 @@ export interface SiteBlock {
 	layout: SiteBlockLayout<SectionLayout>;
 	value: SectionBlockValue;
 }
+
+export type ActionType = 'ADD_BLOCK' | 'UPDATE_SECTION_BLOCK_LAYOUT';
