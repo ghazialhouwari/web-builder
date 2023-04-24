@@ -21,7 +21,7 @@ export function calculatedGrid(viewType: ViewType): Grid {
 	const width = Math.min(minContainerWidth, containerWidth);
 
 	const cellWidth = (width - gapCount) / columnCount;
-	const cellHeight = viewType === 'desktop' ? width * rowHeightRatio : 26;
+	const cellHeight = viewType === 'desktop' ? width * rowHeightRatio : 30;
 
 	return {
 		gap,

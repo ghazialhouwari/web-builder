@@ -45,7 +45,9 @@ export const useGridStore = defineStore('grid', () => {
 	}
 
 	function setSectionIndex(value: number) {
-		sectionIndex.value = value;
+		if (!isDragging.value) {
+			sectionIndex.value = value;
+		}
 	}
 
 	function resetSectionIndex() {
