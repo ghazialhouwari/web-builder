@@ -19,10 +19,13 @@ export default function useGridItemDraggable({
 	const { gridWrapper } = useGrid();
 
 	function updateItemOffset(x: number, y: number) {
+		const wrapperOffsetLeft = gridWrapper.value?.offsetLeft || 0;
 		const wrapperOffsetTop = gridWrapper.value?.offsetTop || 0;
-		offset.value.x = x + window.scrollX - (gridItem.value?.offsetLeft || 0);
-		offset.value.y =
-			y + window.scrollY - wrapperOffsetTop - (gridItem.value?.offsetTop || 0);
+		const blockOffsetLeft = gridItem.value?.offsetLeft || 0;
+		const blockOffsetTop = gridItem.value?.offsetTop || 0;
+
+		offset.value.x = x + window.scrollX - wrapperOffsetLeft - blockOffsetLeft;
+		offset.value.y = y + window.scrollY - wrapperOffsetTop - blockOffsetTop;
 	}
 
 	function resetItemOffset() {

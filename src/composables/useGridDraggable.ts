@@ -1,4 +1,4 @@
-import { SectionBlockLayout } from '@/utils/types';
+import { SectionBlockLayout, SectionBreakpoints } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
 import useGrid from '@/composables/useGrid';
@@ -6,22 +6,27 @@ import useGrid from '@/composables/useGrid';
 export default function useGridDraggable(sectionIndex: number) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
-	const { viewType, offsetToBlockLayout } = useGrid();
+	const { offsetToBlockLayout } = useGrid();
 
 	function moveStartHandler() {
 		gridStore.setIsDragging(true);
 		gridStore.setSectionIndex(sectionIndex);
 	}
-	function moveHandler(x: number, y: number, blockLayout: SectionBlockLayout) {
-		const rowSize = blockLayout.end.y - blockLayout.start.y;
-		const columnSize = blockLayout.end.x - blockLayout.start.x;
+	function moveHandler(
+		x: number,
+		y: number,
+		blockLayout: SectionBreakpoints<SectionBlockLayout>
+	) {
+		const layout = blockLayout[gridStore.viewType];
+		const rowSize = layout.end.y - layout.start.y;
+		const columnSize = layout.end.x - layout.start.x;
 
 		const draggedBlockLayout = offsetToBlockLayout(
 			x,
 			y,
 			columnSize,
 			rowSize,
-			blockLayout.zIndex
+			layout.zIndex
 		);
 		gridStore.setDraggedBlockLayout(draggedBlockLayout);
 	}
@@ -33,7 +38,7 @@ export default function useGridDraggable(sectionIndex: number) {
 				sectionIndex,
 				blockIndex,
 				gridStore.draggedBlockLayout,
-				viewType.value
+				gridStore.viewType
 			);
 			gridStore.updateSectionRowCount(gridStore.draggedBlockLayout.end.y);
 			gridStore.resetDraggedBlockLayout();

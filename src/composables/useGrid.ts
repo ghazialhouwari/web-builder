@@ -1,5 +1,12 @@
-import { ref, reactive, toRefs, onMounted, onUnmounted, computed } from 'vue';
-import { ViewType } from '@/utils/types';
+import {
+	ref,
+	reactive,
+	toRefs,
+	onMounted,
+	onUnmounted,
+	computed,
+	watch,
+} from 'vue';
 import { useGridStore } from '@/store/grid';
 import { SectionBlockLayout } from '@/utils/types';
 
@@ -16,7 +23,6 @@ export default function useGrid() {
 	const gridStore = useGridStore();
 	const grid = reactive<Grid>(calculateGrid());
 	const gridWrapper = ref<HTMLElement | null>(null);
-	const viewType = ref<ViewType>('desktop');
 
 	const rowCount = computed(() => {
 		const sectionRowCount = gridStore.sectionLayout?.rows ?? 1;
@@ -26,9 +32,20 @@ export default function useGrid() {
 		);
 	});
 
-	function handleResize() {
+	function updateGrid() {
 		Object.assign(grid, calculateGrid());
-		viewType.value = window.innerWidth > 767 ? 'desktop' : 'mobile';
+	}
+	function handleResize() {
+		updateGrid();
+		if (gridStore.viewType === 'desktop' && window.innerWidth <= 767) {
+			gridStore.setViewType('mobile');
+		} else if (gridStore.viewType === 'mobile' && window.innerWidth > 767) {
+			gridStore.setViewType('desktop');
+		}
+	}
+
+	function setGridWrapper() {
+		gridWrapper.value = document.querySelector('#gridWrapper');
 	}
 
 	function offsetToBlockLayout(
@@ -38,8 +55,14 @@ export default function useGrid() {
 		rowSize: number,
 		zIndex: number
 	): SectionBlockLayout {
-		const offsetX = x + window.scrollX - grid.gutters + grid.gap;
-		const offsetY = y + window.scrollY - (gridWrapper.value?.offsetTop || 0);
+		const wrapperOffsetLeft = gridWrapper.value?.offsetLeft || 0;
+		const wrapperOffsetTop = gridWrapper.value?.offsetTop || 0;
+
+		const offsetX =
+			x + window.scrollX - wrapperOffsetLeft - grid.gutters + grid.gap;
+		const offsetY = y + window.scrollY - wrapperOffsetTop;
+		console.log(y, window.scrollY, wrapperOffsetTop);
+		console.log(y + window.scrollY - wrapperOffsetTop);
 
 		// Get grid row and column from grid item offset
 		const gridColumn = Math.ceil(offsetX / (grid.cellWidth + grid.gap));
@@ -63,9 +86,45 @@ export default function useGrid() {
 		};
 	}
 
-	function setGridWrapper() {
-		gridWrapper.value = document.querySelector('#gridWrapper');
+	function calculateGrid(): Grid {
+		const { viewType } = gridStore;
+		const viewPort = viewType === 'desktop' ? window.innerWidth : 430;
+
+		const gap = 11;
+		const columnCount = viewType === 'desktop' ? 24 : 8;
+		const minRowCount = 8;
+		const rowHeightRatio = 0.0215;
+		const minContainerWidth = 1400;
+
+		const guttersPercent = viewType === 'desktop' ? 0.02 : 0.06;
+		const baseGutters = viewPort * guttersPercent - gap;
+		const frGutters = (viewPort - minContainerWidth) / 2 - gap;
+
+		const gutters = viewPort < minContainerWidth ? baseGutters : frGutters;
+		const gapCount = (columnCount - 1) * gap;
+		const containerWidth = viewPort - gutters * 2 - gap * 2;
+
+		const width = Math.min(minContainerWidth, containerWidth);
+
+		const cellWidth = (width - gapCount) / columnCount;
+		const cellHeight = viewType === 'desktop' ? width * rowHeightRatio : 26;
+
+		return {
+			gap,
+			gutters,
+			cellWidth,
+			cellHeight,
+			columnCount,
+			minRowCount,
+		};
 	}
+
+	watch(
+		() => gridStore.viewType,
+		(newValue, oldValue) => {
+			updateGrid();
+		}
+	);
 
 	onMounted(() => {
 		setGridWrapper();
@@ -76,39 +135,7 @@ export default function useGrid() {
 	return {
 		...toRefs(grid),
 		rowCount,
-		viewType,
 		gridWrapper,
 		offsetToBlockLayout,
-	};
-}
-
-function calculateGrid(): Grid {
-	const viewPort = window.innerWidth;
-
-	const gap = 11;
-	const columnCount = 24;
-	const minRowCount = 8;
-	const rowHeightRatio = 0.0215;
-	const minContainerWidth = 1400;
-
-	const baseGutters = viewPort * 0.02 - gap;
-	const frGutters = (viewPort - minContainerWidth) / 2 - gap;
-
-	const gutters = viewPort < minContainerWidth ? baseGutters : frGutters;
-	const gapCount = (columnCount - 1) * gap;
-	const containerWidth = viewPort - gutters * 2 - gap * 2;
-
-	const width = Math.min(minContainerWidth, containerWidth);
-
-	const cellWidth = (width - gapCount) / columnCount;
-	const cellHeight = width * rowHeightRatio;
-
-	return {
-		gap,
-		gutters,
-		cellWidth,
-		cellHeight,
-		columnCount,
-		minRowCount,
 	};
 }

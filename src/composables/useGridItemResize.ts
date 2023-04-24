@@ -24,7 +24,6 @@ export default function useGridItemResize({
 	const end: Position = { x: 0, y: 0 };
 	const { cellWidth, cellHeight, gap } = useGrid();
 	const gridStore = useGridStore();
-	const { viewType } = useGrid();
 	let directions: string[] = [];
 
 	function mouseDownHandler(evt: MouseEvent) {
@@ -66,14 +65,14 @@ export default function useGridItemResize({
 
 			const layout: SectionBlockLayout = {
 				start: {
-					x: block.layout[viewType.value].start.x,
-					y: block.layout[viewType.value].start.y,
+					x: block.layout[gridStore.viewType].start.x,
+					y: block.layout[gridStore.viewType].start.y,
 				},
 				end: {
-					x: block.layout[viewType.value].end.x,
-					y: block.layout[viewType.value].end.y,
+					x: block.layout[gridStore.viewType].end.x,
+					y: block.layout[gridStore.viewType].end.y,
 				},
-				zIndex: block.layout[viewType.value].zIndex,
+				zIndex: block.layout[gridStore.viewType].zIndex,
 			};
 
 			if (

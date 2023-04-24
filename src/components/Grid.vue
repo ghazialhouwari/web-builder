@@ -18,14 +18,14 @@
 	}>();
 
 	const gridStore = useGridStore();
-	const { viewType, rowCount } = useGrid();
+	const { columnCount, rowCount } = useGrid();
 	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable(
 		props.sectionIndex
 	);
 	const { resizeHanlder } = useGridResize(props.sectionIndex);
 
 	onMounted(() => {
-		gridStore.setSectionLayout(props.section.layout[viewType.value]);
+		gridStore.setSectionLayout(props.section.layout);
 	});
 </script>
 
@@ -35,6 +35,7 @@
 		class="grid-wrapper"
 		:style="{
 			'--grid-row-count': rowCount,
+			'--grid-column-count': columnCount,
 		}"
 	>
 		<GridItem

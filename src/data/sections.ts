@@ -51,12 +51,12 @@ export const sections: Section[] = [
 					},
 					mobile: {
 						start: {
-							x: 1,
-							y: 15,
+							x: 4,
+							y: 3,
 						},
 						end: {
-							x: 4,
-							y: 16,
+							x: 7,
+							y: 5,
 						},
 						zIndex: 3,
 					},
@@ -114,12 +114,12 @@ export const sections: Section[] = [
 					},
 					mobile: {
 						start: {
-							x: 1,
-							y: 15,
+							x: 3,
+							y: 3,
 						},
 						end: {
-							x: 4,
-							y: 16,
+							x: 8,
+							y: 5,
 						},
 						zIndex: 3,
 					},

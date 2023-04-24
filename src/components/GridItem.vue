@@ -5,9 +5,11 @@
 		SectionBlockLayout,
 		BlockComponentType,
 		BlocksComponenets,
+		SectionBreakpoints,
 	} from '@/utils/types';
+	// Store
+	import { useGridStore } from '@/store/grid';
 	// Composables
-	import useGrid from '@/composables/useGrid';
 	import useGridItemResize from '@/composables/useGridItemResize';
 	import useGridItemDraggable from '@/composables/useGridItemDraggable';
 	// Components
@@ -29,24 +31,27 @@
 	/* eslint-disable no-unused-vars */
 	const emit = defineEmits({
 		start: () => true,
-		move: (x: number, y: number, blockLayout: SectionBlockLayout) => true,
+		move: (
+			x: number,
+			y: number,
+			blockLayout: SectionBreakpoints<SectionBlockLayout>
+		) => true,
 		end: (blockIndex: number) => true,
 		resize: (blockIndex: number, layout: SectionBlockLayout) => true,
 	});
 
 	const currentBlock = ref<BlockComponentType>('ButtonBlock');
 
+	const gridStore = useGridStore();
 	const gridItem = ref<HTMLElement | null>(null);
 	const dragHandle = ref<HTMLElement | null>(null);
 	const resizeHandle = ref<HTMLElement | null>(null);
 
-	const { viewType } = useGrid();
 	const { offset } = useGridItemDraggable({
 		gridItem,
 		dragHandle,
 		onStart: () => emit('start'),
-		onMove: (x: number, y: number) =>
-			emit('move', x, y, props.block.layout[viewType.value]),
+		onMove: (x: number, y: number) => emit('move', x, y, props.block.layout),
 		onEnd: () => emit('end', props.blockIndex),
 	});
 	useGridItemResize({
@@ -62,10 +67,10 @@
 		ref="gridItem"
 		class="grid-item d-flex"
 		:style="{
-			'--row-start': block.layout[viewType].start.y,
-			'--col-start': block.layout[viewType].start.x,
-			'--row-end': block.layout[viewType].end.y,
-			'--col-end': block.layout[viewType].end.x,
+			'--row-start': block.layout[gridStore.viewType].start.y,
+			'--col-start': block.layout[gridStore.viewType].start.x,
+			'--row-end': block.layout[gridStore.viewType].end.y,
+			'--col-end': block.layout[gridStore.viewType].end.x,
 			'--x-offset': `${offset.x}px`,
 			'--y-offset': `${offset.y}px`,
 		}"

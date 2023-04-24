@@ -1,19 +1,25 @@
 import { defineStore } from 'pinia';
 import { ref, readonly } from 'vue';
-import { SectionBlockLayout, SectionLayout } from '@/utils/types';
+import {
+	SectionBlockLayout,
+	SectionBreakpoints,
+	SectionLayout,
+	ViewType,
+} from '@/utils/types';
 
 export const useGridStore = defineStore('grid', () => {
 	const isDragging = ref(false);
 	const sectionIndex = ref<number | null>(0);
 	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
 	const sectionLayout = ref<SectionLayout>();
+	const viewType = ref<ViewType>('desktop');
 
 	function setDraggedBlockLayout(layout: SectionBlockLayout) {
 		draggedBlockLayout.value = layout;
 	}
 
-	function setSectionLayout(layout: SectionLayout) {
-		sectionLayout.value = layout;
+	function setSectionLayout(layout: SectionBreakpoints<SectionLayout>) {
+		sectionLayout.value = layout[viewType.value];
 	}
 
 	function updateSectionRowCount(rowCount: number) {
@@ -33,8 +39,13 @@ export const useGridStore = defineStore('grid', () => {
 	function setSectionIndex(value: number) {
 		sectionIndex.value = value;
 	}
+
 	function resetSectionIndex() {
 		sectionIndex.value = null;
+	}
+
+	function setViewType(value: ViewType) {
+		viewType.value = value;
 	}
 
 	return {
@@ -42,6 +53,7 @@ export const useGridStore = defineStore('grid', () => {
 		isDragging: readonly(isDragging),
 		sectionLayout: readonly(sectionLayout),
 		sectionIndex: readonly(sectionIndex),
+		viewType: readonly(viewType),
 		setSectionLayout,
 		setDraggedBlockLayout,
 		resetDraggedBlockLayout,
@@ -49,5 +61,6 @@ export const useGridStore = defineStore('grid', () => {
 		setSectionIndex,
 		resetSectionIndex,
 		updateSectionRowCount,
+		setViewType,
 	};
 });
