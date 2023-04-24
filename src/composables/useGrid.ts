@@ -61,12 +61,14 @@ export default function useGrid() {
 		const offsetX =
 			x + window.scrollX - wrapperOffsetLeft - grid.gutters + grid.gap;
 		const offsetY = y + window.scrollY - wrapperOffsetTop;
-		console.log(y, window.scrollY, wrapperOffsetTop);
-		console.log(y + window.scrollY - wrapperOffsetTop);
 
 		// Get grid row and column from grid item offset
-		const gridColumn = Math.ceil(offsetX / (grid.cellWidth + grid.gap));
+		let gridColumn = Math.ceil(offsetX / (grid.cellWidth + grid.gap));
 		const gridRow = Math.round(offsetY / (grid.cellHeight + grid.gap));
+
+		if (gridColumn > 1 && gridColumn + columnSize > grid.columnCount + 2) {
+			gridColumn = grid.columnCount + 2 - columnSize;
+		}
 
 		const columnStart = Math.max(1, gridColumn + 1);
 		const rowStart = Math.max(1, gridRow + 1);
