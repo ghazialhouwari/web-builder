@@ -1,12 +1,17 @@
 <script setup lang="ts">
-	import useGrid from '@/composables/useGrid';
-
-	const { rowCount, columnCount } = useGrid();
+	// Store
+	import { useGridStore } from '@/store/grid';
+	// Props
+	defineProps<{
+		rowCount: number;
+	}>();
+	// Store definition
+	const gridStore = useGridStore();
 </script>
 
 <template>
 	<template v-for="row in rowCount" :key="row">
-		<template v-for="column in columnCount" :key="column">
+		<template v-for="column in gridStore.columnCount" :key="column">
 			<div
 				class="grid-wrapper__cell"
 				:style="`grid-area: ${row}/${column + 1}/${row}/${column + 1}`"

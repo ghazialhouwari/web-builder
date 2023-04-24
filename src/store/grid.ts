@@ -1,18 +1,22 @@
 import { defineStore } from 'pinia';
-import { ref, readonly } from 'vue';
+import { ref, readonly, reactive, toRefs } from 'vue';
 import {
+	Grid,
 	SectionBlockLayout,
 	SectionBreakpoints,
 	SectionLayout,
 	ViewType,
 } from '@/utils/types';
+import useGrid from '@/composables/useGrid';
+import { calculatedGrid } from '@/utils/grid';
 
 export const useGridStore = defineStore('grid', () => {
 	const isDragging = ref(false);
-	const sectionIndex = ref<number | null>(0);
+	const sectionIndex = ref<number | null>(1);
 	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
 	const sectionLayout = ref<SectionLayout>();
 	const viewType = ref<ViewType>('desktop');
+	const grid = reactive<Grid>(calculatedGrid(viewType.value));
 
 	function setDraggedBlockLayout(layout: SectionBlockLayout) {
 		draggedBlockLayout.value = layout;
@@ -26,6 +30,10 @@ export const useGridStore = defineStore('grid', () => {
 		if (sectionLayout.value && rowCount > sectionLayout.value.rows) {
 			sectionLayout.value.rows = rowCount;
 		}
+	}
+
+	function updateGrid() {
+		Object.assign(grid, calculatedGrid(viewType.value));
 	}
 
 	function resetDraggedBlockLayout() {
@@ -46,14 +54,17 @@ export const useGridStore = defineStore('grid', () => {
 
 	function setViewType(value: ViewType) {
 		viewType.value = value;
+		updateGrid();
 	}
 
 	return {
+		...toRefs(grid),
 		draggedBlockLayout: readonly(draggedBlockLayout),
 		isDragging: readonly(isDragging),
 		sectionLayout: readonly(sectionLayout),
 		sectionIndex: readonly(sectionIndex),
 		viewType: readonly(viewType),
+		updateGrid,
 		setSectionLayout,
 		setDraggedBlockLayout,
 		resetDraggedBlockLayout,

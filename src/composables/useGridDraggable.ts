@@ -1,16 +1,14 @@
 import { SectionBlockLayout, SectionBreakpoints } from '@/utils/types';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
-import useGrid from '@/composables/useGrid';
+import { offsetToBlockLayout } from '@/utils/grid';
 
 export default function useGridDraggable(sectionIndex: number) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
-	const { offsetToBlockLayout } = useGrid();
 
 	function moveStartHandler() {
 		gridStore.setIsDragging(true);
-		gridStore.setSectionIndex(sectionIndex);
 	}
 	function moveHandler(
 		x: number,

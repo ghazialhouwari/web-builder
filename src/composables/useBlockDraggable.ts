@@ -1,8 +1,8 @@
 import { ref, Ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { useGridStore } from '@/store/grid';
-import useGrid from '@/composables/useGrid';
 import { BlockType, SectionBlockLayout, SiteBlock } from '@/utils/types';
+import { offsetToBlockLayout } from '@/utils/grid';
 
 export default function useBlockDraggable({
 	blockItem,
@@ -24,7 +24,6 @@ export default function useBlockDraggable({
 	const gridStore = useGridStore();
 	const { setIsDragging, setDraggedBlockLayout, resetDraggedBlockLayout } =
 		gridStore;
-	const { offsetToBlockLayout } = useGrid();
 
 	const offset = ref({ x: 0, y: 0 });
 	const isDragging = ref(false);

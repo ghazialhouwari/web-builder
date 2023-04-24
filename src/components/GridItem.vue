@@ -22,14 +22,15 @@
 		ImageBlock: defineAsyncComponent(() => import('@/components/ImageBlock.vue')),
 		QuoteBlock: defineAsyncComponent(() => import('@/components/QuoteBlock.vue')),
 	};
-
+	// Props
 	const props = defineProps<{
 		block: SectionBlock;
 		blockIndex: number;
 	}>();
+	// Emits
 
 	/* eslint-disable no-unused-vars */
-	const emit = defineEmits({
+	const emits = defineEmits({
 		start: () => true,
 		move: (
 			x: number,
@@ -39,26 +40,27 @@
 		end: (blockIndex: number) => true,
 		resize: (blockIndex: number, layout: SectionBlockLayout) => true,
 	});
+	// Store definition
+	const gridStore = useGridStore();
 
 	const currentBlock = ref<BlockComponentType>('ButtonBlock');
 
-	const gridStore = useGridStore();
 	const gridItem = ref<HTMLElement | null>(null);
 	const dragHandle = ref<HTMLElement | null>(null);
 	const resizeHandle = ref<HTMLElement | null>(null);
-
+	// Use composables
 	const { offset } = useGridItemDraggable({
 		gridItem,
 		dragHandle,
-		onStart: () => emit('start'),
-		onMove: (x: number, y: number) => emit('move', x, y, props.block.layout),
-		onEnd: () => emit('end', props.blockIndex),
+		onStart: () => emits('start'),
+		onMove: (x: number, y: number) => emits('move', x, y, props.block.layout),
+		onEnd: () => emits('end', props.blockIndex),
 	});
 	useGridItemResize({
 		block: props.block,
 		resizeHandle,
 		onResize: (layout: SectionBlockLayout) =>
-			emit('resize', props.blockIndex, layout),
+			emits('resize', props.blockIndex, layout),
 	});
 </script>
 

@@ -1,6 +1,6 @@
 import { ref, Ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
-import useGrid from '@/composables/useGrid';
+import { useGridStore } from '@/store/grid';
 
 export default function useGridItemDraggable({
 	gridItem,
@@ -16,11 +16,14 @@ export default function useGridItemDraggable({
 	onEnd?: () => void;
 }) {
 	const offset = ref({ x: 0, y: 0 });
-	const { gridWrapper } = useGrid();
-
+	const gridStore = useGridStore();
 	function updateItemOffset(x: number, y: number) {
-		const wrapperOffsetLeft = gridWrapper.value?.offsetLeft || 0;
-		const wrapperOffsetTop = gridWrapper.value?.offsetTop || 0;
+		const gridWrapper: HTMLElement | null = document.querySelector(
+			`#gridWrapper${gridStore.sectionIndex}`
+		);
+
+		const wrapperOffsetLeft = gridWrapper?.offsetLeft || 0;
+		const wrapperOffsetTop = gridWrapper?.offsetTop || 0;
 		const blockOffsetLeft = gridItem.value?.offsetLeft || 0;
 		const blockOffsetTop = gridItem.value?.offsetTop || 0;
 

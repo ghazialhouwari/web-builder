@@ -11,19 +11,20 @@
 	import GridItem from '@/components/GridItem.vue';
 	import GridCells from '@/components/GridCells.vue';
 	import DraggedBlock from '@/components/DraggedBlock.vue';
-
+	// Props
 	const props = defineProps<{
 		section: Section;
 		sectionIndex: number;
 	}>();
-
+	// Store definition
 	const gridStore = useGridStore();
-	const { columnCount, rowCount } = useGrid();
+	// Use composables
+	const { rowCount } = useGrid();
 	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable(
 		props.sectionIndex
 	);
 	const { resizeHanlder } = useGridResize(props.sectionIndex);
-
+	// Hooks
 	onMounted(() => {
 		gridStore.setSectionLayout(props.section.layout);
 	});
@@ -31,11 +32,11 @@
 
 <template>
 	<div
-		id="gridWrapper"
+		:id="`gridWrapper${sectionIndex}`"
 		class="grid-wrapper"
 		:style="{
 			'--grid-row-count': rowCount,
-			'--grid-column-count': columnCount,
+			'--grid-column-count': gridStore.columnCount,
 		}"
 	>
 		<GridItem
@@ -50,6 +51,7 @@
 		/>
 		<GridCells
 			v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex"
+			:rowCount="rowCount"
 		/>
 		<DraggedBlock
 			v-if="

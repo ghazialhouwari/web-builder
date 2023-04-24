@@ -22,8 +22,8 @@ export default function useGridItemResize({
 	const isDown = ref(false);
 	const start: Position = { x: 0, y: 0 };
 	const end: Position = { x: 0, y: 0 };
-	const { cellWidth, cellHeight, gap } = useGrid();
 	const gridStore = useGridStore();
+	const { cellWidth, cellHeight, gap } = gridStore;
 	let directions: string[] = [];
 
 	function mouseDownHandler(evt: MouseEvent) {
@@ -127,8 +127,8 @@ export default function useGridItemResize({
 		const distanceY = end.y - start.y;
 
 		// Get grid row and column from grid item offset
-		const columns = Math.round(distanceX / (cellWidth.value + gap.value));
-		const rows = Math.round(distanceY / (cellHeight.value + gap.value));
+		const columns = Math.round(distanceX / (cellWidth + gap));
+		const rows = Math.round(distanceY / (cellHeight + gap));
 
 		return { columns, rows };
 	}
