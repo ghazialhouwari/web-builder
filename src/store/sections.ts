@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import {
 	BlockType,
 	Section,
@@ -15,7 +15,10 @@ import useUndoRedo from '@/composables/useUndoRedo';
 
 export const useSectionsStore = defineStore('sections', () => {
 	const sections = reactive<Section[]>(siteSections);
-	const { addAction, undo, redo } = useUndoRedo();
+	const { history, addAction, undo, redo } = useUndoRedo();
+
+	const undosLength = computed(() => history.undos.length);
+	const redosLength = computed(() => history.redos.length);
 
 	function updateLayout(
 		sectionIndex: number,
@@ -83,6 +86,8 @@ export const useSectionsStore = defineStore('sections', () => {
 
 	return {
 		sections,
+		undosLength,
+		redosLength,
 		addBlock,
 		updateSectionBlockLayoutByIndex,
 		undo,

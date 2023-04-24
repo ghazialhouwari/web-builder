@@ -36,6 +36,7 @@ export default function useUndoRedo() {
 	}
 
 	return {
+		history,
 		addAction,
 		undo,
 		redo,

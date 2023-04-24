@@ -16,11 +16,13 @@
 				<v-btn
 					icon="mdi-arrow-u-left-top"
 					color="high-emphasis"
+					:disabled="!sectionsStore.undosLength"
 					@click="sectionsStore.undo"
 				></v-btn>
 				<v-btn
 					icon="mdi-arrow-u-right-top"
 					color="high-emphasis"
+					:disabled="!sectionsStore.redosLength"
 					@click="sectionsStore.redo"
 				></v-btn>
 			</template>
