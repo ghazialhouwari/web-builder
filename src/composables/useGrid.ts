@@ -91,12 +91,14 @@ function calculateGrid(): Grid {
 	const rowHeightRatio = 0.0215;
 	const minContainerWidth = 1400;
 
-	const gutters = viewPort * 0.02 - gap;
+	const baseGutters = viewPort * 0.02 - gap;
+	const frGutters = (viewPort - minContainerWidth) / 2 - gap;
+
+	const gutters = viewPort < minContainerWidth ? baseGutters : frGutters;
 	const gapCount = (columnCount - 1) * gap;
 	const containerWidth = viewPort - gutters * 2 - gap * 2;
 
 	const width = Math.min(minContainerWidth, containerWidth);
-	const height = minRowCount * width * rowHeightRatio + gap * (minRowCount - 1);
 
 	const cellWidth = (width - gapCount) / columnCount;
 	const cellHeight = width * rowHeightRatio;
