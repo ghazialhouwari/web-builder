@@ -25,8 +25,8 @@
 
 <style scoped>
 	.blocks__card {
-		position: sticky;
-		top: 20px;
+		position: fixed;
+		top: 110px;
 		left: 20px;
 		z-index: 999;
 	}

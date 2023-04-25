@@ -48,11 +48,11 @@ export function offsetToBlockLayout(
 		`#gridWrapper${sectionIndex}`
 	);
 
-	const wrapperOffsetLeft = gridWrapper?.offsetLeft || 0;
-	const wrapperOffsetTop = gridWrapper?.offsetTop || 0;
+	const wrapperOffsetLeft = gridWrapper?.getBoundingClientRect().left || 0;
+	const wrapperOffsetTop = gridWrapper?.getBoundingClientRect().top || 0;
 
-	const offsetX = x + window.scrollX - wrapperOffsetLeft - gutters + gap;
-	const offsetY = y + window.scrollY - wrapperOffsetTop;
+	const offsetX = x - wrapperOffsetLeft - gutters + gap;
+	const offsetY = y - wrapperOffsetTop;
 
 	// Get grid row and column from grid item offset
 	let gridColumn = Math.ceil(offsetX / (cellWidth + gap));

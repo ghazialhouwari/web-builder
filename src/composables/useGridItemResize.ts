@@ -83,6 +83,7 @@ export default function useGridItemResize({
 			) {
 				if (layout.start.x + columns < layout.end.x) {
 					layout.start.x += columns;
+					gridStore.setDraggedBlockLayout(layout);
 				}
 			}
 			if (
@@ -93,6 +94,7 @@ export default function useGridItemResize({
 			) {
 				if (layout.start.y + rows < layout.end.y) {
 					layout.start.y += rows;
+					gridStore.setDraggedBlockLayout(layout);
 				}
 			}
 			if (
@@ -101,8 +103,12 @@ export default function useGridItemResize({
 					directions.includes('bottom')) &&
 				directions.includes('right')
 			) {
-				if (layout.end.x + columns > layout.start.x) {
+				if (
+					layout.end.x + columns > layout.start.x &&
+					layout.end.x + columns < gridStore.columnCount + 4
+				) {
 					layout.end.x += columns;
+					gridStore.setDraggedBlockLayout(layout);
 				}
 			}
 			if (
@@ -113,9 +119,9 @@ export default function useGridItemResize({
 			) {
 				if (layout.end.y + rows > layout.start.y) {
 					layout.end.y += rows;
+					gridStore.setDraggedBlockLayout(layout);
 				}
 			}
-			gridStore.setDraggedBlockLayout(layout);
 		}
 	}
 

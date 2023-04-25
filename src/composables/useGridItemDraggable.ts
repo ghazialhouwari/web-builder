@@ -22,13 +22,13 @@ export default function useGridItemDraggable({
 			`#gridWrapper${gridStore.sectionIndex}`
 		);
 
-		const wrapperOffsetLeft = gridWrapper?.offsetLeft || 0;
-		const wrapperOffsetTop = gridWrapper?.offsetTop || 0;
 		const blockOffsetLeft = gridItem.value?.offsetLeft || 0;
 		const blockOffsetTop = gridItem.value?.offsetTop || 0;
+		const wrapperOffsetLeft = gridWrapper?.getBoundingClientRect().left || 0;
+		const wrapperOffsetTop = gridWrapper?.getBoundingClientRect().top || 0;
 
-		offset.value.x = x + window.scrollX - wrapperOffsetLeft - blockOffsetLeft;
-		offset.value.y = y + window.scrollY - wrapperOffsetTop - blockOffsetTop;
+		offset.value.x = x - wrapperOffsetLeft - blockOffsetLeft;
+		offset.value.y = y - wrapperOffsetTop - blockOffsetTop;
 	}
 
 	function resetItemOffset() {

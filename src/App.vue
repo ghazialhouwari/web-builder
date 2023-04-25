@@ -39,15 +39,25 @@
 				></v-btn>
 			</template>
 		</v-app-bar>
-		<v-main class="site__main" :class="gridStore.viewType">
+		<v-main class="site-main relative">
+			<div
+				v-if="gridStore.viewType === 'mobile'"
+				class="site-mobile__elevation"
+			></div>
 			<PageSections />
 		</v-main>
 	</v-app>
 </template>
 
 <style scoped>
-	.site__main.mobile {
-		width: 430px;
+	.site-mobile__elevation {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 100vh;
+		width: var(--site-mobile-width);
 		margin: 0 auto;
+		z-index: 10;
 	}
 </style>

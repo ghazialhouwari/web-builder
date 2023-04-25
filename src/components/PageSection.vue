@@ -2,29 +2,63 @@
 	import { Section } from '@/utils/types';
 	// Components
 	import Grid from '@/components/Grid.vue';
-	// Emits
-	/* eslint-disable no-unused-vars */
-	const emits = defineEmits({
-		mouseOver: (sectionIndex: number) => true,
-	});
+	// Store
+	import { useGridStore } from '@/store/grid';
 	// Props
-	defineProps<{
+	const props = defineProps<{
 		section: Section;
 		sectionIndex: number;
 	}>();
+	// Store definition
+	const gridStore = useGridStore();
+	// Functions
+	function mouseOverHandler() {
+		gridStore.setSectionIndex(props.sectionIndex);
+	}
 </script>
 
 <template>
-	<div class="site__section" @mouseover="emits('mouseOver', sectionIndex)">
-		<div class="py-12">
+	<div class="site-section" @mouseover="mouseOverHandler">
+		<div class="block-menu">
+			<v-btn prependIcon="mdi-plus" color="white" class="block-menu__trigger"
+				>Add Menu</v-btn
+			>
+		</div>
+		<div
+			class="site-section__container py-12"
+			:class="{
+				'view-type--mobile': gridStore.viewType === 'mobile',
+			}"
+		>
 			<Grid :section="section" :sectionIndex="sectionIndex" />
 		</div>
 	</div>
 </template>
 
 <style scoped>
-	.site__section:hover {
+	.site-section {
+		position: relative;
+		overflow-y: hidden;
+		z-index: 20;
+	}
+	.site-section__container.view-type--mobile {
+		--box-shadow: 0 0 25px rgba(0, 0, 0, 0.1), 0 -5px 25px rgba(0, 0, 0, 0.1),
+			0 5px 25px rgba(0, 0, 0, 0.1);
+		width: var(--site-mobile-width);
+		margin: 0 auto;
+		box-shadow: var(--box-shadow);
+	}
+	.site-section:hover .site-section__container {
 		box-shadow: inset 0 0 0 var(--site-engine-border-width)
 			var(--site-engine-color);
+	}
+	.site-section:hover .site-section__container.view-type--mobile {
+		box-shadow: var(--box-shadow),
+			inset 0 0 0 var(--site-engine-border-width) var(--site-engine-color);
+	}
+	.block-menu {
+		position: absolute;
+		top: 20px;
+		left: 20px;
 	}
 </style>
