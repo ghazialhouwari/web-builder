@@ -7,7 +7,7 @@ export function calculatedGrid(viewType: ViewType): Grid {
 	const rowHeightRatio = 0.0215;
 	const minContainerWidth = 1400;
 
-	const viewPort = viewType === 'desktop' ? window.innerWidth : 430;
+	const viewPort = viewType === 'desktop' ? window.innerWidth : 390;
 	const columnCount = viewType === 'desktop' ? 24 : 8;
 
 	const guttersPercent = viewType === 'desktop' ? 0.02 : 0.06;

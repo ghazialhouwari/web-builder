@@ -34,6 +34,9 @@
 	<div
 		:id="`gridWrapper${sectionIndex}`"
 		class="grid-wrapper"
+		:class="{
+			'view-type--mobile': gridStore.viewType === 'mobile',
+		}"
 		:style="{
 			'--grid-row-count': rowCount,
 			'--grid-column-count': gridStore.columnCount,
@@ -49,10 +52,8 @@
 			@end="moveEndHandler"
 			@resize="resizeHanlder"
 		/>
-		<GridCells
-			v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex"
-			:rowCount="rowCount"
-		/>
+		<!-- v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex" -->
+		<GridCells :rowCount="rowCount" />
 		<DraggedBlock
 			v-if="
 				gridStore.isDragging &&
@@ -77,5 +78,8 @@
 			minmax(var(--grid-gutter), 1fr)
 			repeat(var(--grid-column-count), minmax(0, var(--cell-max-width)))
 			minmax(var(--grid-gutter), 1fr);
+	}
+	.grid-wrapper.view-type--mobile {
+		grid-template-rows: repeat(var(--grid-row-count), 30px);
 	}
 </style>
