@@ -84,42 +84,27 @@ export default function useBlockResize({
 		const layout = deepClone(block.layout[gridStore.viewType]);
 		const actions: Record<string, () => void> = {
 			left: () => {
-				if (layout.start.x + state.columns < layout.end.x) {
-					gridStore.setDraggedBlockLayoutPosition(
-						'start',
-						'x',
-						layout.start.x + state.columns
-					);
+				const startX = layout.start.x + state.columns;
+				if (startX > 0 && startX < layout.end.x) {
+					gridStore.setDraggedBlockLayoutPosition('start', 'x', startX);
 				}
 			},
 			top: () => {
-				if (layout.start.y + state.rows < layout.end.y) {
-					gridStore.setDraggedBlockLayoutPosition(
-						'start',
-						'y',
-						layout.start.y + state.rows
-					);
+				const startY = layout.start.y + state.rows;
+				if (startY > 0 && startY < layout.end.y) {
+					gridStore.setDraggedBlockLayoutPosition('start', 'y', startY);
 				}
 			},
 			right: () => {
-				if (
-					layout.end.x + state.columns > layout.start.x &&
-					layout.end.x + state.columns < gridStore.columnCount + 4
-				) {
-					gridStore.setDraggedBlockLayoutPosition(
-						'end',
-						'x',
-						layout.end.x + state.columns
-					);
+				const endX = layout.end.x + state.columns;
+				if (endX > layout.start.x && endX < gridStore.columnCount + 4) {
+					gridStore.setDraggedBlockLayoutPosition('end', 'x', endX);
 				}
 			},
 			bottom: () => {
-				if (layout.end.y + state.rows > layout.start.y) {
-					gridStore.setDraggedBlockLayoutPosition(
-						'end',
-						'y',
-						layout.end.y + state.rows
-					);
+				const endY = layout.end.y + state.rows;
+				if (endY > layout.start.y) {
+					gridStore.setDraggedBlockLayoutPosition('end', 'y', endY);
 				}
 			},
 		};
