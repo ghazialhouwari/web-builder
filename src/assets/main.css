@@ -22,3 +22,20 @@
 		0px 6px 10px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.14)),
 		0px 1px 18px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.12));
 }
+
+.top-down-enter-active,
+.top-down-leave-active {
+	transition: transform 150ms linear, opacity 150ms linear;
+}
+
+.top-down-enter-from,
+.top-down-leave-to {
+	opacity: 0;
+	transform: translateY(-15%);
+}
+
+.top-down-enter-to,
+.top-down-leave-from {
+	opacity: 1;
+	transform: translateY(0%);
+}

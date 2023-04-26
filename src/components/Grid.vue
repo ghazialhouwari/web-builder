@@ -52,8 +52,10 @@
 			@end="moveEndHandler"
 			@resize="resizeHanlder"
 		/>
-		<!-- v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex" -->
-		<GridCells :rowCount="rowCount" />
+		<GridCells
+			v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex"
+			:rowCount="rowCount"
+		/>
 		<DraggedBlock
 			v-if="
 				gridStore.isDragging &&

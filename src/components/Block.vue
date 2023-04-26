@@ -1,20 +1,32 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import { SiteBlock } from '@/utils/types';
+	import { BlockType, SiteBlock, SectionBlockLayout } from '@/utils/types';
+	// Store
 	import { useSectionsStore } from '@/store/sections';
+	import { useAppStore } from '@/store/app';
+	// Composables
 	import useBlockDraggable from '@/composables/useBlockDraggable';
 
+	// Props
 	const props = defineProps<{
 		block: SiteBlock;
 	}>();
-
+	// Use Store
 	const sectionsStore = useSectionsStore();
+	const appStore = useAppStore();
 
 	const blockItem = ref<HTMLElement | null>(null);
 	const { isDragging, offset, width, height } = useBlockDraggable({
 		blockItem,
 		block: props.block,
-		onEnd: sectionsStore.addBlock,
+		onEnd: (
+			sectionIndex: number,
+			type: BlockType,
+			layout: SectionBlockLayout
+		) => {
+			sectionsStore.addBlock(sectionIndex, type, layout);
+			appStore.closeBlocksMenu();
+		},
 	});
 </script>
 

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
-
+	import { useAppStore } from '@/store/app';
 	// Components
 	import PageSections from '@/components/PageSections.vue';
-
+	import Blocks from '@/components/Blocks.vue';
+	// Store definition
 	const sectionsStore = useSectionsStore();
 	const gridStore = useGridStore();
+	const appStore = useAppStore();
 </script>
 
 <template>
@@ -46,6 +48,11 @@
 			></div>
 			<PageSections />
 		</v-main>
+		<Teleport to="#blocks-menu">
+			<Transition name="top-down">
+				<Blocks v-if="appStore.isBlockMenuVisible" />
+			</Transition>
+		</Teleport>
 	</v-app>
 </template>
 

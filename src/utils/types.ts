@@ -25,14 +25,14 @@ export interface SectionBreakpoints<T> {
 	desktop: T;
 }
 
-export interface SectionPosition {
+export interface Position {
 	x: number;
 	y: number;
 }
 
 export interface SectionBlockLayout {
-	start: SectionPosition;
-	end: SectionPosition;
+	start: Position;
+	end: Position;
 	zIndex: number;
 }
 
