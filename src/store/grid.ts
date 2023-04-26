@@ -22,6 +22,15 @@ export const useGridStore = defineStore('grid', () => {
 		draggedBlockLayout.value = layout;
 	}
 
+	function setDraggedBlockLayoutPosition(
+		direction: 'start' | 'end',
+		position: 'x' | 'y',
+		value: number
+	) {
+		if (!draggedBlockLayout.value) return;
+		draggedBlockLayout.value[direction][position] = value;
+	}
+
 	function setSectionLayout(layout: SectionBreakpoints<SectionLayout>) {
 		sectionLayout.value = layout[viewType.value];
 	}
@@ -69,6 +78,7 @@ export const useGridStore = defineStore('grid', () => {
 		updateGrid,
 		setSectionLayout,
 		setDraggedBlockLayout,
+		setDraggedBlockLayoutPosition,
 		resetDraggedBlockLayout,
 		setIsDragging,
 		setSectionIndex,

@@ -19,13 +19,13 @@
 
 <template>
 	<div class="site-section" @mouseover="mouseOverHandler">
-		<div class="block-menu">
+		<div v-if="!gridStore.isDragging" class="block-menu">
 			<v-btn prependIcon="mdi-plus" color="white" class="block-menu__trigger"
 				>Add Menu</v-btn
 			>
 		</div>
 		<div
-			class="site-section__container py-12"
+			class="site-section__container py-16"
 			:class="{
 				'view-type--mobile': gridStore.viewType === 'mobile',
 			}"
@@ -60,5 +60,9 @@
 		position: absolute;
 		top: 20px;
 		left: 20px;
+		display: none;
+	}
+	.site-section:hover .block-menu {
+		display: block;
 	}
 </style>

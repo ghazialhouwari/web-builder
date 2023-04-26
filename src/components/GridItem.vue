@@ -10,7 +10,6 @@
 	// Store
 	import { useGridStore } from '@/store/grid';
 	// Composables
-	import useGridItemResize from '@/composables/useGridItemResize';
 	import useGridItemDraggable from '@/composables/useGridItemDraggable';
 	// Components
 	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
@@ -28,7 +27,6 @@
 		blockIndex: number;
 	}>();
 	// Emits
-
 	/* eslint-disable no-unused-vars */
 	const emits = defineEmits({
 		start: () => true,
@@ -44,10 +42,8 @@
 	const gridStore = useGridStore();
 
 	const currentBlock = ref<BlockComponentType>('ButtonBlock');
-
 	const gridItem = ref<HTMLElement | null>(null);
 	const dragHandle = ref<HTMLElement | null>(null);
-	const resizeHandle = ref<HTMLElement | null>(null);
 	// Use composables
 	const { offset } = useGridItemDraggable({
 		gridItem,
@@ -56,12 +52,10 @@
 		onMove: (x: number, y: number) => emits('move', x, y, props.block.layout),
 		onEnd: () => emits('end', props.blockIndex),
 	});
-	useGridItemResize({
-		block: props.block,
-		resizeHandle,
-		onResize: (layout: SectionBlockLayout) =>
-			emits('resize', props.blockIndex, layout),
-	});
+	// Functions
+	function resizeHandler(layout: SectionBlockLayout) {
+		emits('resize', props.blockIndex, layout);
+	}
 </script>
 
 <template>
@@ -79,7 +73,7 @@
 	>
 		<span ref="dragHandle" class="grid-item__handle"></span>
 		<component :is="blocks[currentBlock]" :value="block.value" />
-		<div ref="resizeHandle"><BlockResizeHandle /></div>
+		<BlockResizeHandle @resize="resizeHandler" :block="block" />
 	</div>
 </template>
 

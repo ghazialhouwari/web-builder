@@ -1,3 +1,27 @@
+<script setup lang="ts">
+	import { ref } from 'vue';
+	// Composables
+	import useGridItemResize from '@/composables/useBlockResize';
+	import { SectionBlock, SectionBlockLayout } from '@/utils/types';
+	// Emits
+	/* eslint-disable no-unused-vars */
+	const emits = defineEmits({
+		resize: (layout: SectionBlockLayout) => true,
+	});
+	// Props
+	const props = defineProps<{
+		block: SectionBlock;
+	}>();
+
+	const resizeHandle = ref<HTMLElement | null>(null);
+	// Use composables
+	useGridItemResize({
+		block: props.block,
+		resizeHandle,
+		onResize: (layout: SectionBlockLayout) => emits('resize', layout),
+	});
+</script>
+
 <template>
 	<div ref="resizeHandle" class="grid-item__resize">
 		<span data-directions="top,left" class="resize__handle top left"></span>
@@ -19,8 +43,6 @@
 		<span data-directions="left,center" class="resize__handle left center"></span>
 	</div>
 </template>
-
-<script setup lang="ts"></script>
 
 <style scoped>
 	.grid-item__handle {
