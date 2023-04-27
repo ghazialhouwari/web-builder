@@ -3,6 +3,7 @@
 	import { Section } from '@/utils/types';
 	// Components
 	import Grid from '@/components/Grid.vue';
+	import SectionBlocksMenuTrigger from '@/components/menu/BlocksMenuTrigger.vue';
 	// Store
 	import { useGridStore } from '@/store/grid';
 	import { useAppStore } from '@/store/app';
@@ -45,15 +46,10 @@
 		}"
 	>
 		<Transition name="top-down">
-			<div
+			<SectionBlocksMenuTrigger
 				v-if="!gridStore.isDragging && isHovered"
-				class="block-menu"
 				@click="showBlocksMenu"
-			>
-				<v-btn prependIcon="mdi-plus" color="white" class="block-menu__trigger"
-					>Add Menu</v-btn
-				>
-			</div>
+			/>
 		</Transition>
 		<div
 			class="site-section__container py-16"
@@ -86,10 +82,5 @@
 	.site-section.site-section--hover .site-section__container.view-type--mobile {
 		box-shadow: var(--box-shadow),
 			inset 0 0 0 var(--site-engine-border-width) var(--site-engine-color);
-	}
-	.block-menu {
-		position: absolute;
-		top: 20px;
-		left: 20px;
 	}
 </style>

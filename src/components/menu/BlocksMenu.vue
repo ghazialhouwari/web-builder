@@ -7,7 +7,7 @@
 	import { useAppStore } from '@/store/app';
 	import { useGridStore } from '@/store/grid';
 	// Components
-	import Block from '@/components/Block.vue';
+	import SectionBlocksMenuItem from '@/components/menu/BlocksMenuItem.vue';
 	// Use Store
 	const appStore = useAppStore();
 	const gridStore = useGridStore();
@@ -33,10 +33,14 @@
 			<v-card-text class="block__group">
 				<h3 class="font-weight-bold text-subtitle-2 px-4">Basic</h3>
 				<ul class="block__group-content py-2">
-					<Block v-for="(block, i) in blocks" :key="i" :block="block">
+					<SectionBlocksMenuItem
+						v-for="(block, i) in blocks"
+						:key="i"
+						:block="block"
+					>
 						<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
 						<h4>{{ block.type }}</h4>
-					</Block>
+					</SectionBlocksMenuItem>
 				</ul>
 			</v-card-text>
 		</v-card>
