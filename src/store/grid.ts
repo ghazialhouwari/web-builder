@@ -7,7 +7,6 @@ import {
 	SectionLayout,
 	ViewType,
 } from '@/utils/types';
-import useGrid from '@/composables/useGrid';
 import { calculatedGrid } from '@/utils/grid';
 
 export const useGridStore = defineStore('grid', () => {
@@ -65,7 +64,6 @@ export const useGridStore = defineStore('grid', () => {
 
 	function setViewType(value: ViewType) {
 		viewType.value = value;
-		updateGrid();
 	}
 
 	return {

@@ -16,7 +16,7 @@
 	const appStore = useAppStore();
 
 	const sectionItem = ref<HTMLElement | null>();
-
+	// Computed
 	const isHovered = computed(
 		() => gridStore.sectionIndex === props.sectionIndex
 	);

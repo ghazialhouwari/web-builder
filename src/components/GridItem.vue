@@ -15,12 +15,19 @@
 	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
 	const blocks: BlocksComponenets = {
 		ButtonBlock: defineAsyncComponent(
-			() => import('@/components/ButtonBlock.vue')
+			() => import('@/components/blocks/ButtonBlock.vue')
 		),
-		TextBlock: defineAsyncComponent(() => import('@/components/TextBlock.vue')),
-		ImageBlock: defineAsyncComponent(() => import('@/components/ImageBlock.vue')),
-		QuoteBlock: defineAsyncComponent(() => import('@/components/QuoteBlock.vue')),
+		TextBlock: defineAsyncComponent(
+			() => import('@/components/blocks/TextBlock.vue')
+		),
+		ImageBlock: defineAsyncComponent(
+			() => import('@/components/blocks/ImageBlock.vue')
+		),
+		QuoteBlock: defineAsyncComponent(
+			() => import('@/components/blocks/QuoteBlock.vue')
+		),
 	};
+
 	// Props
 	const props = defineProps<{
 		block: SectionBlock;

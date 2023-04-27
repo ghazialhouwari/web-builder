@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { SectionBlockText } from '@/utils/types';
-
+	// Props
 	defineProps<{
 		value: SectionBlockText;
 	}>();

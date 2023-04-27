@@ -1,4 +1,4 @@
-import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useGridStore } from '@/store/grid';
 
 export default function useGrid() {
@@ -19,6 +19,7 @@ export default function useGrid() {
 		} else if (gridStore.viewType === 'mobile' && window.innerWidth > 767) {
 			gridStore.setViewType('desktop');
 		}
+		gridStore.updateGrid();
 	}
 
 	function setGridWrapper() {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { SectionBlockLayout } from '@/utils/types';
+	// Props
 	defineProps<{
 		blockLayout: SectionBlockLayout;
 	}>();
