@@ -22,7 +22,8 @@
 
 <style scoped>
 	.grid-wrapper__cell {
+		pointer-events: none;
 		border-radius: 4px;
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
 	}
 </style>

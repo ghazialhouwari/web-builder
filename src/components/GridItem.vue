@@ -105,7 +105,7 @@
 	}
 	.grid-item.is-dragging {
 		box-shadow: var(--site-box-shadow);
-		background: rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.6);
 	}
 	.grid-item.is--focused,
 	.grid-item:hover {
