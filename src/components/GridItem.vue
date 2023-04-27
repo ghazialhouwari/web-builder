@@ -52,13 +52,14 @@
 	const gridItem = ref<HTMLElement | null>(null);
 	const dragHandle = ref<HTMLElement | null>(null);
 	// Use composables
-	const { offset } = useGridItemDraggable({
+	const { offset, isDragging, isFocused } = useGridItemDraggable({
 		gridItem,
 		dragHandle,
 		onStart: () => emits('start'),
 		onMove: (x: number, y: number) => emits('move', x, y, props.block.layout),
 		onEnd: () => emits('end', props.blockIndex),
 	});
+
 	// Functions
 	function resizeHandler(layout: SectionBlockLayout) {
 		emits('resize', props.blockIndex, layout);
@@ -69,6 +70,10 @@
 	<div
 		ref="gridItem"
 		class="grid-item d-flex"
+		:class="{
+			'is--focused': isFocused,
+			'is-dragging': isDragging,
+		}"
 		:style="{
 			'--row-start': block.layout[gridStore.viewType].start.y,
 			'--col-start': block.layout[gridStore.viewType].start.x,
@@ -88,7 +93,7 @@
 	.grid-item {
 		position: relative;
 		user-select: none;
-		background: var(--site-hover);
+		background: #fff;
 		grid-area: var(--row-start) / var(--col-start) / var(--row-end) /
 			var(--col-end);
 		transform: translate(var(--x-offset), var(--y-offset));
@@ -98,6 +103,11 @@
 		will-change: border-color;
 		transition: border-color 150ms ease;
 	}
+	.grid-item.is-dragging {
+		box-shadow: var(--site-box-shadow);
+		background: rgba(255, 255, 255, 0.5);
+	}
+	.grid-item.is--focused,
 	.grid-item:hover {
 		border-color: var(--site-engine-color);
 	}
@@ -111,7 +121,7 @@
 		z-index: 10;
 		cursor: grab;
 	}
-	.grid-item:hover :deep(.grid-item__resize) {
+	.grid-item.is--focused :deep(.grid-item__resize) {
 		display: block;
 	}
 </style>

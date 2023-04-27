@@ -18,8 +18,9 @@ export default function useGrid() {
 			gridStore.setViewType('mobile');
 		} else if (gridStore.viewType === 'mobile' && window.innerWidth > 767) {
 			gridStore.setViewType('desktop');
+		} else {
+			gridStore.updateGrid();
 		}
-		gridStore.updateGrid();
 	}
 
 	function setGridWrapper() {

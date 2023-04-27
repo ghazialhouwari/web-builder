@@ -69,7 +69,7 @@
 <style scoped>
 	.site-section {
 		position: relative;
-		overflow-y: hidden;
+		overflow: hidden;
 		z-index: 20;
 	}
 	.site-section__container.view-type--mobile {

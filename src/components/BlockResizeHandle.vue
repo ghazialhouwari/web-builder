@@ -64,26 +64,24 @@
 		right: -7px;
 		z-index: 5;
 	}
-	.grid-item:hover .grid-item__resize {
-		display: block;
-	}
 	.resize__handle {
 		position: absolute;
-		width: 10px;
-		height: 10px;
-		background: var(--site-engine-color);
+		width: 9px;
+		height: 9px;
+		border: 2px solid var(--site-engine-color);
+		background: #fff;
 	}
 	.resize__handle.top {
-		top: 0;
+		top: 1px;
 	}
 	.resize__handle.bottom {
-		bottom: 0;
+		bottom: 1px;
 	}
 	.resize__handle.left {
-		left: 0;
+		left: 1px;
 	}
 	.resize__handle.right {
-		right: 0;
+		right: 1px;
 	}
 	.resize__handle.top.left,
 	.resize__handle.bottom.right {

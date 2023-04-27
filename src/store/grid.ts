@@ -64,6 +64,7 @@ export const useGridStore = defineStore('grid', () => {
 
 	function setViewType(value: ViewType) {
 		viewType.value = value;
+		updateGrid();
 	}
 
 	return {

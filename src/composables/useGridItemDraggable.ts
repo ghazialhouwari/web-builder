@@ -1,6 +1,7 @@
 import { ref, Ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { useGridStore } from '@/store/grid';
+import { onClickOutside } from '@vueuse/core';
 
 export default function useGridItemDraggable({
 	gridItem,
@@ -16,7 +17,11 @@ export default function useGridItemDraggable({
 	onEnd?: () => void;
 }) {
 	const offset = ref({ x: 0, y: 0 });
+	const isFocused = ref(false);
+	const isDragging = ref(false);
 	const gridStore = useGridStore();
+
+	/** Functions */
 	function updateItemOffset(x: number, y: number) {
 		const gridWrapper: HTMLElement | null = document.querySelector(
 			`#gridWrapper${gridStore.sectionIndex}`
@@ -36,9 +41,12 @@ export default function useGridItemDraggable({
 		offset.value.y = 0;
 	}
 
+	/** Composables */
 	useDraggable(gridItem, {
 		handle: dragHandle,
 		onStart: () => {
+			isFocused.value = false;
+			isDragging.value = true;
 			onStart && onStart();
 		},
 		onMove: ({ x, y }) => {
@@ -46,10 +54,14 @@ export default function useGridItemDraggable({
 			onMove && onMove(x, y);
 		},
 		onEnd: () => {
+			isDragging.value = false;
+			isFocused.value = true;
 			resetItemOffset();
 			onEnd && onEnd();
 		},
 	});
 
-	return { offset };
+	onClickOutside(gridItem, () => (isFocused.value = false));
+
+	return { offset, isFocused, isDragging };
 }
