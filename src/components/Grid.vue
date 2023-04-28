@@ -3,7 +3,7 @@
 	// Store
 	import { useGridStore } from '@/store/grid';
 	// Composables
-	import useGrid from '@/composables/useGrid';
+	import { useWindowSize } from '@/composables/useWindowSize';
 	// Components
 	import GridItem from '@/components/GridItem.vue';
 	import GridCells from '@/components/GridCells.vue';
@@ -17,7 +17,16 @@
 	// Store definition
 	const gridStore = useGridStore();
 	// Use composables
-	useGrid();
+	useWindowSize((width: number) => {
+		const { viewType, setViewType, updateGrid } = gridStore;
+		if (viewType === 'desktop' && width <= 767) {
+			setViewType('mobile');
+		} else if (viewType === 'mobile' && width > 767) {
+			setViewType('desktop');
+		} else {
+			updateGrid();
+		}
+	});
 </script>
 
 <template>
