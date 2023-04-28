@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, ref } from 'vue';
+	import { computed, provide, ref } from 'vue';
 	import { Section } from '@/utils/types';
 	// Components
 	import Grid from '@/components/Grid.vue';
@@ -26,6 +26,11 @@
 	const isHovered = computed(
 		() => gridStore.activeSectionIndex === props.sectionIndex
 	);
+
+	provide('section', props.section);
+	provide('sectionIndex', props.sectionIndex);
+	provide('rowCount', rowCount);
+	provide('highestBlockEndY', highestBlockEndY);
 	// Functions
 	function mouseOverHandler() {
 		gridStore.setActiveSectionIndex(props.sectionIndex);
@@ -62,20 +67,9 @@
 				'view-type--mobile': gridStore.viewType === 'mobile',
 			}"
 		>
-			<Grid
-				:section="section"
-				:sectionIndex="sectionIndex"
-				:rowCount="rowCount"
-				:highestBlockEndY="highestBlockEndY"
-			/>
+			<Grid />
 		</div>
-		<SectionResizeHandle
-			v-if="isHovered"
-			:section="section"
-			:sectionIndex="sectionIndex"
-			:rowCount="rowCount"
-			:highestBlockEndY="highestBlockEndY"
-		/>
+		<SectionResizeHandle v-if="isHovered" />
 	</div>
 </template>
 

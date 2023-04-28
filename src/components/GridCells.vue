@@ -1,10 +1,10 @@
 <script setup lang="ts">
+	import { inject, ref, Ref } from 'vue';
 	// Store
 	import { useGridStore } from '@/store/grid';
-	// Props
-	defineProps<{
-		rowCount: number;
-	}>();
+
+	const rowCount = inject<Ref<number>>('rowCount', ref(0));
+
 	// Store definition
 	const gridStore = useGridStore();
 </script>

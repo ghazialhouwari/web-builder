@@ -2,19 +2,12 @@ import { reactive, Ref } from 'vue';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
 import useDrag from '@/composables/useDrag';
-import { Section } from '@/utils/types';
 
 export default function useSectionResize({
-	section,
-	sectionIndex,
 	rowCount,
-	highestBlockEndY,
 	resizeHandle,
 }: {
-	section: Section;
-	sectionIndex: number;
 	rowCount: Ref<number>;
-	highestBlockEndY: Ref<number | null>;
 	resizeHandle: Ref<HTMLElement | null>;
 }) {
 	const gridStore = useGridStore();

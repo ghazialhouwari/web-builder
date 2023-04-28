@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+	import { inject, ref, Ref } from 'vue';
 	import { Section } from '@/utils/types';
 	// Store
 	import { useGridStore } from '@/store/grid';
@@ -8,12 +9,11 @@
 	import GridItem from '@/components/GridItem.vue';
 	import GridCells from '@/components/GridCells.vue';
 	import DraggedBlock from '@/components/DraggedBlock.vue';
-	// Props
-	defineProps<{
-		section: Section;
-		sectionIndex: number;
-		rowCount: number;
-	}>();
+
+	const section = inject<Section>('section');
+	const sectionIndex = inject<number>('sectionIndex', 0);
+	const rowCount = inject<Ref<number>>('rowCount', ref(0));
+
 	// Store definition
 	const gridStore = useGridStore();
 	// Use composables
@@ -42,14 +42,13 @@
 		}"
 	>
 		<GridItem
-			v-for="(block, blockIndex) in section.blocks"
+			v-for="(block, blockIndex) in section?.blocks"
 			:key="block.id"
 			:blockIndex="blockIndex"
 			:block="block"
 		/>
 		<GridCells
 			v-if="gridStore.isDragging && gridStore.activeSectionIndex === sectionIndex"
-			:rowCount="rowCount"
 		/>
 		<DraggedBlock
 			v-if="

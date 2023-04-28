@@ -1,25 +1,13 @@
 <script setup lang="ts">
-	import { ref, toRefs } from 'vue';
-	import { Section } from '@/utils/types';
+	import { inject, Ref, ref } from 'vue';
 	// Composables
 	import useSectionResize from '@/composables/useSectionResize';
-	// Props
-	const props = defineProps<{
-		section: Section;
-		sectionIndex: number;
-		rowCount: number;
-		highestBlockEndY: number | null;
-	}>();
 
-	const { rowCount, highestBlockEndY } = toRefs(props);
-
+	const rowCount = inject<Ref<number>>('rowCount', ref(0));
 	const resizeHandle = ref<HTMLElement | null>(null);
 	// Use composables
 	useSectionResize({
-		section: props.section,
-		sectionIndex: props.sectionIndex,
 		rowCount,
-		highestBlockEndY,
 		resizeHandle,
 	});
 </script>
