@@ -1,10 +1,10 @@
 export type ViewType = 'desktop' | 'mobile';
 export type BlockType = 'text' | 'quote' | 'button' | 'image';
 export type BlockComponentType =
-	| 'TextBlock'
-	| 'QuoteBlock'
-	| 'ButtonBlock'
-	| 'ImageBlock';
+	| 'textBlock'
+	| 'quoteBlock'
+	| 'buttonBlock'
+	| 'imageBlock';
 
 export interface SectionStyles {
 	sectionTheme: string;

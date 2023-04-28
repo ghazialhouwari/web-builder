@@ -2,10 +2,8 @@
 	import { defineAsyncComponent, ref } from 'vue';
 	import {
 		SectionBlock,
-		SectionBlockLayout,
 		BlockComponentType,
 		BlocksComponenets,
-		SectionBreakpoints,
 	} from '@/utils/types';
 	// Store
 	import { useGridStore } from '@/store/grid';
@@ -14,16 +12,16 @@
 	// Components
 	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
 	const blocks: BlocksComponenets = {
-		ButtonBlock: defineAsyncComponent(
+		buttonBlock: defineAsyncComponent(
 			() => import('@/components/blocks/ButtonBlock.vue')
 		),
-		TextBlock: defineAsyncComponent(
+		textBlock: defineAsyncComponent(
 			() => import('@/components/blocks/TextBlock.vue')
 		),
-		ImageBlock: defineAsyncComponent(
+		imageBlock: defineAsyncComponent(
 			() => import('@/components/blocks/ImageBlock.vue')
 		),
-		QuoteBlock: defineAsyncComponent(
+		quoteBlock: defineAsyncComponent(
 			() => import('@/components/blocks/QuoteBlock.vue')
 		),
 	};
@@ -33,36 +31,25 @@
 		block: SectionBlock;
 		blockIndex: number;
 	}>();
-	// Emits
-	/* eslint-disable no-unused-vars */
-	const emits = defineEmits({
-		start: () => true,
-		move: (
-			x: number,
-			y: number,
-			blockLayout: SectionBreakpoints<SectionBlockLayout>
-		) => true,
-		end: (blockIndex: number) => true,
-	});
+
 	// Store definition
 	const gridStore = useGridStore();
 
-	const currentBlock = ref<BlockComponentType>('ButtonBlock');
-	const gridItem = ref<HTMLElement | null>(null);
-	const dragHandle = ref<HTMLElement | null>(null);
+	const currentBlock = ref<BlockComponentType>(`${props.block.type}Block`);
+	const gridItemRef = ref<HTMLElement | null>(null);
+	const dragHandleRef = ref<HTMLElement | null>(null);
 	// Use composables
 	const { offset, isDragging, isFocused } = useGridItemDraggable({
-		gridItem,
-		dragHandle,
-		onStart: () => emits('start'),
-		onMove: (x: number, y: number) => emits('move', x, y, props.block.layout),
-		onEnd: () => emits('end', props.blockIndex),
+		gridItemRef,
+		dragHandleRef,
+		block: props.block,
+		blockIndex: props.blockIndex,
 	});
 </script>
 
 <template>
 	<div
-		ref="gridItem"
+		ref="gridItemRef"
 		class="grid-item d-flex"
 		:class="{
 			'is--focused': isFocused,
@@ -77,7 +64,7 @@
 			'--y-offset': `${offset.y}px`,
 		}"
 	>
-		<span ref="dragHandle" class="grid-item__handle"></span>
+		<span ref="dragHandleRef" class="grid-item__handle"></span>
 		<component :is="blocks[currentBlock]" :value="block.value" />
 		<BlockResizeHandle :block="block" :blockIndex="blockIndex" />
 	</div>

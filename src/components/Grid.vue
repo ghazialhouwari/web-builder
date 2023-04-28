@@ -4,13 +4,12 @@
 	import { useGridStore } from '@/store/grid';
 	// Composables
 	import useGrid from '@/composables/useGrid';
-	import useGridDraggable from '@/composables/useGridDraggable';
 	// Components
 	import GridItem from '@/components/GridItem.vue';
 	import GridCells from '@/components/GridCells.vue';
 	import DraggedBlock from '@/components/DraggedBlock.vue';
 	// Props
-	const props = defineProps<{
+	defineProps<{
 		section: Section;
 		sectionIndex: number;
 		rowCount: number;
@@ -19,9 +18,6 @@
 	const gridStore = useGridStore();
 	// Use composables
 	useGrid();
-	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable(
-		props.sectionIndex
-	);
 </script>
 
 <template>
@@ -41,9 +37,6 @@
 			:key="block.id"
 			:blockIndex="blockIndex"
 			:block="block"
-			@start="moveStartHandler"
-			@move="moveHandler"
-			@end="moveEndHandler"
 		/>
 		<GridCells
 			v-if="gridStore.isDragging && gridStore.activeSectionIndex === sectionIndex"
