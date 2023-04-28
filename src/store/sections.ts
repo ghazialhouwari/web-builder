@@ -32,7 +32,7 @@ export const useSectionsStore = defineStore('sections', () => {
 		);
 	}
 
-	function updateSectionBlockLayoutByIndex(
+	function setSectionBlockLayoutByIndex(
 		sectionIndex: number,
 		blockIndex: number,
 		layout: SectionBlockLayout,
@@ -53,6 +53,14 @@ export const useSectionsStore = defineStore('sections', () => {
 				updateLayout(sectionIndex, blockIndex, layout, viewType);
 			},
 		});
+	}
+
+	function setSectionRowCountByIndex(
+		sectionIndex: number,
+		viewType: ViewType,
+		value: number
+	) {
+		sections[sectionIndex].layout[viewType].rows = value;
 	}
 
 	function createBlock(
@@ -89,7 +97,8 @@ export const useSectionsStore = defineStore('sections', () => {
 		undosLength,
 		redosLength,
 		addBlock,
-		updateSectionBlockLayoutByIndex,
+		setSectionBlockLayoutByIndex,
+		setSectionRowCountByIndex,
 		undo,
 		redo,
 	};

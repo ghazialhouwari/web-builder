@@ -1,23 +1,20 @@
 import { defineStore } from 'pinia';
 import { ref, readonly, reactive, toRefs } from 'vue';
-import {
-	Grid,
-	SectionBlockLayout,
-	SectionBreakpoints,
-	SectionLayout,
-	ViewType,
-} from '@/utils/types';
+import { Grid, SectionBlockLayout, ViewType } from '@/utils/types';
 import { calculatedGrid } from '@/utils/grid';
 
 export const useGridStore = defineStore('grid', () => {
-	const isDragging = ref(false);
-	const sectionIndex = ref<number | null>(1);
-	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
-	const sectionLayout = ref<SectionLayout>();
 	const viewType = ref<ViewType>('desktop');
 	const grid = reactive<Grid>(calculatedGrid(viewType.value));
 
-	function setDraggedBlockLayout(layout: SectionBlockLayout) {
+	const isDragging = ref(false);
+	const isResizing = ref(false);
+	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
+
+	const activeSectionIndex = ref<number | null>(null);
+	const activeSectionRowCount = ref<number>(grid.minRowCount);
+
+	function setDraggedBlockLayout(layout: SectionBlockLayout | null) {
 		draggedBlockLayout.value = layout;
 	}
 
@@ -30,36 +27,25 @@ export const useGridStore = defineStore('grid', () => {
 		draggedBlockLayout.value[direction][position] = value;
 	}
 
-	function setSectionLayout(layout: SectionBreakpoints<SectionLayout>) {
-		sectionLayout.value = layout[viewType.value];
-	}
-
-	function updateSectionRowCount(rowCount: number) {
-		if (sectionLayout.value && rowCount > sectionLayout.value.rows) {
-			sectionLayout.value.rows = rowCount;
-		}
-	}
-
 	function updateGrid() {
 		Object.assign(grid, calculatedGrid(viewType.value));
-	}
-
-	function resetDraggedBlockLayout() {
-		draggedBlockLayout.value = null;
 	}
 
 	function setIsDragging(value: boolean) {
 		isDragging.value = value;
 	}
+	function setIsResizing(value: boolean) {
+		isResizing.value = value;
+	}
 
-	function setSectionIndex(value: number) {
+	function setActiveSectionIndex(value: number | null) {
 		if (!isDragging.value) {
-			sectionIndex.value = value;
+			activeSectionIndex.value = value;
 		}
 	}
 
-	function resetSectionIndex() {
-		sectionIndex.value = null;
+	function setActiveSectionRowCount(value: number) {
+		activeSectionRowCount.value = value + 1;
 	}
 
 	function setViewType(value: ViewType) {
@@ -69,20 +55,19 @@ export const useGridStore = defineStore('grid', () => {
 
 	return {
 		...toRefs(grid),
-		draggedBlockLayout: readonly(draggedBlockLayout),
 		isDragging: readonly(isDragging),
-		sectionLayout: readonly(sectionLayout),
-		sectionIndex: readonly(sectionIndex),
+		isResizing: readonly(isResizing),
+		draggedBlockLayout: readonly(draggedBlockLayout),
+		activeSectionIndex: readonly(activeSectionIndex),
+		activeSectionRowCount: readonly(activeSectionRowCount),
 		viewType: readonly(viewType),
 		updateGrid,
-		setSectionLayout,
+		setActiveSectionRowCount,
 		setDraggedBlockLayout,
 		setDraggedBlockLayoutPosition,
-		resetDraggedBlockLayout,
 		setIsDragging,
-		setSectionIndex,
-		resetSectionIndex,
-		updateSectionRowCount,
+		setIsResizing,
+		setActiveSectionIndex,
 		setViewType,
 	};
 });

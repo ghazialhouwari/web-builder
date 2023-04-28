@@ -41,11 +41,17 @@ export function offsetToBlockLayout(
 	zIndex: number
 ): SectionBlockLayout {
 	const gridStore = useGridStore();
-	const { gutters, gap, cellWidth, cellHeight, columnCount, sectionIndex } =
-		gridStore;
+	const {
+		gutters,
+		gap,
+		cellWidth,
+		cellHeight,
+		columnCount,
+		activeSectionIndex,
+	} = gridStore;
 
 	const gridWrapper: HTMLElement | null = document.querySelector(
-		`#gridWrapper${sectionIndex}`
+		`#gridWrapper${activeSectionIndex}`
 	);
 
 	const wrapperOffsetLeft = gridWrapper?.getBoundingClientRect().left || 0;

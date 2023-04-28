@@ -32,14 +32,24 @@ export default function useGridDraggable(sectionIndex: number) {
 	function moveEndHandler(blockIndex: number) {
 		gridStore.setIsDragging(false);
 		if (gridStore.draggedBlockLayout) {
-			sectionsStore.updateSectionBlockLayoutByIndex(
+			const section = sectionsStore.sections[gridStore.activeSectionIndex!];
+			sectionsStore.setSectionBlockLayoutByIndex(
 				sectionIndex,
 				blockIndex,
 				gridStore.draggedBlockLayout,
 				gridStore.viewType
 			);
-			gridStore.updateSectionRowCount(gridStore.draggedBlockLayout.end.y);
-			gridStore.resetDraggedBlockLayout();
+			if (
+				gridStore.draggedBlockLayout.end.y - 1 >
+				section.layout[gridStore.viewType].rows
+			) {
+				sectionsStore.setSectionRowCountByIndex(
+					gridStore.activeSectionIndex!,
+					gridStore.viewType,
+					gridStore.draggedBlockLayout.end.y - 1
+				);
+			}
+			gridStore.setDraggedBlockLayout(null);
 		}
 	}
 

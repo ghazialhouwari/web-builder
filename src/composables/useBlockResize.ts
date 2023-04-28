@@ -1,19 +1,23 @@
 import { reactive, Ref } from 'vue';
 import { useGridStore } from '@/store/grid';
+import { useSectionsStore } from '@/store/sections';
 import { SectionBlock, SectionBlockLayout } from '@/utils/types';
 import useDrag from '@/composables/useDrag';
 import { deepClone } from '@/utils';
 
 export default function useBlockResize({
 	block,
+	blockIndex,
 	resizeHandle,
 	onResize,
 }: {
 	block: SectionBlock;
+	blockIndex: number;
 	resizeHandle: Ref<HTMLElement | null>;
 	onResize?: (layout: SectionBlockLayout) => void;
 }) {
 	const gridStore = useGridStore();
+	const sectionsStore = useSectionsStore();
 
 	const state = reactive({
 		rows: 0,
@@ -51,8 +55,26 @@ export default function useBlockResize({
 		gridStore.setIsDragging(false);
 
 		if (gridStore.draggedBlockLayout) {
+			const section = sectionsStore.sections[gridStore.activeSectionIndex!];
+
+			sectionsStore.setSectionBlockLayoutByIndex(
+				gridStore.activeSectionIndex!,
+				blockIndex,
+				gridStore.draggedBlockLayout,
+				gridStore.viewType
+			);
+			if (
+				gridStore.draggedBlockLayout.end.y - 1 >
+				section.layout[gridStore.viewType].rows
+			) {
+				sectionsStore.setSectionRowCountByIndex(
+					gridStore.activeSectionIndex!,
+					gridStore.viewType,
+					gridStore.draggedBlockLayout.end.y - 1
+				);
+			}
 			onResize?.(gridStore.draggedBlockLayout);
-			updateGridStore(gridStore.draggedBlockLayout);
+			gridStore.setDraggedBlockLayout(null);
 		}
 
 		dragging.removeMouseListeners();
@@ -73,11 +95,6 @@ export default function useBlockResize({
 		state.start.y = clientY;
 		state.end.x = clientX;
 		state.end.y = clientY;
-	}
-
-	function updateGridStore(layout: SectionBlockLayout) {
-		gridStore.updateSectionRowCount(layout.end.y);
-		gridStore.resetDraggedBlockLayout();
 	}
 
 	function updateDraggedBlockLayout() {

@@ -22,8 +22,7 @@ export default function useBlockDraggable({
 	) => void;
 }) {
 	const gridStore = useGridStore();
-	const { setIsDragging, setDraggedBlockLayout, resetDraggedBlockLayout } =
-		gridStore;
+	const { setIsDragging, setDraggedBlockLayout } = gridStore;
 
 	const offset = ref({ x: 0, y: 0 });
 	const isDragging = ref(false);
@@ -60,7 +59,7 @@ export default function useBlockDraggable({
 
 	function resetValues() {
 		setOffset(0, 0);
-		resetDraggedBlockLayout();
+		setDraggedBlockLayout(null);
 	}
 
 	function updateIsDragging(value: boolean) {
@@ -81,8 +80,8 @@ export default function useBlockDraggable({
 		},
 		onEnd: () => {
 			updateIsDragging(false);
-			const { sectionIndex, draggedBlockLayout } = gridStore;
-			onEnd && onEnd(sectionIndex!, block.type, draggedBlockLayout!);
+			const { activeSectionIndex, draggedBlockLayout } = gridStore;
+			onEnd && onEnd(activeSectionIndex!, block.type, draggedBlockLayout!);
 			resetValues();
 		},
 	});

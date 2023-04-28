@@ -3,7 +3,10 @@
 	import { Section } from '@/utils/types';
 	// Components
 	import Grid from '@/components/Grid.vue';
+	import SectionResizeHandle from '@/components/section/ResizeHandle.vue';
 	import SectionBlocksMenuTrigger from '@/components/menu/BlocksMenuTrigger.vue';
+	// Composables
+	import useSection from '@/composables/useSection';
 	// Store
 	import { useGridStore } from '@/store/grid';
 	import { useAppStore } from '@/store/app';
@@ -16,14 +19,16 @@
 	const gridStore = useGridStore();
 	const appStore = useAppStore();
 
+	const { rowCount, highestBlockEndY } = useSection(props.sectionIndex);
+
 	const sectionItem = ref<HTMLElement | null>();
 	// Computed
 	const isHovered = computed(
-		() => gridStore.sectionIndex === props.sectionIndex
+		() => gridStore.activeSectionIndex === props.sectionIndex
 	);
 	// Functions
 	function mouseOverHandler() {
-		gridStore.setSectionIndex(props.sectionIndex);
+		gridStore.setActiveSectionIndex(props.sectionIndex);
 	}
 	function showBlocksMenu() {
 		if (sectionItem.value) {
@@ -48,7 +53,7 @@
 		<Transition name="top-down">
 			<SectionBlocksMenuTrigger
 				v-if="!gridStore.isDragging && isHovered"
-				@click="showBlocksMenu"
+				@showBlocksMenu="showBlocksMenu"
 			/>
 		</Transition>
 		<div
@@ -57,8 +62,20 @@
 				'view-type--mobile': gridStore.viewType === 'mobile',
 			}"
 		>
-			<Grid :section="section" :sectionIndex="sectionIndex" />
+			<Grid
+				:section="section"
+				:sectionIndex="sectionIndex"
+				:rowCount="rowCount"
+				:highestBlockEndY="highestBlockEndY"
+			/>
 		</div>
+		<SectionResizeHandle
+			v-if="isHovered"
+			:section="section"
+			:sectionIndex="sectionIndex"
+			:rowCount="rowCount"
+			:highestBlockEndY="highestBlockEndY"
+		/>
 	</div>
 </template>
 

@@ -24,7 +24,7 @@ export default function useGridItemDraggable({
 	/** Functions */
 	function updateItemOffset(x: number, y: number) {
 		const gridWrapper: HTMLElement | null = document.querySelector(
-			`#gridWrapper${gridStore.sectionIndex}`
+			`#gridWrapper${gridStore.activeSectionIndex}`
 		);
 
 		const blockOffsetLeft = gridItem.value?.offsetLeft || 0;

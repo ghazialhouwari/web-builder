@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-	import { onMounted } from 'vue';
 	import { Section } from '@/utils/types';
 	// Store
 	import { useGridStore } from '@/store/grid';
 	// Composables
 	import useGrid from '@/composables/useGrid';
-	import useGridResize from '@/composables/useGridResize';
 	import useGridDraggable from '@/composables/useGridDraggable';
 	// Components
 	import GridItem from '@/components/GridItem.vue';
@@ -15,19 +13,15 @@
 	const props = defineProps<{
 		section: Section;
 		sectionIndex: number;
+		rowCount: number;
 	}>();
 	// Store definition
 	const gridStore = useGridStore();
 	// Use composables
-	const { rowCount } = useGrid();
+	useGrid();
 	const { moveStartHandler, moveHandler, moveEndHandler } = useGridDraggable(
 		props.sectionIndex
 	);
-	const { resizeHanlder } = useGridResize(props.sectionIndex);
-	// Hooks
-	onMounted(() => {
-		gridStore.setSectionLayout(props.section.layout);
-	});
 </script>
 
 <template>
@@ -50,16 +44,15 @@
 			@start="moveStartHandler"
 			@move="moveHandler"
 			@end="moveEndHandler"
-			@resize="resizeHanlder"
 		/>
 		<GridCells
-			v-if="gridStore.isDragging && gridStore.sectionIndex === sectionIndex"
+			v-if="gridStore.isDragging && gridStore.activeSectionIndex === sectionIndex"
 			:rowCount="rowCount"
 		/>
 		<DraggedBlock
 			v-if="
 				gridStore.isDragging &&
-				gridStore.sectionIndex === sectionIndex &&
+				gridStore.activeSectionIndex === sectionIndex &&
 				gridStore.draggedBlockLayout
 			"
 			:blockLayout="gridStore.draggedBlockLayout"

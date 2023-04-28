@@ -11,12 +11,14 @@
 	// Props
 	const props = defineProps<{
 		block: SectionBlock;
+		blockIndex: number;
 	}>();
 
 	const resizeHandle = ref<HTMLElement | null>(null);
 	// Use composables
 	useGridItemResize({
 		block: props.block,
+		blockIndex: props.blockIndex,
 		resizeHandle,
 		onResize: (layout: SectionBlockLayout) => emits('resize', layout),
 	});

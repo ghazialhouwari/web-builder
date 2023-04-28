@@ -43,7 +43,6 @@
 			blockLayout: SectionBreakpoints<SectionBlockLayout>
 		) => true,
 		end: (blockIndex: number) => true,
-		resize: (blockIndex: number, layout: SectionBlockLayout) => true,
 	});
 	// Store definition
 	const gridStore = useGridStore();
@@ -59,11 +58,6 @@
 		onMove: (x: number, y: number) => emits('move', x, y, props.block.layout),
 		onEnd: () => emits('end', props.blockIndex),
 	});
-
-	// Functions
-	function resizeHandler(layout: SectionBlockLayout) {
-		emits('resize', props.blockIndex, layout);
-	}
 </script>
 
 <template>
@@ -85,7 +79,7 @@
 	>
 		<span ref="dragHandle" class="grid-item__handle"></span>
 		<component :is="blocks[currentBlock]" :value="block.value" />
-		<BlockResizeHandle @resize="resizeHandler" :block="block" />
+		<BlockResizeHandle :block="block" :blockIndex="blockIndex" />
 	</div>
 </template>
 
