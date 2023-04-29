@@ -49,7 +49,7 @@ export default function useGrid(sectionIndex: number) {
 
 		return (
 			Math.max(
-				minRowCount,
+				minRowCount + 1,
 				sectionRowCount,
 				activeSectionRowCount,
 				draggedBlockRowCount,

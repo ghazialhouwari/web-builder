@@ -24,13 +24,16 @@ export default function useSectionResize({
 	const { cellHeight, gap } = gridStore;
 
 	function onMouseDown(evt: MouseEvent) {
+		state.gridRows = rowCount.value;
+		// Set the initial row count before indicate draging and resizing
+		gridStore.setActiveSectionRowCount(state.gridRows);
+
+		state.end = state.start = evt.clientY;
+
 		gridStore.setIsDragging(true);
 		gridStore.setIsResizing(true);
 		dragging.attachMouseListeners();
 
-		state.end = state.start = evt.clientY;
-		state.gridRows = rowCount.value;
-		gridStore.setActiveSectionRowCount(state.gridRows);
 		sectionsStore.setSectionRowCountByIndex(
 			gridStore.activeSectionIndex!,
 			gridStore.viewType,
@@ -57,6 +60,7 @@ export default function useSectionResize({
 			gridStore.activeSectionRowCount - 1
 		);
 
+		gridStore.setActiveSectionRowCount(0);
 		gridStore.setIsDragging(false);
 		gridStore.setIsResizing(false);
 		dragging.removeMouseListeners();

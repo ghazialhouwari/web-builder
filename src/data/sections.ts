@@ -15,7 +15,7 @@ export const sections: Section[] = [
 		},
 		layout: {
 			mobile: {
-				rows: 27,
+				rows: 10,
 				columns: 8,
 			},
 			desktop: {
@@ -78,7 +78,7 @@ export const sections: Section[] = [
 		},
 		layout: {
 			mobile: {
-				rows: 27,
+				rows: 10,
 				columns: 8,
 			},
 			desktop: {
