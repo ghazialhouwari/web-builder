@@ -8,7 +8,7 @@
 <template>
 	<div class="block-menu" @click="emits('showBlocksMenu')">
 		<v-btn prependIcon="mdi-plus" color="white" class="block-menu__trigger"
-			>Add Menu</v-btn
+			>Add Block</v-btn
 		>
 	</div>
 </template>

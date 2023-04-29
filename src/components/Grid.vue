@@ -10,8 +10,8 @@
 	import GridCells from '@/components/GridCells.vue';
 	import DraggedBlock from '@/components/DraggedBlock.vue';
 
-	const section = inject<Section>('section');
-	const sectionIndex = inject<number>('sectionIndex', 0);
+	const section = inject<Ref<Section>>('section');
+	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
 	const rowCount = inject<Ref<number>>('rowCount', ref(0));
 
 	// Store definition

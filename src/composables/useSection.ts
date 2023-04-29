@@ -1,16 +1,16 @@
-import { computed } from 'vue';
+import { computed, Ref } from 'vue';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
 
-export default function useGrid(sectionIndex: number) {
+export default function useGrid(sectionIndex: Ref<number>) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
 
 	const highestBlockEndY = computed<number | null>(() => {
 		const { viewType, activeSectionIndex } = gridStore;
-		const section = sectionsStore.sections[sectionIndex];
+		const section = sectionsStore.sections[sectionIndex.value];
 
-		if (activeSectionIndex === null || sectionIndex !== activeSectionIndex)
+		if (activeSectionIndex === null || sectionIndex.value !== activeSectionIndex)
 			return null;
 
 		const blocks = sectionsStore.sections[activeSectionIndex].blocks;
@@ -31,7 +31,7 @@ export default function useGrid(sectionIndex: number) {
 	});
 
 	const rowCount = computed(() => {
-		const section = sectionsStore.sections[sectionIndex];
+		const section = sectionsStore.sections[sectionIndex.value];
 		const {
 			isResizing,
 			minRowCount,

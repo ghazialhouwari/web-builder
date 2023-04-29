@@ -126,7 +126,13 @@ export interface SiteBlock {
 	value: SectionBlockValue;
 }
 
-export type ActionType = 'ADD_BLOCK' | 'UPDATE_SECTION_BLOCK_LAYOUT';
+export type ActionType =
+	| 'ADD_BLOCK'
+	| 'UPDATE_SECTION_BLOCK_LAYOUT'
+	| 'SHIFT_SECTION_UP'
+	| 'SHIFT_SECTION_DOWN'
+	| 'SET_SECTION_ROW_COUNT'
+	| 'REMOVE_SECTION';
 
 export type BlocksComponenets = {
 	[key in BlockComponentType]: any;

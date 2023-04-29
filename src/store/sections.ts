@@ -9,6 +9,7 @@ import {
 } from '@/utils/types';
 import { sections as siteSections } from '@/data/sections';
 import { blocks as siteBlocks } from '@/data/blocks';
+import { deepClone } from '@/utils';
 
 import useSectionGuard from '@/composables/useSectionGuard';
 import useUndoRedo from '@/composables/useUndoRedo';
@@ -54,13 +55,23 @@ export const useSectionsStore = defineStore('sections', () => {
 			},
 		});
 	}
-
 	function setSectionRowCountByIndex(
 		sectionIndex: number,
 		viewType: ViewType,
 		value: number
 	) {
+		const prevValue = sections[sectionIndex].layout[viewType].rows;
 		sections[sectionIndex].layout[viewType].rows = value;
+
+		addAction({
+			type: 'SET_SECTION_ROW_COUNT',
+			undo: () => {
+				sections[sectionIndex].layout[viewType].rows = prevValue;
+			},
+			redo: () => {
+				sections[sectionIndex].layout[viewType].rows = value;
+			},
+		});
 	}
 
 	function createBlock(
@@ -91,6 +102,58 @@ export const useSectionsStore = defineStore('sections', () => {
 			},
 		});
 	}
+	function removeSection(sectionIndex: number) {
+		const removedSection = sections[sectionIndex];
+		sections.splice(sectionIndex, 1);
+
+		addAction({
+			type: 'REMOVE_SECTION',
+			undo: () => {
+				sections.splice(sectionIndex, 0, removedSection);
+			},
+			redo: () => {
+				sections.splice(sectionIndex, 1);
+			},
+		});
+	}
+
+	function swapSections(indexA: number, indexB: number) {
+		const temp = deepClone(sections[indexA]);
+		sections.splice(indexA, 1, deepClone(sections[indexB]));
+		sections.splice(indexB, 1, temp);
+	}
+
+	function shiftSectionUp(sectionIndex: number) {
+		if (sectionIndex <= 0) return;
+
+		swapSections(sectionIndex - 1, sectionIndex);
+
+		addAction({
+			type: 'SHIFT_SECTION_UP',
+			undo: () => {
+				shiftSectionDown(sectionIndex - 1);
+			},
+			redo: () => {
+				shiftSectionUp(sectionIndex);
+			},
+		});
+	}
+
+	function shiftSectionDown(sectionIndex: number) {
+		if (sectionIndex >= sections.length - 1) return;
+
+		swapSections(sectionIndex, sectionIndex + 1);
+
+		addAction({
+			type: 'SHIFT_SECTION_DOWN',
+			undo: () => {
+				shiftSectionUp(sectionIndex + 1);
+			},
+			redo: () => {
+				shiftSectionDown(sectionIndex);
+			},
+		});
+	}
 
 	return {
 		sections,
@@ -99,6 +162,9 @@ export const useSectionsStore = defineStore('sections', () => {
 		addBlock,
 		setSectionBlockLayoutByIndex,
 		setSectionRowCountByIndex,
+		removeSection,
+		shiftSectionDown,
+		shiftSectionUp,
 		undo,
 		redo,
 	};

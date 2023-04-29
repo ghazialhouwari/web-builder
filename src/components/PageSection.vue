@@ -1,9 +1,10 @@
 <script setup lang="ts">
-	import { computed, provide, ref } from 'vue';
+	import { computed, provide, ref, toRefs } from 'vue';
 	import { Section } from '@/utils/types';
 	// Components
 	import Grid from '@/components/Grid.vue';
 	import SectionResizeHandle from '@/components/section/ResizeHandle.vue';
+	import SectionMenu from '@/components/section/Menu.vue';
 	import SectionBlocksMenuTrigger from '@/components/menu/BlocksMenuTrigger.vue';
 	// Composables
 	import useSection from '@/composables/useSection';
@@ -19,21 +20,22 @@
 	const gridStore = useGridStore();
 	const appStore = useAppStore();
 
-	const { rowCount, highestBlockEndY } = useSection(props.sectionIndex);
+	const { section, sectionIndex } = toRefs(props);
+	const { rowCount, highestBlockEndY } = useSection(sectionIndex);
 
 	const sectionItem = ref<HTMLElement | null>();
 	// Computed
 	const isHovered = computed(
-		() => gridStore.activeSectionIndex === props.sectionIndex
+		() => gridStore.activeSectionIndex === sectionIndex.value
 	);
 
-	provide('section', props.section);
-	provide('sectionIndex', props.sectionIndex);
+	provide('section', section);
+	provide('sectionIndex', sectionIndex);
 	provide('rowCount', rowCount);
 	provide('highestBlockEndY', highestBlockEndY);
 	// Functions
 	function mouseOverHandler() {
-		gridStore.setActiveSectionIndex(props.sectionIndex);
+		gridStore.setActiveSectionIndex(sectionIndex.value);
 	}
 	function showBlocksMenu() {
 		if (sectionItem.value) {
@@ -70,6 +72,9 @@
 			<Grid />
 		</div>
 		<SectionResizeHandle v-if="isHovered" />
+		<Transition name="top-down">
+			<SectionMenu v-if="!gridStore.isDragging && isHovered" />
+		</Transition>
 	</div>
 </template>
 
