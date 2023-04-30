@@ -131,10 +131,10 @@ export const useSectionsStore = defineStore('sections', () => {
 		addAction({
 			type: 'SHIFT_SECTION_UP',
 			undo: () => {
-				shiftSectionDown(sectionIndex - 1);
+				swapSections(sectionIndex - 1, sectionIndex);
 			},
 			redo: () => {
-				shiftSectionUp(sectionIndex);
+				swapSections(sectionIndex - 1, sectionIndex);
 			},
 		});
 	}
@@ -147,10 +147,10 @@ export const useSectionsStore = defineStore('sections', () => {
 		addAction({
 			type: 'SHIFT_SECTION_DOWN',
 			undo: () => {
-				shiftSectionUp(sectionIndex + 1);
+				swapSections(sectionIndex, sectionIndex + 1);
 			},
 			redo: () => {
-				shiftSectionDown(sectionIndex);
+				swapSections(sectionIndex, sectionIndex + 1);
 			},
 		});
 	}
