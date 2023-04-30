@@ -132,7 +132,8 @@ export type ActionType =
 	| 'SHIFT_SECTION_UP'
 	| 'SHIFT_SECTION_DOWN'
 	| 'SET_SECTION_ROW_COUNT'
-	| 'REMOVE_SECTION';
+	| 'REMOVE_SECTION'
+	| 'ADD_SECTION';
 
 export type BlocksComponenets = {
 	[key in BlockComponentType]: any;

@@ -9,7 +9,8 @@ import {
 } from '@/utils/types';
 import { sections as siteSections } from '@/data/sections';
 import { blocks as siteBlocks } from '@/data/blocks';
-import { deepClone } from '@/utils';
+import { defaultBlankSection } from '@/data/defaultSection';
+import { deepClone, generateUUID } from '@/utils';
 
 import useSectionGuard from '@/composables/useSectionGuard';
 import useUndoRedo from '@/composables/useUndoRedo';
@@ -154,6 +155,21 @@ export const useSectionsStore = defineStore('sections', () => {
 			},
 		});
 	}
+	function addSection(index: number) {
+		const section = { ...defaultBlankSection, id: generateUUID() };
+
+		sections.splice(index, 0, section);
+
+		addAction({
+			type: 'ADD_SECTION',
+			undo: () => {
+				sections.splice(index, 1);
+			},
+			redo: () => {
+				sections.splice(index, 0, section);
+			},
+		});
+	}
 
 	return {
 		sections,
@@ -165,6 +181,7 @@ export const useSectionsStore = defineStore('sections', () => {
 		removeSection,
 		shiftSectionDown,
 		shiftSectionUp,
+		addSection,
 		undo,
 		redo,
 	};

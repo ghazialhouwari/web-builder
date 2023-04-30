@@ -5,6 +5,7 @@
 	import Grid from '@/components/Grid.vue';
 	import SectionResizeHandle from '@/components/section/ResizeHandle.vue';
 	import SectionMenu from '@/components/section/Menu.vue';
+	import SectionAddBtn from '@/components/section/AddBtn.vue';
 	import SectionBlocksMenuTrigger from '@/components/menu/BlocksMenuTrigger.vue';
 	// Composables
 	import useSection from '@/composables/useSection';
@@ -57,6 +58,7 @@
 			'site-section--hover': isHovered,
 		}"
 	>
+		<SectionAddBtn v-if="isHovered" position="top" />
 		<Transition name="top-down">
 			<SectionBlocksMenuTrigger
 				v-if="!gridStore.isDragging && isHovered"
@@ -75,6 +77,7 @@
 		<Transition name="top-down">
 			<SectionMenu v-if="!gridStore.isDragging && isHovered" />
 		</Transition>
+		<SectionAddBtn v-if="isHovered" position="bottom" />
 	</div>
 </template>
 
