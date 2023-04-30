@@ -1,11 +1,14 @@
 <script setup lang="ts">
 	import { inject, Ref, ref } from 'vue';
+	// Componenets
+	import SectionSettingsMenu from '@/components/section/SettingsMenu.vue';
 	// Store
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
 
 	const sectionsStore = useSectionsStore();
 	const gridStore = useGridStore();
+
 	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
 
 	function removeSection() {
@@ -19,7 +22,6 @@
 	function shiftSectionDown() {
 		sectionsStore.shiftSectionDown(sectionIndex.value);
 	}
-	function editSection() {}
 </script>
 
 <template>
@@ -48,12 +50,17 @@
 					density="comfortable"
 					@click="removeSection"
 				></v-btn>
-				<v-btn
-					icon="mdi-pencil-outline"
-					density="comfortable"
-					variant="text"
-					@click="editSection"
-				></v-btn>
+				<v-menu :close-on-content-click="false" transition="slide-y-transition">
+					<template v-slot:activator="{ props }">
+						<v-btn
+							v-bind="props"
+							icon="mdi-pencil-outline"
+							density="comfortable"
+							variant="text"
+						></v-btn>
+					</template>
+					<SectionSettingsMenu />
+				</v-menu>
 			</v-card-text>
 		</v-card>
 	</div>

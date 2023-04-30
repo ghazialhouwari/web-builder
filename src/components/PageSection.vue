@@ -6,12 +6,11 @@
 	import SectionResizeHandle from '@/components/section/ResizeHandle.vue';
 	import SectionMenu from '@/components/section/Menu.vue';
 	import SectionAddBtn from '@/components/section/AddBtn.vue';
-	import SectionBlocksMenuTrigger from '@/components/menu/BlocksMenuTrigger.vue';
+	import SectionBlocksMenu from '@/components/menu/BlocksMenu.vue';
 	// Composables
 	import useSection from '@/composables/useSection';
 	// Store
 	import { useGridStore } from '@/store/grid';
-	import { useAppStore } from '@/store/app';
 	// Props
 	const props = defineProps<{
 		section: Section;
@@ -19,7 +18,6 @@
 	}>();
 	// Store definition
 	const gridStore = useGridStore();
-	const appStore = useAppStore();
 
 	const { section, sectionIndex } = toRefs(props);
 	const { rowCount, highestBlockEndY } = useSection(sectionIndex);
@@ -34,18 +32,10 @@
 	provide('sectionIndex', sectionIndex);
 	provide('rowCount', rowCount);
 	provide('highestBlockEndY', highestBlockEndY);
+
 	// Functions
 	function mouseOverHandler() {
 		gridStore.setActiveSectionIndex(sectionIndex.value);
-	}
-	function showBlocksMenu() {
-		if (sectionItem.value) {
-			const rect = sectionItem.value.getBoundingClientRect();
-			appStore.showBlocksMenu({
-				x: rect.left + window.scrollX,
-				y: rect.top + window.scrollY,
-			});
-		}
 	}
 </script>
 
@@ -59,12 +49,15 @@
 		}"
 	>
 		<SectionAddBtn v-if="isHovered" position="top" />
+
 		<Transition name="top-down">
-			<SectionBlocksMenuTrigger
-				v-if="!gridStore.isDragging && isHovered"
-				@showBlocksMenu="showBlocksMenu"
-			/>
+			<SectionBlocksMenu v-if="isHovered" />
 		</Transition>
+
+		<Transition name="top-down">
+			<SectionMenu v-if="!gridStore.isDragging && isHovered" />
+		</Transition>
+
 		<div
 			class="site-section__container py-16"
 			:class="{
@@ -74,9 +67,6 @@
 			<Grid />
 		</div>
 		<SectionResizeHandle v-if="isHovered" />
-		<Transition name="top-down">
-			<SectionMenu v-if="!gridStore.isDragging && isHovered" />
-		</Transition>
 		<SectionAddBtn v-if="isHovered" position="bottom" />
 	</div>
 </template>
