@@ -81,22 +81,15 @@
 <style scoped>
 	.site-section {
 		position: relative;
-		overflow: hidden;
+		background: transparent;
 		z-index: 20;
 	}
 	.site-section__container.view-type--mobile {
-		--box-shadow: 0 0 25px rgba(0, 0, 0, 0.1), 0 -5px 25px rgba(0, 0, 0, 0.1),
-			0 5px 25px rgba(0, 0, 0, 0.1);
 		width: var(--site-mobile-width);
 		margin: 0 auto;
-		box-shadow: var(--box-shadow);
 	}
 	.site-section.site-section--hover .site-section__container {
 		box-shadow: inset 0 0 0 var(--site-engine-border-width)
 			var(--site-engine-color);
-	}
-	.site-section.site-section--hover .site-section__container.view-type--mobile {
-		box-shadow: var(--box-shadow),
-			inset 0 0 0 var(--site-engine-border-width) var(--site-engine-color);
 	}
 </style>
