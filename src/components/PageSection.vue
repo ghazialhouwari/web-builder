@@ -63,6 +63,9 @@
 			:class="{
 				'view-type--mobile': gridStore.viewType === 'mobile',
 			}"
+			:style="{
+				'--section-background-color': section.styles.backgroundColor,
+			}"
 		>
 			<Grid />
 		</div>
@@ -76,6 +79,9 @@
 		position: relative;
 		background: transparent;
 		z-index: 20;
+	}
+	.site-section__container {
+		background-color: var(--section-background-color);
 	}
 	.site-section__container.view-type--mobile {
 		width: var(--site-mobile-width);

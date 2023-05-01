@@ -9,7 +9,7 @@ export const defaultBlankSection: Section = {
 		sectionHeight: 'medium',
 		customSectionHeight: 0,
 		verticalAlignment: 'top',
-		backgroundColor: '',
+		backgroundColor: '#FFF',
 		backgroundMode: 'color',
 	},
 	layout: {

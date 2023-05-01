@@ -13,3 +13,21 @@ export const generateUUID = (): string => {
 export function deepClone<T>(obj: T): T {
 	return JSON.parse(JSON.stringify(obj));
 }
+
+export function debounce<T extends (...args: any[]) => any>(
+	func: T,
+	wait: number
+): (...args: Parameters<T>) => void {
+	let timeout: ReturnType<typeof setTimeout> | null;
+
+	return function (...args: Parameters<T>) {
+		const later = () => {
+			if (timeout) clearTimeout(timeout);
+			// @ts-ignore
+			func.apply(this, args);
+		};
+
+		if (timeout) clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}

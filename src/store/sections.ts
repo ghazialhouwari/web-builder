@@ -171,6 +171,21 @@ export const useSectionsStore = defineStore('sections', () => {
 		});
 	}
 
+	function updateSectionBackgroundColor(sectionIndex: number, newColor: string) {
+		const oldColor = sections[sectionIndex].styles.backgroundColor;
+		sections[sectionIndex].styles.backgroundColor = newColor;
+
+		addAction({
+			type: 'UPDATE_SECTION_BACKGROUND_COLOR',
+			undo: () => {
+				sections[sectionIndex].styles.backgroundColor = oldColor;
+			},
+			redo: () => {
+				sections[sectionIndex].styles.backgroundColor = newColor;
+			},
+		});
+	}
+
 	return {
 		sections,
 		undosLength,
@@ -184,5 +199,6 @@ export const useSectionsStore = defineStore('sections', () => {
 		addSection,
 		undo,
 		redo,
+		updateSectionBackgroundColor,
 	};
 });
