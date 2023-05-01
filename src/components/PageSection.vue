@@ -78,7 +78,9 @@
 	.site-section {
 		position: relative;
 		background: transparent;
-		z-index: 20;
+	}
+	.site-section.site-section--hover {
+		z-index: 1005;
 	}
 	.site-section__container {
 		background-color: var(--section-background-color);
