@@ -36,6 +36,7 @@ export default function useGrid(sectionIndex: Ref<number>) {
 			gridActiveEvent,
 			minRowCount,
 			viewType,
+			activeSectionIndex,
 			activeSectionRowCount,
 			draggedBlockLayout,
 		} = gridStore;
@@ -45,13 +46,19 @@ export default function useGrid(sectionIndex: Ref<number>) {
 			sectionRowCount = 1;
 		}
 
-		const draggedBlockRowCount = draggedBlockLayout?.end.y ?? 1;
+		let draggedBlockRowCount = 1;
+		let sectionResizeRowCount = 1;
+
+		if (sectionIndex.value === activeSectionIndex) {
+			sectionResizeRowCount = activeSectionRowCount;
+			draggedBlockRowCount = draggedBlockLayout?.end.y ?? 1;
+		}
 
 		return (
 			Math.max(
 				minRowCount + 1,
 				sectionRowCount,
-				activeSectionRowCount,
+				sectionResizeRowCount,
 				draggedBlockRowCount,
 				highestBlockEndY.value ?? 1
 			) - 1
