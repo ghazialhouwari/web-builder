@@ -29,9 +29,7 @@ export default function useSectionResize({
 		gridStore.setActiveSectionRowCount(state.gridRows);
 
 		state.end = state.start = evt.clientY;
-
-		gridStore.setIsDragging(true);
-		gridStore.setIsResizing(true);
+		gridStore.activateGrid('RESIZE_SECTION');
 		dragging.attachMouseListeners();
 
 		sectionsStore.setSectionRowCountByIndex(
@@ -42,7 +40,7 @@ export default function useSectionResize({
 	}
 
 	function onMouseMove(evt: MouseEvent) {
-		if (!gridStore.isDragging) return;
+		if (!gridStore.isGridActive) return;
 
 		state.end = evt.clientY;
 		state.distanceY = state.end - state.start;
@@ -61,8 +59,7 @@ export default function useSectionResize({
 		);
 
 		gridStore.setActiveSectionRowCount(0);
-		gridStore.setIsDragging(false);
-		gridStore.setIsResizing(false);
+		gridStore.deactivateGrid();
 		dragging.removeMouseListeners();
 	}
 

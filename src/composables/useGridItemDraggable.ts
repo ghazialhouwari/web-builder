@@ -95,7 +95,7 @@ export default function useGridItemDraggable({
 	useDraggable(gridItemRef, {
 		handle: dragHandleRef,
 		onStart: () => {
-			gridStore.setIsDragging(true);
+			gridStore.activateGrid('DRAG_SECTION_BLOCK');
 			isFocused.value = false;
 			isDragging.value = true;
 			onStartDrag?.();
@@ -107,7 +107,7 @@ export default function useGridItemDraggable({
 		},
 		onEnd: () => {
 			updateSectionBlockLayout();
-			gridStore.setIsDragging(false);
+			gridStore.deactivateGrid();
 			isDragging.value = false;
 			isFocused.value = true;
 			gridStore.setDraggedBlockLayout(null);

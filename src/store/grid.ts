@@ -1,14 +1,20 @@
 import { defineStore } from 'pinia';
 import { ref, readonly, reactive, toRefs } from 'vue';
-import { Grid, SectionBlockLayout, ViewType } from '@/utils/types';
+import {
+	Grid,
+	GridActivationEvents,
+	SectionBlockLayout,
+	ViewType,
+} from '@/utils/types';
 import { calculatedGrid } from '@/utils/grid';
 
 export const useGridStore = defineStore('grid', () => {
 	const viewType = ref<ViewType>('desktop');
 	const grid = reactive<Grid>(calculatedGrid(viewType.value));
 
-	const isDragging = ref(false);
-	const isResizing = ref(false);
+	const isGridActive = ref(false);
+	const gridActiveEvent = ref<GridActivationEvents>();
+
 	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
 
 	const activeSectionIndex = ref<number | null>(null);
@@ -31,15 +37,18 @@ export const useGridStore = defineStore('grid', () => {
 		Object.assign(grid, calculatedGrid(viewType.value));
 	}
 
-	function setIsDragging(value: boolean) {
-		isDragging.value = value;
+	function activateGrid(event: GridActivationEvents) {
+		isGridActive.value = true;
+		gridActiveEvent.value = event;
 	}
-	function setIsResizing(value: boolean) {
-		isResizing.value = value;
+
+	function deactivateGrid() {
+		isGridActive.value = false;
+		gridActiveEvent.value = undefined;
 	}
 
 	function setActiveSectionIndex(value: number | null) {
-		if (!isDragging.value) {
+		if (!isGridActive.value) {
 			activeSectionIndex.value = value;
 		}
 	}
@@ -55,18 +64,18 @@ export const useGridStore = defineStore('grid', () => {
 
 	return {
 		...toRefs(grid),
-		isDragging: readonly(isDragging),
-		isResizing: readonly(isResizing),
+		isGridActive: readonly(isGridActive),
+		gridActiveEvent: readonly(gridActiveEvent),
 		draggedBlockLayout: readonly(draggedBlockLayout),
 		activeSectionIndex: readonly(activeSectionIndex),
 		activeSectionRowCount: readonly(activeSectionRowCount),
 		viewType: readonly(viewType),
 		updateGrid,
+		activateGrid,
+		deactivateGrid,
 		setActiveSectionRowCount,
 		setDraggedBlockLayout,
 		setDraggedBlockLayoutPosition,
-		setIsDragging,
-		setIsResizing,
 		setActiveSectionIndex,
 		setViewType,
 	};

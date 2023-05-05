@@ -41,18 +41,22 @@
 			'--grid-column-count': gridStore.columnCount,
 		}"
 	>
-		<GridItem
-			v-for="(block, blockIndex) in section?.blocks"
-			:key="block.id"
-			:blockIndex="blockIndex"
-			:block="block"
-		/>
+		<template v-if="section?.blocks.length">
+			<GridItem
+				v-for="(block, blockIndex) in section?.blocks"
+				:key="block.id"
+				:blockIndex="blockIndex"
+				:block="block"
+			/>
+		</template>
 		<GridCells
-			v-if="gridStore.isDragging && gridStore.activeSectionIndex === sectionIndex"
+			v-if="
+				gridStore.isGridActive && gridStore.activeSectionIndex === sectionIndex
+			"
 		/>
 		<DraggedBlock
 			v-if="
-				gridStore.isDragging &&
+				gridStore.isGridActive &&
 				gridStore.activeSectionIndex === sectionIndex &&
 				gridStore.draggedBlockLayout
 			"

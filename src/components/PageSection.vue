@@ -55,7 +55,7 @@
 		</Transition>
 
 		<Transition name="top-down">
-			<SectionMenu v-if="!gridStore.isDragging && isHovered" />
+			<SectionMenu v-if="!gridStore.isGridActive && isHovered" />
 		</Transition>
 
 		<div

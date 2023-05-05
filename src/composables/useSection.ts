@@ -33,7 +33,7 @@ export default function useGrid(sectionIndex: Ref<number>) {
 	const rowCount = computed(() => {
 		const section = sectionsStore.sections[sectionIndex.value];
 		const {
-			isResizing,
+			gridActiveEvent,
 			minRowCount,
 			viewType,
 			activeSectionRowCount,
@@ -41,7 +41,7 @@ export default function useGrid(sectionIndex: Ref<number>) {
 		} = gridStore;
 
 		let sectionRowCount = section.layout[viewType].rows + 1;
-		if (isResizing && highestBlockEndY.value) {
+		if (gridActiveEvent === 'RESIZE_SECTION' && highestBlockEndY.value) {
 			sectionRowCount = 1;
 		}
 

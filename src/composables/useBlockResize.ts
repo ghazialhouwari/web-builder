@@ -37,12 +37,12 @@ export default function useBlockResize({
 		}
 		gridStore.setDraggedBlockLayout(deepClone(block.layout[gridStore.viewType]));
 		updateStartAndEndPositions(evt.clientX, evt.clientY);
-		gridStore.setIsDragging(true);
+		gridStore.activateGrid('RESIZE_BLOCK');
 		dragging.attachMouseListeners();
 	}
 
 	function onMouseMove(evt: MouseEvent) {
-		if (gridStore.isDragging && state.directions.length) {
+		if (gridStore.isGridActive && state.directions.length) {
 			state.end.x = evt.clientX;
 			state.end.y = evt.clientY;
 
@@ -52,7 +52,7 @@ export default function useBlockResize({
 	}
 
 	function onMouseUp() {
-		gridStore.setIsDragging(false);
+		gridStore.deactivateGrid();
 
 		if (gridStore.draggedBlockLayout) {
 			const section = sectionsStore.sections[gridStore.activeSectionIndex!];

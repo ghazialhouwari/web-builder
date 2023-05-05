@@ -58,7 +58,6 @@
 		cursor: grab;
 	}
 	.grid-item__resize {
-		display: none;
 		position: absolute;
 		top: -7px;
 		left: -7px;

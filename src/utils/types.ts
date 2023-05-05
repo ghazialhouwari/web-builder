@@ -148,3 +148,9 @@ export interface Grid {
 	columnCount: number;
 	minRowCount: number;
 }
+
+export type GridActivationEvents =
+	| 'DRAG_SECTION_BLOCK'
+	| 'DRAG_MENU_BLOCK'
+	| 'RESIZE_SECTION'
+	| 'RESIZE_BLOCK';

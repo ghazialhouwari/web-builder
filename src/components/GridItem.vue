@@ -66,7 +66,11 @@
 	>
 		<span ref="dragHandleRef" class="grid-item__handle"></span>
 		<component :is="blocks[currentBlock]" :value="block.value" />
-		<BlockResizeHandle :block="block" :blockIndex="blockIndex" />
+		<BlockResizeHandle
+			v-if="isFocused && gridStore.gridActiveEvent !== 'RESIZE_BLOCK'"
+			:block="block"
+			:blockIndex="blockIndex"
+		/>
 	</div>
 </template>
 
@@ -101,8 +105,5 @@
 		bottom: 0;
 		z-index: 10;
 		cursor: grab;
-	}
-	.grid-item.is--focused :deep(.grid-item__resize) {
-		display: block;
 	}
 </style>

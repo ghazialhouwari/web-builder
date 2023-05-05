@@ -22,7 +22,7 @@ export default function useBlockDraggable({
 	) => void;
 }) {
 	const gridStore = useGridStore();
-	const { setIsDragging, setDraggedBlockLayout } = gridStore;
+	const { activateGrid, deactivateGrid, setDraggedBlockLayout } = gridStore;
 
 	const offset = ref({ x: 0, y: 0 });
 	const isDragging = ref(false);
@@ -62,15 +62,12 @@ export default function useBlockDraggable({
 		setDraggedBlockLayout(null);
 	}
 
-	function updateIsDragging(value: boolean) {
-		isDragging.value = value;
-		setIsDragging(value);
-	}
-
 	useDraggable(blockItem, {
 		onStart: ({ x, y }) => {
 			setInitialValues(x, y);
-			updateIsDragging(true);
+			isDragging.value = true;
+			activateGrid('DRAG_MENU_BLOCK');
+
 			onStart && onStart();
 		},
 		onMove: ({ x, y }) => {
@@ -79,7 +76,8 @@ export default function useBlockDraggable({
 			updateDraggedBlockLayout(x, y);
 		},
 		onEnd: () => {
-			updateIsDragging(false);
+			isDragging.value = false;
+			deactivateGrid();
 			const { activeSectionIndex, draggedBlockLayout } = gridStore;
 			onEnd && onEnd(activeSectionIndex!, block.type, draggedBlockLayout!);
 			resetValues();
