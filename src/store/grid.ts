@@ -14,6 +14,7 @@ export const useGridStore = defineStore('grid', () => {
 
 	const isGridActive = ref(false);
 	const gridActiveEvent = ref<GridActivationEvents>();
+	const isBlockedFocused = ref(false);
 
 	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
 
@@ -62,10 +63,16 @@ export const useGridStore = defineStore('grid', () => {
 		updateGrid();
 	}
 
+	function setIsBlockedFocused(value: boolean) {
+		console.log('setIsBlockedFocused', value);
+		isBlockedFocused.value = value;
+	}
+
 	return {
 		...toRefs(grid),
 		isGridActive: readonly(isGridActive),
 		gridActiveEvent: readonly(gridActiveEvent),
+		isBlockedFocused: readonly(isBlockedFocused),
 		draggedBlockLayout: readonly(draggedBlockLayout),
 		activeSectionIndex: readonly(activeSectionIndex),
 		activeSectionRowCount: readonly(activeSectionRowCount),
@@ -78,5 +85,6 @@ export const useGridStore = defineStore('grid', () => {
 		setDraggedBlockLayoutPosition,
 		setActiveSectionIndex,
 		setViewType,
+		setIsBlockedFocused,
 	};
 });

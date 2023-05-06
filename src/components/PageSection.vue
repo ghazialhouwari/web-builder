@@ -48,14 +48,21 @@
 			'site-section--hover': isHovered,
 		}"
 	>
-		<SectionAddBtn v-if="isHovered && !gridStore.isGridActive" position="top" />
+		<SectionAddBtn
+			v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+			position="top"
+		/>
 
 		<Transition name="top-down">
-			<SectionBlocksMenu v-if="isHovered && !gridStore.isGridActive" />
+			<SectionBlocksMenu
+				v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+			/>
 		</Transition>
 
 		<Transition name="top-down">
-			<SectionMenu v-if="isHovered && !gridStore.isGridActive" />
+			<SectionMenu
+				v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+			/>
 		</Transition>
 
 		<div
@@ -72,12 +79,13 @@
 		<SectionResizeHandle
 			v-if="
 				isHovered &&
+				!gridStore.isBlockedFocused &&
 				(!gridStore.isGridActive ||
 					(gridStore.isGridActive && gridStore.gridActiveEvent === 'RESIZE_SECTION'))
 			"
 		/>
 		<SectionAddBtn
-			v-if="isHovered && !gridStore.isGridActive"
+			v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
 			position="bottom"
 		/>
 	</div>

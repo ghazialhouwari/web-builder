@@ -97,6 +97,7 @@ export default function useGridItemDraggable({
 		onStart: () => {
 			gridStore.activateGrid('DRAG_SECTION_BLOCK');
 			isFocused.value = false;
+			gridStore.setIsBlockedFocused(false);
 			isDragging.value = true;
 			onStartDrag?.();
 		},
@@ -110,6 +111,7 @@ export default function useGridItemDraggable({
 			gridStore.deactivateGrid();
 			isDragging.value = false;
 			isFocused.value = true;
+			gridStore.setIsBlockedFocused(true);
 			gridStore.setDraggedBlockLayout(null);
 			resetItemOffset();
 			onEndDrag?.();
@@ -117,7 +119,12 @@ export default function useGridItemDraggable({
 	});
 
 	// Handle click outside
-	onClickOutside(gridItemRef, () => (isFocused.value = false));
+	onClickOutside(gridItemRef, () => {
+		if (isFocused.value) {
+			isFocused.value = false;
+			gridStore.setIsBlockedFocused(false);
+		}
+	});
 
 	return { offset, isFocused, isDragging };
 }
