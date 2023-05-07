@@ -1,5 +1,12 @@
-import { Grid, SectionBlockLayout, ViewType } from '@/utils/types';
+import {
+	Grid,
+	SectionBlock,
+	SectionBlockLayout,
+	SectionBreakpoints,
+	ViewType,
+} from '@/utils/types';
 import { useGridStore } from '@/store/grid';
+import { deepClone } from '@/utils';
 
 export function calculatedGrid(viewType: ViewType): Grid {
 	const gap = 11;
@@ -84,4 +91,24 @@ export function offsetToBlockLayout(
 		},
 		zIndex,
 	};
+}
+
+export function shiftBlock(
+	block: SectionBlock
+): SectionBreakpoints<SectionBlockLayout> {
+	const layout = deepClone(block.layout);
+	layout.desktop.start.y += 1;
+	layout.desktop.end.y += 1;
+	layout.mobile.start.y += 1;
+	layout.mobile.end.y += 1;
+
+	if (layout.desktop.end.x < 27) {
+		layout.desktop.start.x += 1;
+		layout.desktop.end.x += 1;
+	}
+	if (layout.mobile.end.x < 11) {
+		layout.mobile.start.x += 1;
+		layout.mobile.end.x += 1;
+	}
+	return layout;
 }

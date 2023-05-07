@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { defineAsyncComponent, ref } from 'vue';
+	import { computed, defineAsyncComponent, ref } from 'vue';
 	import {
 		SectionBlock,
 		BlockComponentType,
@@ -11,6 +11,7 @@
 	import useGridItemDraggable from '@/composables/useGridItemDraggable';
 	// Components
 	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
+	import BlockMenu from '@/components/block/Menu.vue';
 	const blocks: BlocksComponenets = {
 		buttonBlock: defineAsyncComponent(
 			() => import('@/components/blocks/ButtonBlock.vue')
@@ -38,8 +39,11 @@
 	const currentBlock = ref<BlockComponentType>(`${props.block.type}Block`);
 	const gridItemRef = ref<HTMLElement | null>(null);
 	const dragHandleRef = ref<HTMLElement | null>(null);
+
+	const isFocused = computed(() => gridStore.focusedBlockId === props.block.id);
+
 	// Use composables
-	const { offset, isDragging, isFocused } = useGridItemDraggable({
+	const { offset, isDragging } = useGridItemDraggable({
 		gridItemRef,
 		dragHandleRef,
 		block: props.block,
@@ -64,6 +68,9 @@
 			'--y-offset': `${offset.y}px`,
 		}"
 	>
+		<Transition name="bottom-up">
+			<BlockMenu v-if="isFocused" :block="block" :blockIndex="blockIndex" />
+		</Transition>
 		<span ref="dragHandleRef" class="grid-item__handle"></span>
 		<component :is="blocks[currentBlock]" :value="block.value" />
 		<BlockResizeHandle

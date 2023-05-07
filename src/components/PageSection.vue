@@ -49,19 +49,17 @@
 		}"
 	>
 		<SectionAddBtn
-			v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+			v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
 			position="top"
 		/>
 
 		<Transition name="top-down">
-			<SectionBlocksMenu
-				v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
-			/>
+			<SectionBlocksMenu v-if="isHovered && !gridStore.focusedBlockId" />
 		</Transition>
 
 		<Transition name="top-down">
 			<SectionMenu
-				v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+				v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
 			/>
 		</Transition>
 
@@ -79,13 +77,13 @@
 		<SectionResizeHandle
 			v-if="
 				isHovered &&
-				!gridStore.isBlockedFocused &&
+				!gridStore.focusedBlockId &&
 				(!gridStore.isGridActive ||
 					(gridStore.isGridActive && gridStore.gridActiveEvent === 'RESIZE_SECTION'))
 			"
 		/>
 		<SectionAddBtn
-			v-if="isHovered && !gridStore.isBlockedFocused && !gridStore.isGridActive"
+			v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
 			position="bottom"
 		/>
 	</div>

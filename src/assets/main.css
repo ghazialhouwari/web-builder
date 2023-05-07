@@ -39,3 +39,20 @@
 	opacity: 1;
 	transform: translateY(0%);
 }
+
+.bottom-up-enter-active,
+.bottom-up-leave-active {
+	transition: transform 150ms linear, opacity 150ms linear;
+}
+
+.bottom-up-enter-from,
+.bottom-up-leave-to {
+	opacity: 0;
+	transform: translateY(15%);
+}
+
+.bottom-up-enter-to,
+.bottom-up-leave-from {
+	opacity: 1;
+	transform: translateY(0);
+}

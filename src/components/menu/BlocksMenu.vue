@@ -7,11 +7,21 @@
 
 	const blocks = ref<SiteBlock[]>(data);
 	const isDraggingBlock = ref(false);
+	const isMenuVisible = ref(false);
+
+	function dragEndHandler() {
+		isDraggingBlock.value = false;
+		isMenuVisible.value = false;
+	}
 </script>
 
 <template>
 	<div :class="{ 'block--is-dragging': isDraggingBlock }">
-		<v-menu :close-on-content-click="false" transition="slide-y-transition">
+		<v-menu
+			v-model="isMenuVisible"
+			:close-on-content-click="false"
+			transition="slide-y-transition"
+		>
 			<template v-slot:activator="{ props }">
 				<v-btn
 					v-bind="props"
@@ -35,7 +45,7 @@
 							:key="i"
 							:block="block"
 							@start="isDraggingBlock = true"
-							@end="isDraggingBlock = false"
+							@end="dragEndHandler"
 						>
 							<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
 							<h4>{{ block.type }}</h4>

@@ -4,6 +4,7 @@ import {
 	BlockType,
 	Section,
 	SectionBlockLayout,
+	SectionBreakpoints,
 	SiteBlock,
 	ViewType,
 } from '@/utils/types';
@@ -118,6 +119,44 @@ export const useSectionsStore = defineStore('sections', () => {
 		});
 	}
 
+	function removeBlock(sectionIndex: number, blockIndex: number) {
+		const removedBlock = sections[sectionIndex].blocks[blockIndex];
+		sections[sectionIndex].blocks.splice(blockIndex, 1);
+
+		addAction({
+			type: 'REMOVE_SECTION',
+			undo: () => {
+				sections[sectionIndex].blocks.splice(blockIndex, 0, removedBlock);
+			},
+			redo: () => {
+				sections[sectionIndex].blocks.splice(blockIndex, 1);
+			},
+		});
+	}
+
+	function duplicateBlock(
+		sectionIndex: number,
+		blockIndex: number,
+		layout: SectionBreakpoints<SectionBlockLayout>
+	) {
+		const originalBlock = sections[sectionIndex].blocks[blockIndex];
+		const duplicatedBlock = deepClone(originalBlock);
+		duplicatedBlock.id = generateUUID();
+		duplicatedBlock.layout = layout;
+
+		sections[sectionIndex].blocks.splice(blockIndex + 1, 0, duplicatedBlock);
+
+		addAction({
+			type: 'DUPLICATE_BLOCK',
+			undo: () => {
+				sections[sectionIndex].blocks.splice(blockIndex + 1, 1);
+			},
+			redo: () => {
+				sections[sectionIndex].blocks.splice(blockIndex + 1, 0, duplicatedBlock);
+			},
+		});
+	}
+
 	function swapSections(indexA: number, indexB: number) {
 		const temp = deepClone(sections[indexA]);
 		sections.splice(indexA, 1, deepClone(sections[indexB]));
@@ -194,6 +233,8 @@ export const useSectionsStore = defineStore('sections', () => {
 		setSectionBlockLayoutByIndex,
 		setSectionRowCountByIndex,
 		removeSection,
+		removeBlock,
+		duplicateBlock,
 		shiftSectionDown,
 		shiftSectionUp,
 		addSection,

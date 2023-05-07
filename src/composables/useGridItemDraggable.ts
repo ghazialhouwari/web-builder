@@ -29,7 +29,6 @@ export default function useGridItemDraggable({
 	const sectionsStore = useSectionsStore();
 
 	const offset = ref({ x: 0, y: 0 });
-	const isFocused = ref(false);
 	const isDragging = ref(false);
 
 	// Update the item offset
@@ -96,8 +95,7 @@ export default function useGridItemDraggable({
 		handle: dragHandleRef,
 		onStart: () => {
 			gridStore.activateGrid('DRAG_SECTION_BLOCK');
-			isFocused.value = false;
-			gridStore.setIsBlockedFocused(false);
+			gridStore.setFocusedBlock(null);
 			isDragging.value = true;
 			onStartDrag?.();
 		},
@@ -110,8 +108,7 @@ export default function useGridItemDraggable({
 			updateSectionBlockLayout();
 			gridStore.deactivateGrid();
 			isDragging.value = false;
-			isFocused.value = true;
-			gridStore.setIsBlockedFocused(true);
+			gridStore.setFocusedBlock(block.id);
 			gridStore.setDraggedBlockLayout(null);
 			resetItemOffset();
 			onEndDrag?.();
@@ -120,11 +117,10 @@ export default function useGridItemDraggable({
 
 	// Handle click outside
 	onClickOutside(gridItemRef, () => {
-		if (isFocused.value) {
-			isFocused.value = false;
-			gridStore.setIsBlockedFocused(false);
+		if (gridStore.focusedBlockId === block.id) {
+			gridStore.setFocusedBlock(null);
 		}
 	});
 
-	return { offset, isFocused, isDragging };
+	return { offset, isDragging };
 }

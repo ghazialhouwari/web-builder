@@ -134,7 +134,8 @@ export type ActionType =
 	| 'SET_SECTION_ROW_COUNT'
 	| 'REMOVE_SECTION'
 	| 'ADD_SECTION'
-	| 'UPDATE_SECTION_BACKGROUND_COLOR';
+	| 'UPDATE_SECTION_BACKGROUND_COLOR'
+	| 'DUPLICATE_BLOCK';
 
 export type BlocksComponenets = {
 	[key in BlockComponentType]: any;
