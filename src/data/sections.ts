@@ -47,7 +47,7 @@ export const sections: Section[] = [
 							x: 7,
 							y: 3,
 						},
-						zIndex: 3,
+						zIndex: 1,
 					},
 					mobile: {
 						start: {
@@ -58,7 +58,7 @@ export const sections: Section[] = [
 							x: 7,
 							y: 5,
 						},
-						zIndex: 3,
+						zIndex: 1,
 					},
 				},
 			},
@@ -110,7 +110,7 @@ export const sections: Section[] = [
 							x: 15,
 							y: 4,
 						},
-						zIndex: 3,
+						zIndex: 1,
 					},
 					mobile: {
 						start: {
@@ -121,7 +121,7 @@ export const sections: Section[] = [
 							x: 8,
 							y: 5,
 						},
-						zIndex: 3,
+						zIndex: 1,
 					},
 				},
 			},

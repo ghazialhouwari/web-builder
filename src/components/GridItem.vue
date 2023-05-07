@@ -64,6 +64,7 @@
 			'--col-start': block.layout[gridStore.viewType].start.x,
 			'--row-end': block.layout[gridStore.viewType].end.y,
 			'--col-end': block.layout[gridStore.viewType].end.x,
+			'--z-index': block.layout[gridStore.viewType].zIndex,
 			'--x-offset': `${offset.x}px`,
 			'--y-offset': `${offset.y}px`,
 		}"
@@ -90,6 +91,7 @@
 			var(--col-end);
 		transform: translate(var(--x-offset), var(--y-offset));
 		border-width: var(--site-engine-border-width);
+		z-index: var(--z-index);
 		border-style: solid;
 		border-color: transparent;
 		will-change: border-color;
@@ -102,6 +104,12 @@
 	.grid-item.is--focused,
 	.grid-item:hover {
 		border-color: var(--site-engine-color);
+	}
+	.grid-item.is--focused {
+		z-index: 1001;
+	}
+	.grid-item:hover {
+		z-index: 1002;
 	}
 	.grid-item__handle {
 		display: block;

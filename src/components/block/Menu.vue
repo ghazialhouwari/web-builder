@@ -6,6 +6,7 @@
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
 	import { shiftBlock } from '@/utils/grid';
+	import { deepClone } from '@/utils';
 	// Props
 	const props = defineProps<{
 		block: SectionBlock;
@@ -26,10 +27,27 @@
 	function removeBlock() {
 		sectionsStore.removeBlock(sectionIndex.value, props.blockIndex);
 	}
+	function moveBlock(direction: 'forward' | 'backward') {
+		const { viewType, activeSectionIndex } = gridStore;
+		const layout = deepClone(props.block.layout[viewType]);
+
+		if (direction === 'forward') {
+			layout.zIndex++;
+		} else {
+			layout.zIndex--;
+		}
+
+		sectionsStore.setSectionBlockLayoutByIndex(
+			activeSectionIndex!,
+			props.blockIndex,
+			layout,
+			viewType
+		);
+	}
 </script>
 
 <template>
-	<div class="block__menu">
+	<div class="block__menu py-3">
 		<v-card class="elevation-4">
 			<v-card-text class="block__menu-content d-flex align-center pa-1">
 				<v-btn
@@ -37,6 +55,21 @@
 					variant="text"
 					density="comfortable"
 				></v-btn>
+				<v-divider vertical length="25" inset class="mx-3"></v-divider>
+				<v-btn
+					icon="mdi-flip-to-front"
+					variant="text"
+					density="comfortable"
+					@click="moveBlock('forward')"
+				></v-btn>
+				<v-btn
+					icon="mdi-flip-to-back"
+					variant="text"
+					density="comfortable"
+					:disabled="block.layout[gridStore.viewType].zIndex <= 1"
+					@click="moveBlock('backward')"
+				></v-btn>
+				<v-divider vertical length="25" inset class="mx-3"></v-divider>
 				<v-btn
 					icon="mdi-content-copy"
 					variant="text"
@@ -58,7 +91,7 @@
 <style scoped>
 	.block__menu {
 		position: absolute;
-		bottom: calc(100% + 10px);
+		bottom: 100%;
 		left: 0;
 	}
 </style>
