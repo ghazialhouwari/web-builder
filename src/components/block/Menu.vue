@@ -5,8 +5,13 @@
 	// Store
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
+
 	import { shiftBlock } from '@/utils/grid';
 	import { deepClone } from '@/utils';
+	// Emits
+	const emits = defineEmits({
+		openSettingsMenu: () => true,
+	});
 	// Props
 	const props = defineProps<{
 		block: SectionBlock;
@@ -44,6 +49,9 @@
 			viewType
 		);
 	}
+	function editBlock() {
+		emits('openSettingsMenu');
+	}
 </script>
 
 <template>
@@ -54,6 +62,7 @@
 					icon="mdi-pencil-outline"
 					variant="text"
 					density="comfortable"
+					@click="editBlock"
 				></v-btn>
 				<v-divider vertical length="25" inset class="mx-3"></v-divider>
 				<v-btn

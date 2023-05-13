@@ -3,7 +3,9 @@ import { computed, reactive } from 'vue';
 import {
 	BlockType,
 	Section,
+	SectionBlock,
 	SectionBlockLayout,
+	SectionBlockValue,
 	SectionBreakpoints,
 	SiteBlock,
 	ViewType,
@@ -57,6 +59,15 @@ export const useSectionsStore = defineStore('sections', () => {
 			},
 		});
 	}
+
+	function updateBlock(
+		sectionIndex: number,
+		blockIndex: number,
+		block: SectionBlock
+	) {
+		sections[sectionIndex].blocks[blockIndex] = block;
+	}
+
 	function setSectionRowCountByIndex(
 		sectionIndex: number,
 		viewType: ViewType,
@@ -225,6 +236,26 @@ export const useSectionsStore = defineStore('sections', () => {
 		});
 	}
 
+	function updateBlockValue(
+		sectionIndex: number,
+		blockIndex: number,
+		newValue: SectionBlockValue
+	) {
+		const prevValue = sections[sectionIndex].blocks[blockIndex].value;
+
+		sections[sectionIndex].blocks[blockIndex].value = newValue;
+
+		addAction({
+			type: 'UPDATE_BLOCK_VALUE',
+			undo: () => {
+				sections[sectionIndex].blocks[blockIndex].value = prevValue;
+			},
+			redo: () => {
+				sections[sectionIndex].blocks[blockIndex].value = newValue;
+			},
+		});
+	}
+
 	return {
 		sections,
 		undosLength,
@@ -241,5 +272,6 @@ export const useSectionsStore = defineStore('sections', () => {
 		undo,
 		redo,
 		updateSectionBackgroundColor,
+		updateBlockValue,
 	};
 });

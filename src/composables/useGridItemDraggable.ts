@@ -1,4 +1,4 @@
-import { ref, Ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
@@ -30,6 +30,10 @@ export default function useGridItemDraggable({
 
 	const offset = ref({ x: 0, y: 0 });
 	const isDragging = ref(false);
+	const rect = ref<DOMRect>();
+
+	// Use ResizeObserver to listen for changes in dimensions
+	let resizeObserver: ResizeObserver | null = null;
 
 	// Update the item offset
 	function updateItemOffset(x: number, y: number) {
@@ -112,6 +116,7 @@ export default function useGridItemDraggable({
 			gridStore.setDraggedBlockLayout(null);
 			resetItemOffset();
 			onEndDrag?.();
+			rect.value = gridItemRef.value?.getBoundingClientRect();
 		},
 	});
 
@@ -122,5 +127,26 @@ export default function useGridItemDraggable({
 		}
 	});
 
-	return { offset, isDragging };
+	onMounted(() => {
+		rect.value = gridItemRef.value?.getBoundingClientRect();
+
+		if (gridItemRef.value) {
+			// Create a new ResizeObserver instance
+			resizeObserver = new ResizeObserver(() => {
+				rect.value = gridItemRef.value?.getBoundingClientRect();
+			});
+
+			// Start observing the grid item
+			resizeObserver.observe(gridItemRef.value);
+		}
+	});
+
+	onBeforeUnmount(() => {
+		// Stop observing when the component is unmounted
+		if (resizeObserver && gridItemRef.value) {
+			resizeObserver.unobserve(gridItemRef.value);
+		}
+	});
+
+	return { offset, isDragging, rect };
 }

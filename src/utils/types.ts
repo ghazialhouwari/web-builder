@@ -10,7 +10,7 @@ export interface SectionStyles {
 	sectionTheme: string;
 	sectionHeight: 'small' | 'medium' | 'large';
 	customSectionHeight: number;
-	verticalAlignment: 'top' | 'center' | 'bottom';
+	verticalAlignment: 'start' | 'center' | 'end';
 	backgroundColor: string;
 	backgroundMode: 'image' | 'video' | 'color';
 }
@@ -54,7 +54,8 @@ export interface SectionBlockLink {
 export interface SectionBlockButton {
 	buttonText: string;
 	action: SectionBlockLink;
-	buttonAlignment: 'top' | 'center' | 'bottom';
+	verticalAlignment: 'start' | 'center' | 'end';
+	horizontalAlignment: 'start' | 'center' | 'end';
 	buttonSize: 'x-small' | 'small' | 'default' | 'large' | 'x-large';
 	fluid: boolean;
 }
@@ -135,7 +136,8 @@ export type ActionType =
 	| 'REMOVE_SECTION'
 	| 'ADD_SECTION'
 	| 'UPDATE_SECTION_BACKGROUND_COLOR'
-	| 'DUPLICATE_BLOCK';
+	| 'DUPLICATE_BLOCK'
+	| 'UPDATE_BLOCK_VALUE';
 
 export type BlocksComponenets = {
 	[key in BlockComponentType]: any;

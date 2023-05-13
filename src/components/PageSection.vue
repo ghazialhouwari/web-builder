@@ -24,7 +24,7 @@
 
 	const sectionItem = ref<HTMLElement | null>();
 	// Computed
-	const isHovered = computed(
+	const isSectionActive = computed(
 		() => gridStore.activeSectionIndex === sectionIndex.value
 	);
 
@@ -45,21 +45,25 @@
 		class="site-section"
 		@mouseover="mouseOverHandler"
 		:class="{
-			'site-section--hover': isHovered,
+			'site-section--hover': isSectionActive,
 		}"
 	>
 		<SectionAddBtn
-			v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
+			v-if="
+				isSectionActive && !gridStore.focusedBlockId && !gridStore.isGridActive
+			"
 			position="top"
 		/>
 
 		<Transition name="top-down">
-			<SectionBlocksMenu v-if="isHovered && !gridStore.focusedBlockId" />
+			<SectionBlocksMenu v-if="isSectionActive && !gridStore.focusedBlockId" />
 		</Transition>
 
 		<Transition name="top-down">
 			<SectionMenu
-				v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
+				v-if="
+					isSectionActive && !gridStore.focusedBlockId && !gridStore.isGridActive
+				"
 			/>
 		</Transition>
 
@@ -76,14 +80,16 @@
 		</div>
 		<SectionResizeHandle
 			v-if="
-				isHovered &&
+				isSectionActive &&
 				!gridStore.focusedBlockId &&
 				(!gridStore.isGridActive ||
 					(gridStore.isGridActive && gridStore.gridActiveEvent === 'RESIZE_SECTION'))
 			"
 		/>
 		<SectionAddBtn
-			v-if="isHovered && !gridStore.focusedBlockId && !gridStore.isGridActive"
+			v-if="
+				isSectionActive && !gridStore.focusedBlockId && !gridStore.isGridActive
+			"
 			position="bottom"
 		/>
 	</div>

@@ -8,8 +8,8 @@
 
 <template>
 	<div
-		class="button__container d-flex justify-center"
-		:class="`align-${value.buttonAlignment}`"
+		class="button__container d-flex"
+		:class="`align-${value.verticalAlignment} justify-${value.horizontalAlignment}`"
 	>
 		<v-btn color="error" :size="value.buttonSize" :block="value.fluid">{{
 			value.buttonText

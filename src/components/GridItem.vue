@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, defineAsyncComponent, ref } from 'vue';
+	import { computed, defineAsyncComponent, inject, Ref, ref, watch } from 'vue';
 	import {
 		SectionBlock,
 		BlockComponentType,
@@ -12,6 +12,7 @@
 	// Components
 	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
 	import BlockMenu from '@/components/block/Menu.vue';
+	import BlockSettings from '@/components/BlockSettings.vue';
 	const blocks: BlocksComponenets = {
 		buttonBlock: defineAsyncComponent(
 			() => import('@/components/blocks/ButtonBlock.vue')
@@ -36,19 +37,39 @@
 	// Store definition
 	const gridStore = useGridStore();
 
+	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
+
 	const currentBlock = ref<BlockComponentType>(`${props.block.type}Block`);
 	const gridItemRef = ref<HTMLElement | null>(null);
 	const dragHandleRef = ref<HTMLElement | null>(null);
+	const isBlockSettingsVisible = ref(false);
 
+	// Computed
 	const isFocused = computed(() => gridStore.focusedBlockId === props.block.id);
-
+	const isSectionActive = computed(
+		() => gridStore.activeSectionIndex === sectionIndex.value
+	);
 	// Use composables
-	const { offset, isDragging } = useGridItemDraggable({
+	const { offset, isDragging, rect } = useGridItemDraggable({
 		gridItemRef,
 		dragHandleRef,
 		block: props.block,
 		blockIndex: props.blockIndex,
 	});
+
+	function toggleBlockSettingsVisibility(value: boolean) {
+		isBlockSettingsVisible.value = value;
+		gridStore.setFocusedBlock(null);
+	}
+
+	watch(
+		() => gridStore.activeSectionIndex,
+		() => {
+			if (isBlockSettingsVisible.value) {
+				toggleBlockSettingsVisibility(false);
+			}
+		}
+	);
 </script>
 
 <template>
@@ -56,7 +77,7 @@
 		ref="gridItemRef"
 		class="grid-item d-flex"
 		:class="{
-			'is--focused': isFocused,
+			'is--focused': isFocused || isBlockSettingsVisible,
 			'is-dragging': isDragging,
 		}"
 		:style="{
@@ -70,15 +91,32 @@
 		}"
 	>
 		<Transition name="bottom-up">
-			<BlockMenu v-if="isFocused" :block="block" :blockIndex="blockIndex" />
+			<BlockMenu
+				v-if="isFocused"
+				:block="block"
+				:blockIndex="blockIndex"
+				@openSettingsMenu="toggleBlockSettingsVisibility(true)"
+			/>
 		</Transition>
 		<span ref="dragHandleRef" class="grid-item__handle"></span>
-		<component :is="blocks[currentBlock]" :value="block.value" />
+		<Component :is="blocks[currentBlock]" :value="block.value" />
 		<BlockResizeHandle
-			v-if="isFocused && gridStore.gridActiveEvent !== 'RESIZE_BLOCK'"
+			v-if="
+				(isFocused && gridStore.gridActiveEvent !== 'RESIZE_BLOCK') ||
+				isBlockSettingsVisible
+			"
 			:block="block"
 			:blockIndex="blockIndex"
 		/>
+		<Teleport to="#block-settings-menu">
+			<BlockSettings
+				v-if="!gridStore.isGridActive && isSectionActive && isBlockSettingsVisible"
+				:block="block"
+				:blockIndex="blockIndex"
+				:blockRect="rect!"
+				@closeBlockSettings="toggleBlockSettingsVisibility(false)"
+			/>
+		</Teleport>
 	</div>
 </template>
 
