@@ -8,11 +8,11 @@
 	// Store
 	import { useGridStore } from '@/store/grid';
 	// Composables
-	import useGridItemDraggable from '@/composables/useGridItemDraggable';
+	import useBlockDraggable from '@/composables/useBlockDraggable';
 	// Components
-	import BlockResizeHandle from '@/components/BlockResizeHandle.vue';
-	import BlockMenu from '@/components/block/Menu.vue';
-	import BlockSettings from '@/components/BlockSettings.vue';
+	import ResizeHandle from '@/components/block/ResizeHandle.vue';
+	import BlockControls from '@/components/block/Controls.vue';
+	import BlockSettings from '@/components/block/Settings.vue';
 	const blocks: BlocksComponenets = {
 		buttonBlock: defineAsyncComponent(
 			() => import('@/components/blocks/ButtonBlock.vue')
@@ -40,7 +40,7 @@
 	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
 
 	const currentBlock = ref<BlockComponentType>(`${props.block.type}Block`);
-	const gridItemRef = ref<HTMLElement | null>(null);
+	const blockRef = ref<HTMLElement | null>(null);
 	const dragHandleRef = ref<HTMLElement | null>(null);
 	const isBlockSettingsVisible = ref(false);
 
@@ -50,8 +50,8 @@
 		() => gridStore.activeSectionIndex === sectionIndex.value
 	);
 	// Use composables
-	const { offset, isDragging, rect } = useGridItemDraggable({
-		gridItemRef,
+	const { offset, isDragging, rect } = useBlockDraggable({
+		blockRef,
 		dragHandleRef,
 		block: props.block,
 		blockIndex: props.blockIndex,
@@ -74,11 +74,11 @@
 
 <template>
 	<div
-		ref="gridItemRef"
-		class="grid-item d-flex"
+		ref="blockRef"
+		class="block d-flex"
 		:class="{
 			'is--focused': isFocused || isBlockSettingsVisible,
-			'is-dragging': isDragging,
+			'is--dragging': isDragging,
 		}"
 		:style="{
 			'--row-start': block.layout[gridStore.viewType].start.y,
@@ -91,16 +91,16 @@
 		}"
 	>
 		<Transition name="bottom-up">
-			<BlockMenu
+			<BlockControls
 				v-if="isFocused"
 				:block="block"
 				:blockIndex="blockIndex"
-				@openSettingsMenu="toggleBlockSettingsVisibility(true)"
+				@openBlockSettings="toggleBlockSettingsVisibility(true)"
 			/>
 		</Transition>
-		<span ref="dragHandleRef" class="grid-item__handle"></span>
+		<span ref="dragHandleRef" class="block__handle"></span>
 		<Component :is="blocks[currentBlock]" :value="block.value" />
-		<BlockResizeHandle
+		<ResizeHandle
 			v-if="
 				(isFocused && gridStore.gridActiveEvent !== 'RESIZE_BLOCK') ||
 				isBlockSettingsVisible
@@ -121,7 +121,7 @@
 </template>
 
 <style scoped>
-	.grid-item {
+	.block {
 		position: relative;
 		user-select: none;
 		background: #fff;
@@ -135,21 +135,21 @@
 		will-change: border-color;
 		transition: border-color 150ms ease;
 	}
-	.grid-item.is-dragging {
+	.block.is--dragging {
 		box-shadow: var(--site-box-shadow);
 		background: rgba(255, 255, 255, 0.6);
 	}
-	.grid-item.is--focused,
-	.grid-item:hover {
+	.block.is--focused,
+	.block:hover {
 		border-color: var(--site-engine-color);
 	}
-	.grid-item.is--focused {
+	.block.is--focused {
 		z-index: 1001;
 	}
-	.grid-item:hover {
+	.block:hover {
 		z-index: 1002;
 	}
-	.grid-item__handle {
+	.block__handle {
 		display: block;
 		position: absolute;
 		top: 0;

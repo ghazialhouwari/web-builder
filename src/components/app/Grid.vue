@@ -3,12 +3,10 @@
 	import { Section } from '@/utils/types';
 	// Store
 	import { useGridStore } from '@/store/grid';
-	// Composables
-	import { useWindowSize } from '@/composables/useWindowSize';
 	// Components
-	import GridItem from '@/components/GridItem.vue';
-	import GridCells from '@/components/GridCells.vue';
-	import DraggedBlock from '@/components/DraggedBlock.vue';
+	import GridBlock from '@/components/grid/Block.vue';
+	import GridCells from '@/components/grid/GridCells.vue';
+	import GridDraggedBlock from '@/components/grid/DraggedBlock.vue';
 
 	const section = inject<Ref<Section>>('section');
 	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
@@ -16,33 +14,19 @@
 
 	// Store definition
 	const gridStore = useGridStore();
-	// Use composables
-	useWindowSize((width: number) => {
-		const { viewType, setViewType, updateGrid } = gridStore;
-		if (viewType === 'desktop' && width <= 767) {
-			setViewType('mobile');
-		} else if (viewType === 'mobile' && width > 767) {
-			setViewType('desktop');
-		} else {
-			updateGrid();
-		}
-	});
+	const { columnCount } = gridStore;
 </script>
 
 <template>
 	<div
-		:id="`gridWrapper${sectionIndex}`"
-		class="grid-wrapper"
+		:id="`grid${sectionIndex}`"
+		class="grid"
 		:class="{
 			'view-type--mobile': gridStore.viewType === 'mobile',
 		}"
-		:style="{
-			'--grid-row-count': rowCount,
-			'--grid-column-count': gridStore.columnCount,
-		}"
 	>
 		<template v-if="section?.blocks.length">
-			<GridItem
+			<GridBlock
 				v-for="(block, blockIndex) in section?.blocks"
 				:key="block.id"
 				:blockIndex="blockIndex"
@@ -54,7 +38,7 @@
 				gridStore.isGridActive && gridStore.activeSectionIndex === sectionIndex
 			"
 		/>
-		<DraggedBlock
+		<GridDraggedBlock
 			v-if="
 				gridStore.isGridActive &&
 				gridStore.activeSectionIndex === sectionIndex &&
@@ -66,20 +50,20 @@
 </template>
 
 <style>
-	.grid-wrapper {
+	.grid {
 		display: grid;
 		position: relative;
 		gap: var(--grid-gap);
 		grid-template-rows: repeat(
-			var(--grid-row-count),
+			v-bind(rowCount),
 			minmax(calc(var(--container-width) * var(--grid-row-height-ratio)), auto)
 		);
 		grid-template-columns:
 			minmax(var(--grid-gutter), 1fr)
-			repeat(var(--grid-column-count), minmax(0, var(--cell-max-width)))
+			repeat(v-bind(columnCount), minmax(0, var(--cell-max-width)))
 			minmax(var(--grid-gutter), 1fr);
 	}
-	.grid-wrapper.view-type--mobile {
-		grid-template-rows: repeat(var(--grid-row-count), 30px);
+	.grid.view-type--mobile {
+		grid-template-rows: repeat(v-bind(rowCount), 30px);
 	}
 </style>

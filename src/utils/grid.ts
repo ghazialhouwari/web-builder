@@ -57,12 +57,12 @@ export function offsetToBlockLayout(
 		activeSectionIndex,
 	} = gridStore;
 
-	const gridWrapper: HTMLElement | null = document.querySelector(
-		`#gridWrapper${activeSectionIndex}`
+	const gridRef: HTMLElement | null = document.querySelector(
+		`#grid${activeSectionIndex}`
 	);
 
-	const wrapperOffsetLeft = gridWrapper?.getBoundingClientRect().left || 0;
-	const wrapperOffsetTop = gridWrapper?.getBoundingClientRect().top || 0;
+	const wrapperOffsetLeft = gridRef?.getBoundingClientRect().left || 0;
+	const wrapperOffsetTop = gridRef?.getBoundingClientRect().top || 0;
 
 	const offsetX = x - wrapperOffsetLeft - gutters + gap;
 	const offsetY = y - wrapperOffsetTop;

@@ -3,23 +3,23 @@
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
 	// Components
-	import PageSection from '@/components/PageSection.vue';
+	import AppSection from '@/components/app/Section.vue';
 	// Store definition
 	const sectionsStore = useSectionsStore();
 	const gridStore = useGridStore();
 </script>
 <template>
-	<PageSection
+	<AppSection
 		v-for="(section, sectionIndex) of sectionsStore.sections"
 		:key="section.id"
 		:section="section"
 		:sectionIndex="sectionIndex"
 	/>
-	<div v-if="gridStore.viewType === 'mobile'" class="sections-shadow"></div>
+	<div v-if="gridStore.viewType === 'mobile'" class="mobile-view__shadow"></div>
 </template>
 
 <style scoped>
-	.sections-shadow {
+	.mobile-view__shadow {
 		--section-box-shadow: 0 0 25px rgba(0, 0, 0, 0.1),
 			0 -5px 25px rgba(0, 0, 0, 0.1), 0 5px 25px rgba(0, 0, 0, 0.1);
 		width: var(--site-mobile-width);

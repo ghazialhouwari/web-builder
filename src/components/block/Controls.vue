@@ -10,7 +10,7 @@
 	import { deepClone } from '@/utils';
 	// Emits
 	const emits = defineEmits({
-		openSettingsMenu: () => true,
+		openBlockSettings: () => true,
 	});
 	// Props
 	const props = defineProps<{
@@ -49,20 +49,20 @@
 			viewType
 		);
 	}
-	function editBlock() {
-		emits('openSettingsMenu');
+	function openBlockSettings() {
+		emits('openBlockSettings');
 	}
 </script>
 
 <template>
-	<div class="block__menu py-3">
+	<div class="block-controls py-3">
 		<v-card class="elevation-4">
-			<v-card-text class="block__menu-content d-flex align-center pa-1">
+			<v-card-text class="block-controls__content d-flex align-center pa-1">
 				<v-btn
 					icon="mdi-pencil-outline"
 					variant="text"
 					density="comfortable"
-					@click="editBlock"
+					@click="openBlockSettings"
 				></v-btn>
 				<v-divider vertical length="25" inset class="mx-3"></v-divider>
 				<v-btn
@@ -98,7 +98,7 @@
 </template>
 
 <style scoped>
-	.block__menu {
+	.block-controls {
 		position: absolute;
 		bottom: 100%;
 		left: 0;

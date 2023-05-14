@@ -6,16 +6,16 @@
 	// Components
 	const blocks: BlocksComponenets = {
 		buttonBlock: defineAsyncComponent(
-			() => import('@/components/settings/Button.vue')
+			() => import('@/components/block/settings/Button.vue')
 		),
 		textBlock: defineAsyncComponent(
-			() => import('@/components/settings/Text.vue')
+			() => import('@/components/block/settings/Text.vue')
 		),
 		imageBlock: defineAsyncComponent(
-			() => import('@/components/settings/Image.vue')
+			() => import('@/components/block/settings/Image.vue')
 		),
 		quoteBlock: defineAsyncComponent(
-			() => import('@/components/settings/Quote.vue')
+			() => import('@/components/block/settings/Quote.vue')
 		),
 	};
 

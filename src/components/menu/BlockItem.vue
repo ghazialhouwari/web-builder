@@ -4,7 +4,7 @@
 	// Store
 	import { useSectionsStore } from '@/store/sections';
 	// Composables
-	import useBlockDraggable from '@/composables/useBlockDraggable';
+	import useBlockItemDraggable from '@/composables/useBlockItemDraggable';
 	// Emits
 	/* eslint-disable no-unused-vars */
 	const emits = defineEmits({
@@ -19,7 +19,7 @@
 	const sectionsStore = useSectionsStore();
 
 	const blockItem = ref<HTMLElement | null>(null);
-	const { isDragging, offset, width, height } = useBlockDraggable({
+	const { isDragging, offset, width, height } = useBlockItemDraggable({
 		blockItem,
 		block: props.block,
 		onStart: () => emits('start'),
@@ -36,13 +36,13 @@
 
 <template>
 	<li ref="blockItem">
-		<div class="block__item">
+		<div class="block-item">
 			<slot />
 		</div>
 		<Teleport v-if="isDragging" to="#dragged-block">
 			<div
-				class="block__item block__item__placeholder"
-				:class="{ 'block__item--drag': isDragging }"
+				class="block-item block-item__placeholder"
+				:class="{ 'block-item--drag': isDragging }"
 				:style="{
 					'--x-offset': `${offset.x}px`,
 					'--y-offset': `${offset.y}px`,
@@ -57,7 +57,7 @@
 </template>
 
 <style scoped>
-	.block__item {
+	.block-item {
 		position: relative;
 		user-select: none;
 		cursor: grab;
@@ -65,14 +65,14 @@
 		border-radius: 4px;
 		display: flex;
 	}
-	.block__item:hover {
+	.block-item:hover {
 		background: var(--site-hover);
 	}
-	.block__item--drag {
+	.block-item--drag {
 		background: var(--site-hover);
 		box-shadow: var(--site-box-shadow);
 	}
-	.block__item__placeholder {
+	.block-item__placeholder {
 		position: absolute;
 		z-index: 9999;
 		opacity: 0.9;

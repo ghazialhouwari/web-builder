@@ -8,7 +8,7 @@ export const defaultBlankSection: Section = {
 		sectionTheme: '',
 		sectionHeight: 'medium',
 		customSectionHeight: 0,
-		verticalAlignment: 'top',
+		verticalAlignment: 'start',
 		backgroundColor: '#FFF',
 		backgroundMode: 'color',
 	},

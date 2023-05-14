@@ -2,7 +2,7 @@ import { computed, Ref } from 'vue';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
 
-export default function useGrid(sectionIndex: Ref<number>) {
+export default function useSection(sectionIndex: Ref<number>) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
 

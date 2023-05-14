@@ -1,88 +1,152 @@
-import { ref, Ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { useGridStore } from '@/store/grid';
-import { BlockType, SectionBlockLayout, SiteBlock } from '@/utils/types';
+import { useSectionsStore } from '@/store/sections';
+import { onClickOutside } from '@vueuse/core';
+import { SectionBlock } from '@/utils/types';
 import { offsetToBlockLayout } from '@/utils/grid';
 
+interface Args {
+	blockRef: Ref<HTMLElement | null>;
+	dragHandleRef: Ref<HTMLElement | null>;
+	block: SectionBlock;
+	blockIndex: number;
+	onStartDrag?: () => void;
+	onMoveDrag?: (x: number, y: number) => void;
+	onEndDrag?: () => void;
+}
+
 export default function useBlockDraggable({
-	blockItem,
+	blockRef,
+	dragHandleRef,
 	block,
-	onStart,
-	onMove,
-	onEnd,
-}: {
-	blockItem: Ref<HTMLElement | null>;
-	block: SiteBlock;
-	onStart?: () => void;
-	onMove?: (x: number, y: number) => void;
-	onEnd?: (
-		sectionIndex: number,
-		type: BlockType,
-		layout: SectionBlockLayout
-	) => void;
-}) {
+	blockIndex,
+	onStartDrag,
+	onMoveDrag,
+	onEndDrag,
+}: Args) {
 	const gridStore = useGridStore();
-	const { activateGrid, deactivateGrid, setDraggedBlockLayout } = gridStore;
+	const sectionsStore = useSectionsStore();
 
 	const offset = ref({ x: 0, y: 0 });
 	const isDragging = ref(false);
-	const width = ref<number>();
-	const height = ref<number>();
+	const rect = ref<DOMRect>();
 
-	function updateDraggedBlockLayout(x: number, y: number) {
+	// Use ResizeObserver to listen for changes in dimensions
+	let resizeObserver: ResizeObserver | null = null;
+
+	// Update the item offset
+	function updateItemOffset(x: number, y: number) {
+		const gridRef: HTMLElement | null = document.querySelector(
+			`#grid${gridStore.activeSectionIndex}`
+		);
+
+		const blockOffsetLeft = blockRef.value?.offsetLeft || 0;
+		const blockOffsetTop = blockRef.value?.offsetTop || 0;
+		const wrapperOffsetLeft = gridRef?.getBoundingClientRect().left || 0;
+		const wrapperOffsetTop = gridRef?.getBoundingClientRect().top || 0;
+
+		offset.value.x = x - wrapperOffsetLeft - blockOffsetLeft;
+		offset.value.y = y - wrapperOffsetTop - blockOffsetTop;
+	}
+
+	// Reset the item offset
+	function resetItemOffset() {
+		offset.value.x = 0;
+		offset.value.y = 0;
+	}
+
+	// Update the grid block layout
+	function updateGridBlockLayout(x: number, y: number) {
+		const layout = block.layout[gridStore.viewType];
+		const rowSize = layout.end.y - layout.start.y;
+		const columnSize = layout.end.x - layout.start.x;
+
 		const draggedBlockLayout = offsetToBlockLayout(
 			x,
 			y,
-			block.layout.size.columns,
-			block.layout.size.rows,
-			block.layout.zIndex
+			columnSize,
+			rowSize,
+			layout.zIndex
 		);
-		setDraggedBlockLayout(draggedBlockLayout);
+		gridStore.setDraggedBlockLayout(draggedBlockLayout);
 	}
 
-	function setOffset(x: number, y: number) {
-		offset.value.x = x + window.scrollX;
-		offset.value.y = y + window.scrollY;
+	// Update the section block layout
+	function updateSectionBlockLayout() {
+		const { draggedBlockLayout, viewType, activeSectionIndex } = gridStore;
+
+		if (!draggedBlockLayout || activeSectionIndex === null) return;
+
+		const section = sectionsStore.sections[activeSectionIndex];
+		sectionsStore.setSectionBlockLayoutByIndex(
+			activeSectionIndex,
+			blockIndex,
+			draggedBlockLayout,
+			viewType
+		);
+		if (draggedBlockLayout.end.y - 1 > section.layout[viewType].rows) {
+			sectionsStore.setSectionRowCountByIndex(
+				activeSectionIndex!,
+				viewType,
+				draggedBlockLayout.end.y - 1
+			);
+		}
 	}
 
-	function setInitialValues(x: number, y: number) {
-		if (!blockItem.value) return;
-
-		width.value = blockItem.value.offsetWidth;
-		height.value = blockItem.value.offsetHeight;
-
-		const rect = blockItem.value.getBoundingClientRect();
-
-		setOffset(rect.left, rect.top);
-		updateDraggedBlockLayout(rect.left, rect.top);
-	}
-
-	function resetValues() {
-		setOffset(0, 0);
-		setDraggedBlockLayout(null);
-	}
-
-	useDraggable(blockItem, {
-		onStart: ({ x, y }) => {
-			setInitialValues(x, y);
+	// Use draggable composable
+	useDraggable(blockRef, {
+		handle: dragHandleRef,
+		onStart: () => {
+			gridStore.activateGrid('DRAG_SECTION_BLOCK');
+			gridStore.setFocusedBlock(null);
 			isDragging.value = true;
-			activateGrid('DRAG_MENU_BLOCK');
-
-			onStart && onStart();
+			onStartDrag?.();
 		},
 		onMove: ({ x, y }) => {
-			onMove && onMove(x, y);
-			setOffset(x, y);
-			updateDraggedBlockLayout(x, y);
+			updateGridBlockLayout(x, y);
+			updateItemOffset(x, y);
+			onMoveDrag?.(x, y);
 		},
 		onEnd: () => {
+			updateSectionBlockLayout();
+			gridStore.deactivateGrid();
 			isDragging.value = false;
-			deactivateGrid();
-			const { activeSectionIndex, draggedBlockLayout } = gridStore;
-			onEnd && onEnd(activeSectionIndex!, block.type, draggedBlockLayout!);
-			resetValues();
+			gridStore.setFocusedBlock(block.id);
+			gridStore.setDraggedBlockLayout(null);
+			resetItemOffset();
+			onEndDrag?.();
+			rect.value = blockRef.value?.getBoundingClientRect();
 		},
 	});
 
-	return { isDragging, offset, width, height };
+	// Handle click outside
+	onClickOutside(blockRef, () => {
+		if (gridStore.focusedBlockId === block.id) {
+			gridStore.setFocusedBlock(null);
+		}
+	});
+
+	onMounted(() => {
+		rect.value = blockRef.value?.getBoundingClientRect();
+
+		if (blockRef.value) {
+			// Create a new ResizeObserver instance
+			resizeObserver = new ResizeObserver(() => {
+				rect.value = blockRef.value?.getBoundingClientRect();
+			});
+
+			// Start observing the grid item
+			resizeObserver.observe(blockRef.value);
+		}
+	});
+
+	onBeforeUnmount(() => {
+		// Stop observing when the component is unmounted
+		if (resizeObserver && blockRef.value) {
+			resizeObserver.unobserve(blockRef.value);
+		}
+	});
+
+	return { offset, isDragging, rect };
 }

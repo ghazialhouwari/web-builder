@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { inject, Ref, ref } from 'vue';
 	// Componenets
-	import SectionSettingsMenu from '@/components/section/SettingsMenu.vue';
+	import SectionSettings from '@/components/section/Settings.vue';
 	// Store
 	import { useSectionsStore } from '@/store/sections';
 	import { useGridStore } from '@/store/grid';
@@ -15,13 +15,6 @@
 		sectionsStore.removeSection(sectionIndex.value);
 		gridStore.setActiveSectionIndex(null);
 	}
-	function shiftSectionUp() {
-		sectionsStore.shiftSectionUp(sectionIndex.value);
-	}
-
-	function shiftSectionDown() {
-		sectionsStore.shiftSectionDown(sectionIndex.value);
-	}
 </script>
 
 <template>
@@ -33,14 +26,14 @@
 					density="comfortable"
 					variant="text"
 					:disabled="sectionIndex <= 0"
-					@click="shiftSectionUp"
+					@click="sectionsStore.shiftSectionUp(sectionIndex)"
 				></v-btn>
 				<v-btn
 					icon="mdi-arrow-down"
 					density="comfortable"
 					variant="text"
 					:disabled="sectionIndex >= sectionsStore.sections.length - 1"
-					@click="shiftSectionDown"
+					@click="sectionsStore.shiftSectionDown(sectionIndex)"
 				></v-btn>
 				<v-divider vertical length="25" inset class="mx-3"></v-divider>
 				<v-btn
@@ -59,7 +52,7 @@
 							variant="text"
 						></v-btn>
 					</template>
-					<SectionSettingsMenu />
+					<SectionSettings />
 				</v-menu>
 			</v-card-text>
 		</v-card>

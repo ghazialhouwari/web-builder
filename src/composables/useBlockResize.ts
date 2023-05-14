@@ -8,13 +8,11 @@ import { deepClone } from '@/utils';
 export default function useBlockResize({
 	block,
 	blockIndex,
-	resizeHandle,
-	onResize,
+	resizeHandleRef,
 }: {
 	block: SectionBlock;
 	blockIndex: number;
-	resizeHandle: Ref<HTMLElement | null>;
-	onResize?: (layout: SectionBlockLayout) => void;
+	resizeHandleRef: Ref<HTMLElement | null>;
 }) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
@@ -73,7 +71,6 @@ export default function useBlockResize({
 					gridStore.draggedBlockLayout.end.y - 1
 				);
 			}
-			onResize?.(gridStore.draggedBlockLayout);
 			gridStore.setDraggedBlockLayout(null);
 		}
 
@@ -138,7 +135,7 @@ export default function useBlockResize({
 		state.rows = Math.round(distanceY / (cellHeight + gap));
 	}
 
-	const dragging = useDrag(resizeHandle, onMouseDown, onMouseMove, onMouseUp);
+	const dragging = useDrag(resizeHandleRef, onMouseDown, onMouseMove, onMouseUp);
 
 	return { rows: state.rows, columns: state.columns };
 }

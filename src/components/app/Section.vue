@@ -2,11 +2,11 @@
 	import { computed, provide, ref, toRefs } from 'vue';
 	import { Section } from '@/utils/types';
 	// Components
-	import Grid from '@/components/Grid.vue';
+	import Grid from '@/components/app/Grid.vue';
 	import SectionResizeHandle from '@/components/section/ResizeHandle.vue';
-	import SectionMenu from '@/components/section/Menu.vue';
+	import SectionControls from '@/components/section/Controls.vue';
 	import SectionAddBtn from '@/components/section/AddBtn.vue';
-	import SectionBlocksMenu from '@/components/menu/BlocksMenu.vue';
+	import BlocksMenu from '@/components/menu/Blocks.vue';
 	// Composables
 	import useSection from '@/composables/useSection';
 	// Store
@@ -21,6 +21,10 @@
 
 	const { section, sectionIndex } = toRefs(props);
 	const { rowCount, highestBlockEndY } = useSection(sectionIndex);
+
+	const sectionBackgroundColor = computed(
+		() => section.value.styles.backgroundColor
+	);
 
 	const sectionItem = ref<HTMLElement | null>();
 	// Computed
@@ -56,11 +60,11 @@
 		/>
 
 		<Transition name="top-down">
-			<SectionBlocksMenu v-if="isSectionActive && !gridStore.focusedBlockId" />
+			<BlocksMenu v-if="isSectionActive && !gridStore.focusedBlockId" />
 		</Transition>
 
 		<Transition name="top-down">
-			<SectionMenu
+			<SectionControls
 				v-if="
 					isSectionActive && !gridStore.focusedBlockId && !gridStore.isGridActive
 				"
@@ -71,9 +75,6 @@
 			class="site-section__container py-16"
 			:class="{
 				'view-type--mobile': gridStore.viewType === 'mobile',
-			}"
-			:style="{
-				'--section-background-color': section.styles.backgroundColor,
 			}"
 		>
 			<Grid />
@@ -104,7 +105,7 @@
 		z-index: 1005;
 	}
 	.site-section__container {
-		background-color: var(--section-background-color);
+		background-color: v-bind(sectionBackgroundColor);
 	}
 	.site-section__container.view-type--mobile {
 		width: var(--site-mobile-width);

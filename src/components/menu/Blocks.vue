@@ -3,7 +3,7 @@
 	import { SiteBlock } from '@/utils/types';
 	import { blocks as data } from '@/data/blocks';
 	// // Components
-	import SectionBlocksMenuItem from '@/components/menu/BlocksMenuItem.vue';
+	import BlocksMenuItem from '@/components/menu/BlockItem.vue';
 
 	const blocks = ref<SiteBlock[]>(data);
 	const isDraggingBlock = ref(false);
@@ -27,7 +27,7 @@
 					v-bind="props"
 					prependIcon="mdi-plus"
 					color="white"
-					class="block__menu-trigger"
+					class="block-menu__trigger"
 					>Add Block</v-btn
 				>
 			</template>
@@ -37,10 +37,10 @@
 				class="overflow-visible"
 				:class="{ 'block--is-dragging': isDraggingBlock }"
 			>
-				<v-card-text class="block__group">
+				<v-card-text class="block-group">
 					<h3 class="font-weight-bold text-subtitle-2 px-4">Basic</h3>
-					<ul class="block__group-content py-2">
-						<SectionBlocksMenuItem
+					<ul class="block-group__content py-2">
+						<BlocksMenuItem
 							v-for="(block, i) in blocks"
 							:key="i"
 							:block="block"
@@ -49,7 +49,7 @@
 						>
 							<v-icon size="22" class="me-2">{{ block.icon }}</v-icon>
 							<h4>{{ block.type }}</h4>
-						</SectionBlocksMenuItem>
+						</BlocksMenuItem>
 					</ul>
 				</v-card-text>
 			</v-card>
@@ -58,12 +58,12 @@
 </template>
 
 <style scoped>
-	.block__menu-trigger {
+	.block-menu__trigger {
 		position: absolute;
 		top: 20px;
 		left: 20px;
 	}
-	.block__group-content {
+	.block-group__content {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		list-style: none;
