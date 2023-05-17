@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import { inject, ref, Ref } from 'vue';
+	import { computed, inject, ref, Ref } from 'vue';
 	import { Section } from '@/utils/types';
 	// Store
 	import { useGridStore } from '@/store/grid';
@@ -14,7 +14,7 @@
 
 	// Store definition
 	const gridStore = useGridStore();
-	const { columnCount } = gridStore;
+	const columnCount = computed(() => gridStore.columnCount);
 </script>
 
 <template>

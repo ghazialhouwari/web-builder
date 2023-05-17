@@ -20,7 +20,7 @@
 	.grid__dragged-block-area {
 		border: var(--site-engine-border-width) solid var(--site-engine-color);
 		inset: -3px;
-		z-index: 10;
+		z-index: 1006;
 		grid-area: v-bind(gridArea);
 	}
 </style>

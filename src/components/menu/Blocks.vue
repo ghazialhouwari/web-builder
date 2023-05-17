@@ -27,7 +27,7 @@
 					v-bind="props"
 					prependIcon="mdi-plus"
 					color="white"
-					class="block-menu__trigger"
+					class="block-controls__trigger"
 					>Add Block</v-btn
 				>
 			</template>
@@ -58,10 +58,11 @@
 </template>
 
 <style scoped>
-	.block-menu__trigger {
+	.block-controls__trigger {
 		position: absolute;
 		top: 20px;
 		left: 20px;
+		z-index: 3;
 	}
 	.block-group__content {
 		display: grid;

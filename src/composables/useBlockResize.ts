@@ -28,6 +28,7 @@ export default function useBlockResize({
 	const { cellWidth, cellHeight, gap } = gridStore;
 
 	function onMouseDown(evt: MouseEvent) {
+		console.log('onMouseDown');
 		const element = evt.target as HTMLElement;
 
 		if (isResizeHandle(element)) {
@@ -50,6 +51,7 @@ export default function useBlockResize({
 	}
 
 	function onMouseUp() {
+		console.log('onMouseUp');
 		gridStore.deactivateGrid();
 
 		if (gridStore.draggedBlockLayout) {
@@ -78,12 +80,15 @@ export default function useBlockResize({
 	}
 
 	function isResizeHandle(element: HTMLElement): boolean {
+		console.log(element);
 		return (
-			element.classList.contains('resize__handle') && !!element.dataset.directions
+			element.classList.contains('block__resize-handle') &&
+			!!element.dataset.directions
 		);
 	}
 
 	function getDirectionsFromElement(element: HTMLElement): string[] {
+		console.log(element);
 		return element.dataset.directions?.split(',') ?? [];
 	}
 

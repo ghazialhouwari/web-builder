@@ -102,10 +102,12 @@
 		background: transparent;
 	}
 	.site-section.site-section--hover {
-		z-index: 1005;
+		z-index: 1006;
 	}
 	.site-section__container {
 		background-color: v-bind(sectionBackgroundColor);
+		position: relative;
+		z-index: 2;
 	}
 	.site-section__container.view-type--mobile {
 		width: var(--site-mobile-width);

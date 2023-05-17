@@ -74,7 +74,7 @@
 	}
 	.block-item__placeholder {
 		position: absolute;
-		z-index: 9999;
+		z-index: 1006;
 		opacity: 0.9;
 		width: var(--width, auto);
 		height: var(--height, auto);

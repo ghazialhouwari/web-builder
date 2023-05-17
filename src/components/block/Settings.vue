@@ -84,11 +84,11 @@
 		}
 
 		// Calculate how much space is available below the block
-		const bottomEdgeDistance = windowHeight.value - props.blockRect.bottom;
+		const topEdgeDistance = windowHeight.value - props.blockRect.top;
 
 		// If there isn't enough space below to fit the settings card,
 		// position it above the block. Otherwise, position it below the block.
-		if (bottomEdgeDistance < settingsCard.value.offsetHeight) {
+		if (topEdgeDistance < settingsCard.value.offsetHeight) {
 			offsetY.value = Math.max(
 				0,
 				windowHeight.value - settingsCard.value.offsetHeight
@@ -134,6 +134,6 @@
 		position: fixed;
 		top: v-bind(offsetY + 'px');
 		left: v-bind(offsetX + 'px');
-		z-index: 9999;
+		z-index: 1006;
 	}
 </style>

@@ -18,9 +18,9 @@
 </script>
 
 <template>
-	<div class="section__menu">
+	<div class="section__controls">
 		<v-card class="elevation-4">
-			<v-card-text class="section__menu-content d-flex align-center pa-1">
+			<v-card-text class="section__controls-content d-flex align-center pa-1">
 				<v-btn
 					icon="mdi-arrow-up"
 					density="comfortable"
@@ -60,9 +60,10 @@
 </template>
 
 <style scoped>
-	.section__menu {
+	.section__controls {
 		position: absolute;
 		top: 20px;
 		right: 20px;
+		z-index: 3;
 	}
 </style>
