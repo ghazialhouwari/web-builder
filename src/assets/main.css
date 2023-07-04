@@ -57,10 +57,18 @@
 	transform: translateY(0);
 }
 
-.text-transform-initial {
+.v-btn {
 	text-transform: initial !important;
 }
 
 .cursor-grab {
 	cursor: grab;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.d-grid {
+	display: grid;
 }

@@ -1,3 +1,27 @@
+export interface UnitValue {
+	unit: 'px';
+	value: number;
+}
+
+export interface KeyValuePair {
+	key: string;
+	value: any;
+}
+
+export interface CornerRadius {
+	topLeft: UnitValue;
+	topRight: UnitValue;
+	bottomLeft: UnitValue;
+	bottomRight: UnitValue;
+}
+
+export interface Padding {
+	top: UnitValue;
+	right: UnitValue;
+	bottom: UnitValue;
+	left: UnitValue;
+}
+
 export type ViewType = 'desktop' | 'mobile';
 export type BlockType = 'text' | 'quote' | 'button' | 'image';
 export type BlockComponentType =
@@ -56,8 +80,14 @@ export interface SectionBlockButton {
 	action: SectionBlockLink;
 	verticalAlignment: 'start' | 'center' | 'end';
 	horizontalAlignment: 'start' | 'center' | 'end';
+	contentAlignment: 'start' | 'center' | 'end';
 	buttonSize: 'x-small' | 'small' | 'default' | 'large' | 'x-large';
+	cornerRadius: CornerRadius;
+	padding: Padding;
 	fluid: boolean;
+	color: string;
+	backgroundColor: string;
+	shape: 'elevated' | 'tonal' | 'outlined' | 'text' | 'plain';
 }
 
 export interface SectionBlockImage {

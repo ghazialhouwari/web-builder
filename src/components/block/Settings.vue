@@ -2,7 +2,6 @@
 	import { onClickOutside, useDraggable, useWindowSize } from '@vueuse/core';
 	import { defineAsyncComponent, ref, toRef, onMounted } from 'vue';
 	import { BlocksComponenets, SectionBlock } from '@/utils/types';
-	import { tabs } from '@/data/blockSettingsTabs';
 	// Components
 	const blocks: BlocksComponenets = {
 		buttonBlock: defineAsyncComponent(
@@ -34,7 +33,6 @@
 
 	const settingsCard = ref<HTMLElement | null>();
 	const dragHandle = ref<HTMLElement | null>();
-	const tab = ref(1);
 
 	// Handle click outside
 	onClickOutside(settingsCard, () => {
@@ -104,27 +102,12 @@
 <template>
 	<div ref="settingsCard" class="block-settings">
 		<v-card width="320" height="500" elevation="6">
-			<div ref="dragHandle" class="cursor-grab">
-				<v-card-title class="pb-0 border-b">
-					<v-tabs v-model="tab" color="primary">
-						<v-tab
-							v-for="(item, tabIndex) of tabs[block.type]"
-							:key="block.type + item"
-							:value="tabIndex + 1"
-							class="text-transform-initial"
-							>{{ item }}</v-tab
-						>
-					</v-tabs>
-				</v-card-title>
-			</div>
-			<v-card-text>
-				<Component
-					:is="blocks[`${block.type}Block`]"
-					:block="block"
-					:blockIndex="blockIndex"
-					:tab="tab"
-				/>
-			</v-card-text>
+			<div ref="dragHandle" class="drag__handle cursor-grab"></div>
+			<Component
+				:is="blocks[`${block.type}Block`]"
+				:block="block"
+				:blockIndex="blockIndex"
+			/>
 		</v-card>
 	</div>
 </template>
@@ -135,5 +118,13 @@
 		top: v-bind(offsetY + 'px');
 		left: v-bind(offsetX + 'px');
 		z-index: 1006;
+	}
+	.drag__handle {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 48px;
+		z-index: 2;
 	}
 </style>

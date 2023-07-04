@@ -60,6 +60,7 @@
 	function toggleBlockSettingsVisibility(value: boolean) {
 		isBlockSettingsVisible.value = value;
 		gridStore.setFocusedBlock(null);
+		gridStore.setBlockSettingsVisibility(value);
 	}
 
 	watch(
@@ -124,7 +125,6 @@
 	.block {
 		position: relative;
 		user-select: none;
-		background: #fff;
 		grid-area: var(--row-start) / var(--col-start) / var(--row-end) /
 			var(--col-end);
 		transform: translate(var(--x-offset), var(--y-offset));

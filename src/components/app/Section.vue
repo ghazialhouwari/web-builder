@@ -39,7 +39,9 @@
 
 	// Functions
 	function mouseOverHandler() {
-		gridStore.setActiveSectionIndex(sectionIndex.value);
+		if (!gridStore.isBlockSettingsVisible) {
+			gridStore.setActiveSectionIndex(sectionIndex.value);
+		}
 	}
 </script>
 

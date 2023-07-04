@@ -1,87 +1,105 @@
 <script setup lang="ts">
-	import { ButtonSectionBlock, SectionBlockButton } from '@/utils/types';
-	import { computed, inject, ref, Ref, toRef } from 'vue';
-	// Store
-	import { useSectionsStore } from '@/store/sections';
+	import { ButtonSectionBlock } from '@/utils/types';
+	import MainSettings from '@/components/block/settings/button/MainSettings.vue';
+	import { ref } from 'vue';
 
 	// Props
-	const props = defineProps<{
+	defineProps<{
 		block: ButtonSectionBlock;
 		blockIndex: number;
-		tab: number;
 	}>();
 
-	// Store definition
-	const sectionsStore = useSectionsStore();
+	const subMenu = ref<string | null>(null);
 
-	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
-	const tab = toRef(props, 'tab');
-
-	const createComputedProperty = (key: keyof SectionBlockButton) => {
-		return computed({
-			get() {
-				return props.block.value[key];
-			},
-			set(value) {
-				sectionsStore.updateBlockValue(sectionIndex.value, props.blockIndex, {
-					...props.block.value,
-					[key]: value,
-				});
-			},
-		});
-	};
-
-	const buttonText = createComputedProperty('buttonText');
-	const fluid = createComputedProperty('fluid');
-	const horizontalAlignment = createComputedProperty('horizontalAlignment');
-	const verticalAlignment = createComputedProperty('verticalAlignment');
+	// function openSubMenu(value: string) {
+	// 	subMenu.value = value;
+	// }
+	// function closeSubMenu() {
+	// 	subMenu.value = null;
+	// }
 </script>
 
 <template>
-	<v-window v-model="tab">
-		<v-window-item :value="1">
-			<v-text-field
-				v-model="buttonText"
-				label="Text"
-				variant="underlined"
-			></v-text-field>
-		</v-window-item>
-		<v-window-item :value="2">
-			<v-btn-toggle v-model="fluid" variant="outlined" divided class="mb-3">
-				<v-btn :value="false" class="text-transform-initial">Fit</v-btn>
-				<v-btn :value="true" class="text-transform-initial">Fill</v-btn>
-			</v-btn-toggle>
-			<v-btn-toggle
-				v-model="horizontalAlignment"
-				variant="outlined"
-				divided
-				class="mb-3"
-			>
-				<v-btn value="start">
-					<v-icon icon="mdi-format-align-left"></v-icon>
-				</v-btn>
+	<div class="position-relative">
+		<Transition name="slide_primary" mode="in-out">
+			<div v-show="!subMenu" class="palette__container">
+				<MainSettings :block="block" :blockIndex="blockIndex" />
+			</div>
+		</Transition>
 
-				<v-btn value="center">
-					<v-icon icon="mdi-format-align-center"></v-icon>
-				</v-btn>
-
-				<v-btn value="end">
-					<v-icon icon="mdi-format-align-right"></v-icon>
-				</v-btn>
-			</v-btn-toggle>
-			<v-btn-toggle v-model="verticalAlignment" variant="outlined" divided>
-				<v-btn value="start">
-					<v-icon icon="mdi-format-vertical-align-top"></v-icon>
-				</v-btn>
-
-				<v-btn value="center">
-					<v-icon icon="mdi-format-vertical-align-center"></v-icon>
-				</v-btn>
-
-				<v-btn value="end">
-					<v-icon icon="mdi-format-vertical-align-bottom"></v-icon>
-				</v-btn>
-			</v-btn-toggle>
-		</v-window-item>
-	</v-window>
+		<!-- <v-divider class="my-4"></v-divider>
+		<v-btn
+			variant="tonal"
+			color="primary"
+			prepend-icon="mdi-water-opacity"
+			block
+			@click="openSubMenu('CUSTOM_DESIGN')"
+			>Customize Design</v-btn
+		> -->
+		<!-- <Transition name="slide_secondary" mode="out-in">
+			<div v-if="subMenu === 'CUSTOM_DESIGN'" class="palette__container">
+				<CustomDesign
+					:block="block"
+					:blockIndex="blockIndex"
+					@closeSubMenu="closeSubMenu"
+				/>
+			</div>
+		</Transition> -->
+	</div>
 </template>
+
+<style>
+	.block-settings__content {
+		height: calc(500px - 48px);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+	.block-settings__title {
+		width: fit-content;
+		margin: 0 16px;
+		position: relative;
+		z-index: 3;
+		height: 48px;
+	}
+
+	/* Sections Palette Transition */
+	.slide_primary-enter-from,
+	.slide_primary-enter-to,
+	.slide_primary-leave-from,
+	.slide_secondary-enter-from,
+	.slide_secondary-enter-to,
+	.slide_secondary-leave-from,
+	.slide_secondary-leave-to {
+		position: absolute;
+	}
+
+	.slide_primary-enter-active,
+	.slide_primary-leave-active,
+	.slide_secondary-enter-active,
+	.slide_secondary-leave-active {
+		transition: all 500ms ease;
+	}
+
+	.slide_primary-enter-from,
+	.slide_primary-leave-to {
+		transform: translateX(-110%);
+	}
+
+	/* Compoents Palette Transition */
+	.slide_secondary-enter-from,
+	.slide_secondary-leave-to {
+		transform: translateX(110%);
+	}
+	.slide_secondary-enter-to,
+	.slide_secondary-leave-from,
+	.slide_primary-enter-to,
+	.slide_primary-leave-from {
+		transform: translateX(0%);
+	}
+
+	.palette__container {
+		width: 100%;
+		top: 0;
+		left: 0;
+	}
+</style>

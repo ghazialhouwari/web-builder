@@ -6,7 +6,6 @@
 	// Composables
 	import useBlockItemDraggable from '@/composables/useBlockItemDraggable';
 	// Emits
-	/* eslint-disable no-unused-vars */
 	const emits = defineEmits({
 		start: () => true,
 		end: () => true,
