@@ -18,10 +18,50 @@ export const blocks: SiteBlock[] = [
 				linkTo: 'https://bobapps.co',
 				newWindow: false,
 			},
-			horizontalAlignment: 'center',
 			verticalAlignment: 'center',
-			fluid: true,
+			horizontalAlignment: 'center',
+			contentAlignment: 'center',
 			buttonSize: 'default',
+			fluid: true,
+			color: '#FFF',
+			backgroundColor: '#1867C0',
+			cornerRadius: {
+				topLeft: {
+					unit: 'px',
+					value: 4,
+				},
+				topRight: {
+					unit: 'px',
+					value: 4,
+				},
+				bottomLeft: {
+					unit: 'px',
+					value: 4,
+				},
+				bottomRight: {
+					unit: 'px',
+					value: 4,
+				},
+			},
+			padding: {
+				top: {
+					unit: 'px',
+					value: 0,
+				},
+				right: {
+					unit: 'px',
+					value: 16,
+				},
+				bottom: {
+					unit: 'px',
+					value: 0,
+				},
+				left: {
+					unit: 'px',
+					value: 16,
+				},
+			},
+			shape: 'elevated',
 		},
 	},
 	// mdi-image-outline 6x6

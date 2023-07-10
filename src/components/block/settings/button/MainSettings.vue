@@ -35,31 +35,27 @@
 
 	const tab = ref(1);
 
-	const createComputedProperty = (key: keyof SectionBlockButton) => {
-		return computed({
-			get() {
-				return props.block.value[key];
-			},
-			set(value) {
-				sectionsStore.updateBlockValue(sectionIndex.value, props.blockIndex, {
-					...props.block.value,
-					[key]: value,
-				});
-			},
+	const getter = (key: keyof SectionBlockButton): any => {
+		return props.block.value[key];
+	};
+
+	const setter = (key: keyof SectionBlockButton, value: any) => {
+		sectionsStore.updateBlockValue(sectionIndex.value, props.blockIndex, {
+			...props.block.value,
+			[key]: value,
 		});
 	};
 
-	const cornerRadius = computed({
-		get() {
-			return props.block.value.cornerRadius;
-		},
-		set(value: CornerRadius) {
-			sectionsStore.updateBlockValue(sectionIndex.value, props.blockIndex, {
-				...props.block.value,
-				cornerRadius: value,
-			});
-		},
-	});
+	const createComputedProperty = (key: keyof SectionBlockButton) => {
+		return computed({
+			get() {
+				return getter(key);
+			},
+			set(value) {
+				setter(key, value);
+			},
+		});
+	};
 
 	const buttonText = createComputedProperty('buttonText');
 	const shape = createComputedProperty('shape');
@@ -68,8 +64,31 @@
 	const horizontalAlignment = createComputedProperty('horizontalAlignment');
 	const verticalAlignment = createComputedProperty('verticalAlignment');
 	const contentAlignment = createComputedProperty('contentAlignment');
-	const backgroundColor = createComputedProperty('backgroundColor');
-	const color = createComputedProperty('color');
+
+	const cornerRadius = computed({
+		get() {
+			return getter('cornerRadius');
+		},
+		set(value: CornerRadius) {
+			setter('cornerRadius', value);
+		},
+	});
+	const backgroundColor = computed({
+		get() {
+			return getter('backgroundColor');
+		},
+		set(value) {
+			setter('backgroundColor', value);
+		},
+	});
+	const color = computed({
+		get() {
+			return getter('color');
+		},
+		set(value) {
+			setter('color', value);
+		},
+	});
 </script>
 
 <template>
