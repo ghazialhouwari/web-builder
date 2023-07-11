@@ -27,6 +27,7 @@
 		position: absolute;
 		bottom: 20px;
 		right: 20px;
+		z-index: 20;
 	}
 	.section__resize-handle-btn {
 		cursor: row-resize;

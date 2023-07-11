@@ -1,9 +1,10 @@
 import { reactive, Ref } from 'vue';
 import { useGridStore } from '@/store/grid';
 import { useSectionsStore } from '@/store/sections';
-import { SectionBlock, SectionBlockLayout } from '@/utils/types';
+import { SectionBlock } from '@/utils/types';
 import useDrag from '@/composables/useDrag';
 import { deepClone } from '@/utils';
+import { blocksSpecs } from '@/data/blocksSpecs';
 
 export default function useBlockResize({
 	block,
@@ -28,7 +29,6 @@ export default function useBlockResize({
 	const { cellWidth, cellHeight, gap } = gridStore;
 
 	function onMouseDown(evt: MouseEvent) {
-		console.log('onMouseDown');
 		const element = evt.target as HTMLElement;
 
 		if (isResizeHandle(element)) {
@@ -51,7 +51,6 @@ export default function useBlockResize({
 	}
 
 	function onMouseUp() {
-		console.log('onMouseUp');
 		gridStore.deactivateGrid();
 
 		if (gridStore.draggedBlockLayout) {
@@ -80,7 +79,6 @@ export default function useBlockResize({
 	}
 
 	function isResizeHandle(element: HTMLElement): boolean {
-		console.log(element);
 		return (
 			element.classList.contains('block__resize-handle') &&
 			!!element.dataset.directions
@@ -88,7 +86,6 @@ export default function useBlockResize({
 	}
 
 	function getDirectionsFromElement(element: HTMLElement): string[] {
-		console.log(element);
 		return element.dataset.directions?.split(',') ?? [];
 	}
 
@@ -101,29 +98,56 @@ export default function useBlockResize({
 
 	function updateDraggedBlockLayout() {
 		const layout = deepClone(block.layout[gridStore.viewType]);
+		const diff = {
+			x: Math.abs(layout.end.x - layout.start.x),
+			y: Math.abs(layout.end.y - layout.start.y),
+		};
+		const minColumns = blocksSpecs[block.type].minColumns;
+		const minRows = blocksSpecs[block.type].minRows;
+
 		const actions: Record<string, () => void> = {
 			left: () => {
 				const startX = layout.start.x + state.columns;
 				if (startX > 0 && startX < layout.end.x) {
-					gridStore.setDraggedBlockLayoutPosition('start', 'x', startX);
+					if (diff.x - state.columns >= minColumns) {
+						gridStore.setDraggedBlockLayoutPosition('start', 'x', startX);
+						gridStore.removeDraggedBlockEdgeError('left');
+					} else {
+						gridStore.setDraggedBlockEdgeError('left');
+					}
 				}
 			},
 			top: () => {
 				const startY = layout.start.y + state.rows;
 				if (startY > 0 && startY < layout.end.y) {
-					gridStore.setDraggedBlockLayoutPosition('start', 'y', startY);
+					if (diff.y - state.rows >= minRows) {
+						gridStore.setDraggedBlockLayoutPosition('start', 'y', startY);
+						gridStore.removeDraggedBlockEdgeError('top');
+					} else {
+						gridStore.setDraggedBlockEdgeError('top');
+					}
 				}
 			},
 			right: () => {
 				const endX = layout.end.x + state.columns;
 				if (endX > layout.start.x && endX < gridStore.columnCount + 4) {
-					gridStore.setDraggedBlockLayoutPosition('end', 'x', endX);
+					if (diff.x + state.columns >= minColumns) {
+						gridStore.setDraggedBlockLayoutPosition('end', 'x', endX);
+						gridStore.removeDraggedBlockEdgeError('right');
+					} else {
+						gridStore.setDraggedBlockEdgeError('right');
+					}
 				}
 			},
 			bottom: () => {
 				const endY = layout.end.y + state.rows;
 				if (endY > layout.start.y) {
-					gridStore.setDraggedBlockLayoutPosition('end', 'y', endY);
+					if (diff.y + state.rows >= minRows) {
+						gridStore.setDraggedBlockLayoutPosition('end', 'y', endY);
+						gridStore.removeDraggedBlockEdgeError('bottom');
+					} else {
+						gridStore.setDraggedBlockEdgeError('bottom');
+					}
 				}
 			},
 		};

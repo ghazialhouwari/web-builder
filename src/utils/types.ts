@@ -187,3 +187,13 @@ export type GridActivationEvents =
 	| 'DRAG_MENU_BLOCK'
 	| 'RESIZE_SECTION'
 	| 'RESIZE_BLOCK';
+
+export interface BlockSpecs {
+	minColumns: number;
+	minRows: number;
+}
+export type BlocksSpecs = {
+	[key in BlockType]: BlockSpecs;
+};
+
+export type Direction = 'top' | 'right' | 'bottom' | 'left';

@@ -14,6 +14,7 @@
 		verticalAlignmentOptions,
 		contentAlignmentOptions,
 	} from '@/data/options';
+	import { debounce } from '@/utils';
 	// Components
 	import AppSelectMenu from '@/components/app/SelectMenu.vue';
 	import AppButtonToggle from '@/components/app/ButtonToggle.vue';
@@ -48,9 +49,7 @@
 
 	const createComputedProperty = (key: keyof SectionBlockButton) => {
 		return computed({
-			get() {
-				return getter(key);
-			},
+			get: () => getter(key),
 			set(value) {
 				setter(key, value);
 			},
@@ -66,28 +65,24 @@
 	const contentAlignment = createComputedProperty('contentAlignment');
 
 	const cornerRadius = computed({
-		get() {
-			return getter('cornerRadius');
-		},
+		get: () => getter('cornerRadius'),
 		set(value: CornerRadius) {
 			setter('cornerRadius', value);
 		},
 	});
+
+	const debounceSetColor = debounce(setColor, 100);
+
+	function setColor(key: keyof SectionBlockButton, value: string) {
+		setter(key, value);
+	}
 	const backgroundColor = computed({
-		get() {
-			return getter('backgroundColor');
-		},
-		set(value) {
-			setter('backgroundColor', value);
-		},
+		get: () => getter('backgroundColor'),
+		set: (value: string) => debounceSetColor('backgroundColor', value),
 	});
 	const color = computed({
-		get() {
-			return getter('color');
-		},
-		set(value) {
-			setter('color', value);
-		},
+		get: () => getter('color'),
+		set: (value: string) => debounceSetColor('color', value),
 	});
 </script>
 
