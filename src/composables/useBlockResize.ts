@@ -9,11 +9,11 @@ import { blocksSpecs } from '@/data/blocksSpecs';
 export default function useBlockResize({
 	block,
 	blockIndex,
-	resizeHandleRef,
+	handles,
 }: {
 	block: SectionBlock;
 	blockIndex: number;
-	resizeHandleRef: Ref<HTMLElement | null>;
+	handles: string[];
 }) {
 	const gridStore = useGridStore();
 	const sectionsStore = useSectionsStore();
@@ -79,10 +79,7 @@ export default function useBlockResize({
 	}
 
 	function isResizeHandle(element: HTMLElement): boolean {
-		return (
-			element.classList.contains('block__resize-handle') &&
-			!!element.dataset.directions
-		);
+		return !!element.dataset.directions;
 	}
 
 	function getDirectionsFromElement(element: HTMLElement): string[] {
@@ -163,8 +160,7 @@ export default function useBlockResize({
 		state.columns = Math.round(distanceX / (cellWidth + gap));
 		state.rows = Math.round(distanceY / (cellHeight + gap));
 	}
-
-	const dragging = useDrag(resizeHandleRef, onMouseDown, onMouseMove, onMouseUp);
+	const dragging = useDrag(handles, onMouseDown, onMouseMove, onMouseUp);
 
 	return { rows: state.rows, columns: state.columns };
 }

@@ -103,6 +103,40 @@ export const sections: Section[] = [
 					},
 				},
 			},
+			{
+				id: '12345',
+				type: 'image',
+				value: {
+					url: 'https://bobofficialbucket.s3.us-west-2.amazonaws.com/nTwqPhdVyd6qUWBiZ/0eF0tWy05KSJ8yn1mZU2ZC8nigSY4s.png',
+					action: null,
+					stretch: false,
+					altText: '',
+				},
+				layout: {
+					desktop: {
+						start: {
+							x: 10,
+							y: 4,
+						},
+						end: {
+							x: 16,
+							y: 9,
+						},
+						zIndex: 1,
+					},
+					mobile: {
+						start: {
+							x: 5,
+							y: 6,
+						},
+						end: {
+							x: 8,
+							y: 10,
+						},
+						zIndex: 1,
+					},
+				},
+			},
 		],
 	},
 	{
@@ -129,7 +163,7 @@ export const sections: Section[] = [
 		},
 		blocks: [
 			{
-				id: '12345',
+				id: '123456',
 				type: 'button',
 				value: {
 					buttonText: 'Learn more',

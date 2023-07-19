@@ -1,17 +1,35 @@
 import { onBeforeUnmount, onMounted, Ref } from 'vue';
 
 export default function useDrag(
-	element: Ref<HTMLElement | null>,
+	element: Ref<HTMLElement | null> | string[],
 	onMouseDown: (evt: MouseEvent) => void,
 	onMouseMove: (evt: MouseEvent) => void,
 	onMouseUp: () => void
 ) {
+	const elements: Array<HTMLElement | null> = [];
+
 	onMounted(() => {
-		element.value?.addEventListener('mousedown', onMouseDown);
+		if (element instanceof Array) {
+			element.forEach((selector) => {
+				const el: HTMLElement | null = document.querySelector(selector);
+				if (el) {
+					el.addEventListener('mousedown', onMouseDown);
+					elements.push(el);
+				}
+			});
+		} else {
+			element.value?.addEventListener('mousedown', onMouseDown);
+		}
 	});
 
 	onBeforeUnmount(() => {
-		element.value?.removeEventListener('mousedown', onMouseDown);
+		if (element instanceof Array) {
+			elements?.forEach((el) => {
+				el?.removeEventListener('mousedown', onMouseDown);
+			});
+		} else {
+			element.value?.removeEventListener('mousedown', onMouseDown);
+		}
 	});
 
 	function attachMouseListeners() {
