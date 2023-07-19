@@ -1,105 +1,155 @@
 <script setup lang="ts">
-	import { ButtonSectionBlock } from '@/utils/types';
-	import MainSettings from '@/components/block/settings/button/MainSettings.vue';
-	import { ref } from 'vue';
+	import {
+		ButtonSectionBlock,
+		CornerRadius,
+		SectionBlockButton,
+	} from '@/utils/types';
+	import { computed, inject, ref, Ref } from 'vue';
+	import {
+		shapes,
+		scalingOptions,
+		sizeOptions,
+		horizontalAlignmentOptions,
+		verticalAlignmentOptions,
+		contentAlignmentOptions,
+	} from '@/data/options';
+	import { debounce } from '@/utils';
+	// Composables
+	import { useCreateComputed } from '@/composables/useCreateComputed';
+	// Components
+	import Tabs from '@/components/block/settings/Tabs.vue';
+	import AppSelectMenu from '@/components/app/SelectMenu.vue';
+	import AppButtonToggle from '@/components/app/ButtonToggle.vue';
+	import AppCornerRadius from '@/components/app/CornerRadius.vue';
+	import AppSubtitle from '@/components/app/Subtitle.vue';
+	import AppSelectButton from '@/components/app/SelectButton.vue';
 
 	// Props
-	defineProps<{
+	const props = defineProps<{
 		block: ButtonSectionBlock;
 		blockIndex: number;
 	}>();
 
-	const subMenu = ref<string | null>(null);
+	const sectionIndex = inject<Ref<number>>('sectionIndex', ref(0));
 
-	// function openSubMenu(value: string) {
-	// 	subMenu.value = value;
-	// }
-	// function closeSubMenu() {
-	// 	subMenu.value = null;
-	// }
+	const { getter, setter, createComputedProperty } =
+		useCreateComputed<SectionBlockButton>(
+			props.block.value,
+			props.blockIndex,
+			sectionIndex
+		);
+
+	const buttonText = createComputedProperty('buttonText');
+	const shape = createComputedProperty('shape');
+	const fluid = createComputedProperty('fluid');
+	const buttonSize = createComputedProperty('buttonSize');
+	const horizontalAlignment = createComputedProperty('horizontalAlignment');
+	const verticalAlignment = createComputedProperty('verticalAlignment');
+	const contentAlignment = createComputedProperty('contentAlignment');
+
+	const cornerRadius = computed({
+		get: () => getter('cornerRadius'),
+		set(value: CornerRadius) {
+			setter('cornerRadius', value);
+		},
+	});
+
+	const debounceSetColor = debounce(setColor, 100);
+
+	function setColor(key: keyof SectionBlockButton, value: string) {
+		setter(key, value);
+	}
+	const backgroundColor = computed({
+		get: () => getter('backgroundColor'),
+		set: (value: string) => debounceSetColor('backgroundColor', value),
+	});
+	const color = computed({
+		get: () => getter('color'),
+		set: (value: string) => debounceSetColor('color', value),
+	});
 </script>
 
 <template>
-	<div class="position-relative">
-		<Transition name="slide_primary" mode="in-out">
-			<div v-show="!subMenu" class="palette__container">
-				<MainSettings :block="block" :blockIndex="blockIndex" />
-			</div>
-		</Transition>
+	<Tabs :blockType="block.type">
+		<template #windowContent>
+			<v-text-field
+				v-model="buttonText"
+				label="Text"
+				variant="underlined"
+			></v-text-field>
+		</template>
+		<template #windowLayout>
+			<AppSelectMenu v-model="shape" :items="shapes">
+				<template #activator>
+					<AppSelectButton title="Shape" :value="shape" class="mb-4" />
+				</template>
 
-		<!-- <v-divider class="my-4"></v-divider>
-		<v-btn
-			variant="tonal"
-			color="primary"
-			prepend-icon="mdi-water-opacity"
-			block
-			@click="openSubMenu('CUSTOM_DESIGN')"
-			>Customize Design</v-btn
-		> -->
-		<!-- <Transition name="slide_secondary" mode="out-in">
-			<div v-if="subMenu === 'CUSTOM_DESIGN'" class="palette__container">
-				<CustomDesign
-					:block="block"
-					:blockIndex="blockIndex"
-					@closeSubMenu="closeSubMenu"
-				/>
-			</div>
-		</Transition> -->
-	</div>
+				<template #elevated>
+					<v-btn variant="elevated" color="primary" block>Elevated</v-btn>
+				</template>
+				<template #tonal>
+					<v-btn variant="tonal" color="primary" block>Tonal</v-btn>
+				</template>
+				<template #outlined>
+					<v-btn variant="outlined" color="primary" block>Outline</v-btn>
+				</template>
+				<template #text>
+					<v-btn variant="text" color="primary" block>Text</v-btn>
+				</template>
+				<template #plain>
+					<v-btn variant="plain" color="primary" block>Plain</v-btn>
+				</template>
+			</AppSelectMenu>
+			<!-- Scaling -->
+			<AppSubtitle title="Scaling" />
+			<AppButtonToggle v-model="fluid" :items="scalingOptions" class="mb-4" />
+			<!-- Size -->
+			<AppSubtitle title="Size" />
+			<AppButtonToggle v-model="buttonSize" :items="sizeOptions" class="mb-4" />
+			<!-- Alignment -->
+			<AppSubtitle title="Alignment" />
+			<AppButtonToggle
+				v-model="horizontalAlignment"
+				:items="horizontalAlignmentOptions"
+			/>
+			<AppButtonToggle
+				v-model="verticalAlignment"
+				:items="verticalAlignmentOptions"
+			/>
+		</template>
+		<template #windowDesign>
+			<!-- Background Color -->
+			<AppSelectMenu>
+				<template #activator>
+					<AppSelectButton
+						title="Background Color"
+						:value="backgroundColor"
+						valueType="color"
+				/></template>
+				<v-color-picker v-model="backgroundColor" elevation="0"></v-color-picker>
+			</AppSelectMenu>
+			<!-- Text Color -->
+			<AppSelectMenu>
+				<template #activator>
+					<AppSelectButton
+						title="Text Color"
+						:value="color"
+						valueType="color"
+						class="mb-4"
+				/></template>
+				<v-color-picker v-model="color" elevation="0"></v-color-picker>
+			</AppSelectMenu>
+			<!-- Alignment -->
+			<AppSubtitle title="Content Alignment" />
+			<AppButtonToggle
+				v-model="contentAlignment"
+				:items="contentAlignmentOptions"
+				class="mb-4"
+			/>
+			<!-- Corner Radius -->
+			<AppSubtitle title="Corner Radius" />
+			<AppCornerRadius v-model="cornerRadius" />
+		</template>
+	</Tabs>
 </template>
-
-<style>
-	.block-settings__content {
-		height: calc(500px - 48px);
-		overflow-y: auto;
-		overscroll-behavior: contain;
-	}
-	.block-settings__title {
-		width: fit-content;
-		margin: 0 16px;
-		position: relative;
-		z-index: 3;
-		height: 48px;
-	}
-
-	/* Sections Palette Transition */
-	.slide_primary-enter-from,
-	.slide_primary-enter-to,
-	.slide_primary-leave-from,
-	.slide_secondary-enter-from,
-	.slide_secondary-enter-to,
-	.slide_secondary-leave-from,
-	.slide_secondary-leave-to {
-		position: absolute;
-	}
-
-	.slide_primary-enter-active,
-	.slide_primary-leave-active,
-	.slide_secondary-enter-active,
-	.slide_secondary-leave-active {
-		transition: all 500ms ease;
-	}
-
-	.slide_primary-enter-from,
-	.slide_primary-leave-to {
-		transform: translateX(-110%);
-	}
-
-	/* Compoents Palette Transition */
-	.slide_secondary-enter-from,
-	.slide_secondary-leave-to {
-		transform: translateX(110%);
-	}
-	.slide_secondary-enter-to,
-	.slide_secondary-leave-from,
-	.slide_primary-enter-to,
-	.slide_primary-leave-from {
-		transform: translateX(0%);
-	}
-
-	.palette__container {
-		width: 100%;
-		top: 0;
-		left: 0;
-	}
-</style>
+@/composables/useCreateComputed
