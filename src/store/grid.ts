@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, readonly, reactive, toRefs } from 'vue';
 import {
+	Direction,
 	Grid,
 	GridActivationEvents,
 	SectionBlockLayout,
@@ -18,12 +19,16 @@ export const useGridStore = defineStore('grid', () => {
 	const isBlockSettingsVisible = ref<boolean>(false);
 
 	const draggedBlockLayout = ref<SectionBlockLayout | null>(null);
+	const draggedBlockEdgeError = ref<Direction[]>([]);
 
 	const activeSectionIndex = ref<number | null>(null);
 	const activeSectionRowCount = ref<number>(grid.minRowCount);
 
 	function setDraggedBlockLayout(layout: SectionBlockLayout | null) {
 		draggedBlockLayout.value = layout;
+		if (!layout) {
+			draggedBlockEdgeError.value = [];
+		}
 	}
 
 	function setDraggedBlockLayoutPosition(
@@ -33,6 +38,20 @@ export const useGridStore = defineStore('grid', () => {
 	) {
 		if (!draggedBlockLayout.value) return;
 		draggedBlockLayout.value[direction][position] = value;
+	}
+
+	function setDraggedBlockEdgeError(direction: Direction) {
+		if (!draggedBlockEdgeError.value.includes(direction)) {
+			draggedBlockEdgeError.value.push(direction);
+		}
+	}
+
+	function removeDraggedBlockEdgeError(direction: Direction) {
+		if (draggedBlockEdgeError.value.includes(direction)) {
+			draggedBlockEdgeError.value = draggedBlockEdgeError.value.filter(
+				(dir) => dir !== direction
+			);
+		}
 	}
 
 	function updateGrid() {
@@ -78,6 +97,7 @@ export const useGridStore = defineStore('grid', () => {
 		gridActiveEvent: readonly(gridActiveEvent),
 		focusedBlockId: readonly(focusedBlockId),
 		draggedBlockLayout: readonly(draggedBlockLayout),
+		draggedBlockEdgeError: readonly(draggedBlockEdgeError),
 		activeSectionIndex: readonly(activeSectionIndex),
 		activeSectionRowCount: readonly(activeSectionRowCount),
 		viewType: readonly(viewType),
@@ -92,5 +112,7 @@ export const useGridStore = defineStore('grid', () => {
 		setViewType,
 		setFocusedBlock,
 		setBlockSettingsVisibility,
+		setDraggedBlockEdgeError,
+		removeDraggedBlockEdgeError,
 	};
 });

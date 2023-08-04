@@ -77,7 +77,7 @@ export interface SectionBlockLink {
 
 export interface SectionBlockButton {
 	buttonText: string;
-	action: SectionBlockLink;
+	action: SectionBlockLink | null;
 	verticalAlignment: 'start' | 'center' | 'end';
 	horizontalAlignment: 'start' | 'center' | 'end';
 	contentAlignment: 'start' | 'center' | 'end';
@@ -91,10 +91,10 @@ export interface SectionBlockButton {
 }
 
 export interface SectionBlockImage {
-	url: string;
-	action: SectionBlockLink;
-	stretch: true;
-	altText: string;
+	url: string | null;
+	action: SectionBlockLink | null;
+	stretch: boolean;
+	altText: string | null;
 }
 
 export type SectionBlockValue =
@@ -187,3 +187,13 @@ export type GridActivationEvents =
 	| 'DRAG_MENU_BLOCK'
 	| 'RESIZE_SECTION'
 	| 'RESIZE_BLOCK';
+
+export interface BlockSpecs {
+	minColumns: number;
+	minRows: number;
+}
+export type BlocksSpecs = {
+	[key in BlockType]: BlockSpecs;
+};
+
+export type Direction = 'top' | 'right' | 'bottom' | 'left';

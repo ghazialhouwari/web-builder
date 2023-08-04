@@ -100,7 +100,16 @@
 			/>
 		</Transition>
 		<span ref="dragHandleRef" class="block__handle"></span>
-		<Component :is="blocks[currentBlock]" :value="block.value" />
+		<div
+			class="block__content"
+			:id="`blockContent_${sectionIndex}_${blockIndex}`"
+		>
+			<Component
+				:is="blocks[currentBlock]"
+				:value="block.value"
+				:blockIndex="blockIndex"
+			/>
+		</div>
 		<ResizeHandle
 			v-if="
 				(isFocused && gridStore.gridActiveEvent !== 'RESIZE_BLOCK') ||
@@ -152,11 +161,20 @@
 	.block__handle {
 		display: block;
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		top: -10px;
+		left: -10px;
+		right: -10px;
+		bottom: -10px;
 		z-index: 4;
 		cursor: grab;
+	}
+	.block__content {
+		position: relative;
+		display: flex;
+		width: 100%;
+		height: 100%;
+	}
+	.block.is--focused .block__content {
+		z-index: 5;
 	}
 </style>

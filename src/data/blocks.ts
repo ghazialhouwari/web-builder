@@ -64,6 +64,24 @@ export const blocks: SiteBlock[] = [
 			shape: 'elevated',
 		},
 	},
+	{
+		id: '12',
+		icon: 'mdi-image-outline',
+		type: 'image',
+		layout: {
+			size: {
+				columns: 8,
+				rows: 8,
+			},
+			zIndex: 1,
+		},
+		value: {
+			url: null,
+			action: null,
+			stretch: true,
+			altText: '',
+		},
+	},
 	// mdi-image-outline 6x6
 	// mdi-video-outline 6x6
 ];
